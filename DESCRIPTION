@@ -1,0 +1,65 @@
+Package: RedoxRRI
+Type: Package
+Title: Holobiont Redox Resilience Index for Integrative Stress Biology
+Version: 0.99.0
+Authors@R: c(
+    person("Mitra", "Ghotbi", email = "mitra.ghotbi@gmail.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0001-9185-9993")),
+    person("Marjan", "Ghotbi", email = "ghotbi.marjan@gmail.com", role = "ctb",
+           comment = c(ORCID = "0000-0003-4655-6445"))
+ )
+Maintainer: Mitra Ghotbi <mitra.ghotbi@gmail.com>
+Description:
+    A unified framework for quantifying holobiont-level redox resilience by integrating
+    plant physiological traits, soil redox chemistry, and microbial community organization
+    into a single interpretable index.
+   The package implements the Redox Resilience Index
+    (RRI), a weighted composite metric grounded in redox biogeochemistry,
+    microbial ecology, and systems biology.
+    Multivariate indicators from each domain are reduced to normalized
+    one-dimensional latent scores using flexible dimension-reduction methods
+    (e.g., PCA, factor analysis, nonlinear embeddings, or co-expression
+    networks). Microbial resilience is represented as a blended latent
+    component combining abundance or functional composition with network
+    organization metrics derived from ecological graphs.
+    RedoxRRI is designed for hypothesis-driven research rather than
+    black-box prediction, enabling transparent comparison of alternative
+    aggregation strategies, domain weights, and ecological contexts.
+    The framework supports validation against ecosystem recovery, stress
+    tolerance, and biogeochemical function across experimental and
+    observational studies.
+License: GPL-3
+Encoding: UTF-8
+LazyData: false
+Depends:
+    R (>= 4.3)
+Imports:
+    stats,
+    igraph,
+    rlang
+Suggests:
+    WGCNA,
+    psych,
+    uwot,
+    NMF,
+    ggtern,
+    ggplot2,
+    viridis,
+    knitr,
+    rmarkdown,
+    BiocStyle,
+    testthat (>= 3.0.0)
+VignetteBuilder: knitr
+biocViews:
+    SystemsBiology,
+    EcologicalModeling,
+    Microbiome,
+    SoilScience,
+    StressResponse,
+    NetworkInference,
+    DimensionReduction,
+    MultivariateStatistics,
+    Visualization
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+Config/testthat/edition: 3

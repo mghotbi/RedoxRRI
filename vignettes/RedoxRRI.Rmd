@@ -1,0 +1,240 @@
+---
+title: "RedoxRRI: Holobiont Redox Resilience Index"
+output: BiocStyle::html_document
+vignette: >
+  %\VignetteIndexEntry{RedoxRRI: Holobiont Redox Resilience Index}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  fig.width  = 7,
+  fig.height = 7,
+  out.width  = "60%",
+  fig.align  = "center",
+  dpi = 120
+)
+
+```
+
+
+```{r setup}
+library(RedoxRRI)
+```
+
+Overview
+
+RedoxRRI provides a transparent framework to quantify holobiont redox resilience by integrating three complementary domains:
+
+Plant physiology / oxidative–nitrosative buffering (e.g., ROS-related traits)
+Soil redox stability (e.g., Eh and redox-coupled chemistry)
+Microbial resilience, represented as a single blended domain that can incorporate:
+microbial abundance / functional composition (micro_data)
+microbial network organization (igraph network metrics)
+
+The output is:
+
+a per-sample Redox Resilience Index (RRI) scaled to [0, 1]
+a ternary-ready composition (Physio, Soil, Micro) with row sums equal to 1
+a system-level index attr(x, "RRI_index") (mean across samples)
+
+Conceptual model
+
+## Domain-level equation implemented in `RRI_pipeline()`
+
+The default domain-level equation implemented in `RRI_pipeline()` is:
+
+$$
+\mathrm{RRI}
+= w_1 \exp\!\left(-\mathrm{ROS}^{\ast}\right)
++ w_2 \left(\mathrm{Eh}^{\ast}\right)^2
++ w_3 \mathrm{Micro}^{\ast},
+\qquad
+w_1 + w_2 + w_3 = 1.
+$$
+
+Each domain is first summarized into a 1D latent score (per sample) and
+normalized to $[0,1]$.
+
+
+### Microbial domain as a blended score (Option A)
+
+To preserve a three-part ternary representation, microbial resilience is modeled
+as a single domain score:
+
+$$
+\mathrm{Micro}^{\ast}
+= \alpha\,\mathrm{Micro}^{\ast}_{\mathrm{abund}}
++ (1-\alpha)\,\mathrm{Micro}^{\ast}_{\mathrm{net}}.
+$$
+
+- `alpha_micro = 1` $\rightarrow$ abundance/functional only  
+- `alpha_micro = 0` $\rightarrow$ network only  
+- `alpha_micro = 0.5` $\rightarrow$ equal blend (default)
+
+ 
+```{r}
+data(redoxrri_example)
+str(redoxrri_example, max.level = 1)
+
+```
+The object contains:
+
+ROS_flux: physiology traits (samples × variables)
+Eh_stability: soil variables (samples × variables)
+micro_data: microbial feature matrix (samples × features)
+graph: an igraph network
+
+```{r}
+
+out <- RRI_pipeline(
+ROS_flux     = redoxrri_example$ROS_flux,
+Eh_stability = redoxrri_example$Eh_stability,
+micro_data   = redoxrri_example$micro_data,
+graph        = redoxrri_example$graph,
+alpha_micro  = 0.6,         # 60% abundance, 40% network
+method_phys  = "pca",
+method_soil  = "pca",
+method_micro = "pca",
+network_agg  = "equation",
+w1 = 0.4, w2 = 0.35, w3 = 0.25
+)
+
+head(out)
+
+```
+
+System-level index
+
+```{r}
+attr(out, "RRI_index")
+summary(out$RRI)
+
+```
+
+Interpret the ternary components
+
+The columns Physio, Soil, and Micro are returned in compositional form:
+Physio+Soil+Micro=1
+This makes them directly suitable for ternary visualization.
+
+```{r}
+rowSums(out[, c("Physio", "Soil", "Micro")])[1:6]
+
+```
+
+Microbial components (abundance vs network)
+
+The output also provides the two microbial subcomponents (when available):
+Micro_abundance: latent score from micro_data
+Micro_network: latent score from graph (system-level replicated, or sample-specific if graph is a list)
+
+```{r}
+summary(out$Micro_abundance)
+summary(out$Micro_network)
+
+```
+
+Choosing latent-dimension methods
+Different domains may justify different latent methods.
+
+Common choices:
+
+pca: interpretable linear gradient (often good for physiology)
+wgcna: co-regulated modules (often appropriate for soil redox syndromes)
+umap: nonlinear regimes (useful for threshold-like responses)
+nmf: parts-based factors for nonnegative microbial features
+Below we compare two plausible specifications.
+Spec A: Soil as WGCNA (if available), others PCA
+
+
+```{r}
+specA <- out
+
+if (requireNamespace("WGCNA", quietly = TRUE)) {
+specA <- RRI_pipeline(
+ROS_flux     = redoxrri_example$ROS_flux,
+Eh_stability = redoxrri_example$Eh_stability,
+micro_data   = redoxrri_example$micro_data,
+graph        = redoxrri_example$graph,
+alpha_micro  = 0.6,
+method_phys  = "pca",
+method_soil  = "wgcna",
+method_micro = "pca"
+)
+c(RRI_index = attr(specA, "RRI_index"))
+} else {
+message("WGCNA not installed; skipping WGCNA example (Suggests).")
+}
+
+```
+
+Spec B: Nonlinear embedding (UMAP) where available
+```{r}
+specB <- out
+
+if (requireNamespace("uwot", quietly = TRUE)) {
+specB <- RRI_pipeline(
+ROS_flux     = redoxrri_example$ROS_flux,
+Eh_stability = redoxrri_example$Eh_stability,
+micro_data   = redoxrri_example$micro_data,
+graph        = redoxrri_example$graph,
+alpha_micro  = 0.6,
+method_phys  = "umap",
+method_soil  = "umap",
+method_micro = "pca"
+)
+c(RRI_index = attr(specB, "RRI_index"))
+} else {
+message("uwot not installed; skipping UMAP example (Suggests).")
+}
+
+```
+
+Compare RRI scores across specifications
+```{r}
+cmp <- data.frame(
+RRI_default = out$RRI,
+RRI_specA   = if (exists("specA")) specA$RRI else NA_real_,
+RRI_specB   = if (exists("specB")) specB$RRI else NA_real_
+)
+
+stats::cor(cmp, use = "pairwise.complete.obs")
+
+```
+
+Ternary visualization
+
+This plot requires suggested packages: ggtern, ggplot2, and viridis.
+
+```{r}
+if (requireNamespace("ggtern", quietly = TRUE) &&
+requireNamespace("ggplot2", quietly = TRUE) &&
+requireNamespace("viridis", quietly = TRUE)) {
+plot_RRI_ternary(out)
+} else {
+message("Install ggtern + ggplot2 + viridis to enable ternary plotting.")
+}
+
+```
+
+Practical guidance and recommended workflow
+
+Assemble domain matrices with samples in rows (same sample order across inputs).
+Choose a latent method per domain:
+
+physiology: pca or fa
+soil: pca or wgcna (when syndromic co-regulation is expected)
+microbial abundance: pca, nmf, or wgcna
+Decide microbial blending parameter alpha_micro:
+emphasize composition (alpha_micro high) vs network structure (low)
+Sensitivity-test weights w1,w2,w3 and methods.
+Validate RRI against independent outcomes (recovery, stress tolerance, ecosystem function).
+
+```{r}
+sessionInfo()
+
+```
+

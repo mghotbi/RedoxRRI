@@ -1,0 +1,4 @@
+# RedoxRRI 0.99.0
+- Initial Bioconductor-ready release
+- Implements holobiont Redox Resilience Index (RRI)
+- Includes vignette and example dataset
