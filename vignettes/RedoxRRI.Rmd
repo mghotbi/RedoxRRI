@@ -1,8 +1,10 @@
 ---
-title: "RedoxRRI: Holobiont Redox Resilience Index"
-output: BiocStyle::html_document
+title: "RedoxRRI"
+output:
+  BiocStyle::html_document:
+    toc: true
 vignette: >
-  %\VignetteIndexEntry{RedoxRRI: Holobiont Redox Resilience Index}
+  %\VignetteIndexEntry{RedoxRRI}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 

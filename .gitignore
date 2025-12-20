@@ -17,3 +17,21 @@ renv/python/
 RedoxRRI.Rcheck/
 ..Rcheck/
 *.tar.gz
+# RStudio
+.Rproj.user/
+*.Rproj
+
+# macOS
+.DS_Store
+
+# R build/check
+*.tar.gz
+*.Rcheck/
+..Rcheck/
+RedoxRRI.Rcheck/
+inst/doc/
+
+# R session junk
+.Rhistory
+.RData
+.Ruserdata

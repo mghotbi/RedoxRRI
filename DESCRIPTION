@@ -13,7 +13,7 @@ Description:
     A unified framework for quantifying holobiont-level redox resilience by integrating
     plant physiological traits, soil redox chemistry, and microbial community organization
     into a single interpretable index.
-   The package implements the Redox Resilience Index
+    The package implements the Redox Resilience Index
     (RRI), a weighted composite metric grounded in redox biogeochemistry,
     microbial ecology, and systems biology.
     Multivariate indicators from each domain are reduced to normalized

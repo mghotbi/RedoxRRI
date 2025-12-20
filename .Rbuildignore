@@ -1,7 +1,14 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-^\.DS_Store$
+
 ^\.git$
+^\.gitignore$
 ^\.github$
-^\.\.Rcheck$
-^\.Rcheck$
+
+^\.DS_Store$
+^\.Rhistory$
+^\.RData$
+^\.Ruserdata$
+
+^.*\.Rcheck$
+^..Rcheck$
