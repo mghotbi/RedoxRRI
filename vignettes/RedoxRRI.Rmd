@@ -1,0 +1,242 @@
+---
+title: "RedoxRRI"
+output:
+  BiocStyle::html_document:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{RedoxRRI}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  fig.width = 10,
+  fig.height = 10,
+  out.width = "70%",
+  fig.align = "center",
+  dpi = 120
+)
+```
+
+
+```{r setup}
+library(RedoxRRI)
+```
+
+### Overview
+
+
+RedoxRRI provides a transparent and extensible framework to quantify
+holobiont redox resilience by integrating three complementary domains:
+Plant physiology (oxidative / nitrosative buffering and stress traits)
+Soil redox stability (Eh and redox-coupled chemistry)
+
+Microbial resilience, represented as a single blended domain that can
+incorporate:
+microbial abundance or functional composition (micro_data)
+microbial network organization (igraph network metrics)
+The primary output of the package is:
+a per-sample Redox Resilience Index (RRI) scaled to [0,1])
+a ternary-ready compositional representation
+(Physio, Soil, Micro) with row sums equal to 1
+
+an optional system-level index stored as
+attr(x, "RRI_index")
+
+### Conceptual model
+#### Domain-level aggregation implemented in `rri_pipeline_st()`
+
+Each domain (Physiology, Soil, and Microbial) is first summarized into a
+one-dimensional latent score per sample using a user-selected method
+(e.g., PCA, FA, UMAP, or WGCNA). These latent scores are then scaled to
+the range [0, 1].
+
+The Redox Resilience Index (RRI) is computed as a weighted linear
+combination of the scaled domain scores. The domain weights are
+user-defined and must sum to one. Higher RRI values indicate samples
+with stronger physiological buffering, greater soil redox stability,
+and higher microbial resilience relative to other samples in the same
+dataset.
+
+Optional coupling terms can be included to capture coherence among
+domains, allowing the index to reflect not only domain magnitudes but
+also their agreement or joint stability.
+
+### Microbial domain as a blended score
+
+To preserve a three-part (Physiology–Soil–Microbial) ternary
+representation, microbial resilience is modeled as a single blended
+domain score.
+
+When both microbial abundance (or functional composition) data and
+microbial network data are available, the microbial domain score is
+computed as a weighted blend of the two components. The parameter
+`alpha_micro` controls their relative contribution:
+
+- `alpha_micro = 1`: abundance or functional composition only  
+- `alpha_micro = 0`: network structure only  
+- `alpha_micro = 0.5`: equal contribution (default)
+
+This design allows flexible emphasis on microbial composition,
+microbial organization, or both, while maintaining a consistent
+three-domain representation suitable for compositional and ternary
+visualization.
+
+
+### Simulated example data
+All data used in this vignette are fully simulated and are provided
+solely for demonstration and testing purposes.
+
+generated using simulate_redox_holobiont() and mimics
+
+qualitative properties of redox-ecological systems, including:
+correlated plant physiological traits
+soil redox gradients and stability
+microbial functional heterogeneity
+spatial grouping and temporal structure
+The simulation does not represent any real experiment, species, site,
+or ecosystem.
+
+
+```{r simulate-example}
+sim <- simulate_redox_holobiont()
+# sim <- simulate_redox_holobiont(seed = 1)
+
+str(sim)
+```
+
+
+
+The simulated object contains:
+
+ROS_flux: plant physiological traits (samples × variables)
+Eh_stability: soil redox variables
+micro_data: microbial functional features
+id: sample metadata (spatial and temporal structure)
+graph (optional): an igraph network or list of networks
+
+
+
+### Computing the Redox Resilience Index
+
+```{r run-pipeline}
+res <- rri_pipeline_st(
+  ROS_flux = sim$ROS_flux,
+  Eh_stability = sim$Eh_stability,
+  micro_data = sim$micro_data,
+  id = sim$id,
+  direction_phys = "auto",
+  direction_anchor_phys = "FvFm",
+  direction_soil = "auto",
+  direction_anchor_soil = "Eh"
+)
+```
+
+
+### Interpreting the compositional output
+
+The compositional output is stored in res$row_scores_comp.
+
+```{r scores}
+head(res$row_scores_comp)
+```
+
+The domain components satisfy:
+```{r domain components scores}
+rowSums(res$row_scores_comp[, c("Physio", "Soil", "Micro")])[1:6]
+```
+
+### Microbial subcomponents
+
+When microbial abundance and/or network data are available, the output also
+includes the corresponding latent scores:
+```{r summary}
+summary(res$row_scores$Micro_abundance)
+```
+
+
+### Ternary visualization
+
+This plot requires suggested packages: ggtern, ggplot2, and
+viridis.
+
+```{r Ternary visualization}
+if (requireNamespace("ggtern", quietly = TRUE) &&
+  requireNamespace("ggplot2", quietly = TRUE) &&
+  requireNamespace("viridis", quietly = TRUE)) {
+  plot_RRI_ternary(res$row_scores_comp)
+} else {
+  message("Install ggtern, ggplot2, and viridis to enable ternary plotting.")
+}
+```
+
+Choosing latent-dimension methods
+
+Different domains may justify different latent representations:
+physiology: pca, fa
+soil: pca, wgcna (when co-regulated redox syndromes are expected)
+microbial abundance: pca, nmf, wgcna
+nonlinear regimes: umap
+
+
+Below we illustrate alternative specifications when suggested packages are
+available.
+
+
+```{r Holobiont RRI}
+specA <- res
+
+if (requireNamespace("WGCNA", quietly = TRUE)) {
+  specA <- rri_pipeline_st(
+    ROS_flux     = sim$ROS_flux,
+    Eh_stability = sim$Eh_stability,
+    micro_data   = sim$micro_data,
+    graph        = sim$graph,
+    alpha_micro  = 0.6,
+    method_phys  = "pca",
+    method_soil  = "wgcna",
+    method_micro = "pca"
+  )
+  specA$meta$rri_index
+} else {
+  message("WGCNA not installed; skipping example.")
+}
+```
+
+
+
+```{r index}
+specB <- res
+
+if (requireNamespace("uwot", quietly = TRUE)) {
+  specB <- rri_pipeline_st(
+    ROS_flux     = sim$ROS_flux,
+    Eh_stability = sim$Eh_stability,
+    micro_data   = sim$micro_data,
+    method_phys  = "umap",
+    method_soil  = "umap",
+    method_micro = "pca"
+  )
+  specB$meta$rri_index
+} else {
+  message("uwot not installed; skipping example.")
+}
+```
+
+
+### Practical guidance
+
+A recommended workflow is:
+Assemble domain matrices with samples in rows and consistent ordering.
+Choose latent methods appropriate to each domain.
+Decide microbial blending parameter alpha_micro.
+Sensitivity-test domain weights and methods.
+Validate RRI against independent outcomes (e.g. recovery, stress tolerance).
+
+
+```{r}
+sessionInfo()
+```
+

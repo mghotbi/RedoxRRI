@@ -1,0 +1,60 @@
+#' Example data for RedoxRRI
+#'
+#' A small simulated dataset bundled with \pkg{RedoxRRI} to demonstrate the
+#' full workflow of computing the Holobiont Redox Resilience Index (RRI) and
+#' visualizing plant–soil–microbe contributions.
+#'
+#' @details
+#' This dataset is \strong{synthetic} and intended solely for:
+#' \itemize{
+#'   \item Function examples
+#'   \item Unit tests
+#'   \item Vignettes and tutorials
+#'' }
+#'
+#' Values are generated to mimic realistic structure:
+#' \itemize{
+#'   \item Multivariate plant physiological traits (e.g. Fv/Fm, NPQ)
+#'   \item Soil redox chemistry gradients (Eh, Fe/Mn ratios)
+#'   \item High-dimensional, sparse microbial abundance data
+#'   \item A system-level microbial association network
+#' }
+#'
+#' The data do \emph{not} represent any real biological system.
+#'
+#' @format A named list with components:
+#' \describe{
+#'   \item{ROS_flux}{data.frame; samples (rows) by plant physiological traits (columns).}
+#'   \item{Eh_stability}{data.frame; samples (rows) by soil redox variables (columns).}
+#'   \item{micro_data}{data.frame; samples (rows) by microbial features (columns).}
+#'   \item{graph}{An \pkg{igraph} object representing a microbial association network.}
+#'   \item{id}{data.frame; sample metadata (plot, depth, time).}
+#' }
+#'
+#' @source Simulated data generated for examples and unit tests.
+#'
+#' @examples
+#' data("redoxrri_example")
+#'
+#' str(redoxrri_example)
+#'
+#' res <- rri_pipeline_st(
+#'   ROS_flux = redoxrri_example$ROS_flux,
+#'   Eh_stability = redoxrri_example$Eh_stability,
+#'   micro_data = redoxrri_example$micro_data,
+#'   graph = redoxrri_example$graph,
+#'   id = redoxrri_example$id,
+#'   group_cols = c("plot", "depth"),
+#'   scale_by = c("plot", "depth"),
+#'   direction_phys = "auto",
+#'   direction_anchor_phys = "FvFm",
+#'   direction_soil = "auto",
+#'   direction_anchor_soil = "Eh"
+#' )
+#'
+#' head(res$row_scores)
+#' head(res$row_scores_comp)
+#'
+#' @docType data
+#' @name redoxrri_example
+NULL

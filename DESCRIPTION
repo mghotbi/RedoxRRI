@@ -1,0 +1,62 @@
+Package: RedoxRRI
+Type: Package
+Title: Holobiont Redox Resilience Index for Integrative Stress Biology
+Version: 0.99.0
+Authors@R: c(
+    person("Mitra", "Ghotbi", email = "mitra.ghotbi@gmail.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0001-9185-9993")),
+    person("Marjan", "Ghotbi", email = "ghotbi.marjan@gmail.com", role = "ctb",
+           comment = c(ORCID = "0000-0003-4655-6445"))
+ )
+Description:
+    Provides a unified framework for quantifying holobiont-level redox
+    resilience by integrating plant physiological traits, soil redox
+    chemistry, and microbial features into a single interpretable index.
+    The package implements the Redox Resilience Index (RRI), a weighted
+    composite metric grounded in redox biogeochemistry, microbial ecology,
+    and systems biology. Multivariate indicators from each domain are
+    reduced to normalized one-dimensional latent scores using flexible
+    dimension-reduction methods, including principal component analysis,
+    factor analysis, nonlinear embeddings, and co-expression or network-
+    based approaches. Microbial resilience can be represented as a blended
+    component combining abundance or functional composition with network
+    organization metrics. The framework supports spatial and temporal
+    experimental designs and includes fully simulated example data for
+    demonstration and testing purposes only.
+License: GPL-3
+Encoding: UTF-8
+LazyData: false
+Depends:
+    R (>= 4.5.0)
+Imports:
+    stats,
+    igraph,
+    rlang
+Suggests:
+    WGCNA,
+    withr,
+    psych,
+    uwot,
+    NMF,
+    ggtern,
+    ggplot2,
+    viridis,
+    knitr,
+    rmarkdown,
+    BiocStyle,
+    testthat (>= 3.0.0)
+VignetteBuilder: knitr
+biocViews:
+    SystemsBiology,
+    Microbiome,
+    NetworkInference,
+    DimensionReduction,
+    Visualization,
+    Network,
+    PrincipalComponent,
+    Spatial
+URL: https://github.com/mghotbi/RedoxRRI
+BugReports: https://github.com/mghotbi/RedoxRRI/issues
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+Config/testthat/edition: 3
