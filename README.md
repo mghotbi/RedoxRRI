@@ -98,11 +98,18 @@ install.packages("remotes")
 remotes::install_github("mghotbi/RedoxRRI")
 
 # with vignettes
+install.packages("remotes")
+install.packages("BiocManager")
+
+BiocManager::install(c(
+  "BiocStyle",
+  "rmarkdown",
+  "knitr"))
+
 remotes::install_github(
   "mghotbi/RedoxRRI",
   build_vignettes = TRUE,
-  dependencies = TRUE
-)
+  dependencies = TRUE)
 
 ```
 
