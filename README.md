@@ -114,17 +114,17 @@ res <- rri_pipeline_st(
   micro_data   = sim$micro_data,
   id           = sim$id,
 
-  # Direction anchoring (recommended)
+  # Direction anchoring 
   direction_phys = "auto",
   direction_anchor_phys = "FvFm",
   direction_soil = "auto",
   direction_anchor_soil = "Eh"
 )
 
-# Absolute domain scores (for statistical analysis)
+# Absolute domain scores (for analysis)
 head(res$row_scores)
 
-# Compositional domain contributions (for ternary plots)
+# Compositional domain contributions (for ternary)
 head(res$row_scores_comp)
 
 # Ternary visualization
