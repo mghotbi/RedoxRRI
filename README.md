@@ -97,6 +97,13 @@ Each domain is summarized using a **latent variable** derived from multivariate 
 install.packages("remotes")
 remotes::install_github("mghotbi/RedoxRRI")
 
+# with vignettes
+remotes::install_github(
+  "mghotbi/RedoxRRI",
+  build_vignettes = TRUE,
+  dependencies = TRUE
+)
+
 ```
 
 ## Example
