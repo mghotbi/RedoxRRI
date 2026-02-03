@@ -35,7 +35,7 @@
 #' }
 #'
 #' @examples
-#' # sim <- simulate_redox_holobiont(seed = 1)
+#' sim <- simulate_redox_holobiont(seed = 1)
 #'
 #' res <- rri_pipeline_st(
 #'   ROS_flux = sim$ROS_flux,

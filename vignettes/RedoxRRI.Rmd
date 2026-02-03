@@ -104,7 +104,8 @@ or ecosystem.
 sim <- simulate_redox_holobiont()
 # sim <- simulate_redox_holobiont(seed = 1)
 
-str(sim)
+str(sim, max.level = 1)
+
 ```
 
 
@@ -145,7 +146,9 @@ head(res$row_scores_comp)
 
 The domain components satisfy:
 ```{r domain components scores}
+
 rowSums(res$row_scores_comp[, c("Physio", "Soil", "Micro")])[1:6]
+
 ```
 
 ### Microbial subcomponents
@@ -153,7 +156,11 @@ rowSums(res$row_scores_comp[, c("Physio", "Soil", "Micro")])[1:6]
 When microbial abundance and/or network data are available, the output also
 includes the corresponding latent scores:
 ```{r summary}
-summary(res$row_scores$Micro_abundance)
+
+if ("Micro_abundance" %in% names(res$row_scores)) {
+  summary(res$row_scores$Micro_abundance)
+}
+
 ```
 
 
@@ -166,7 +173,9 @@ viridis.
 if (requireNamespace("ggtern", quietly = TRUE) &&
   requireNamespace("ggplot2", quietly = TRUE) &&
   requireNamespace("viridis", quietly = TRUE)) {
+  
   plot_RRI_ternary(res$row_scores_comp)
+  
 } else {
   message("Install ggtern, ggplot2, and viridis to enable ternary plotting.")
 }
@@ -236,7 +245,7 @@ Sensitivity-test domain weights and methods.
 Validate RRI against independent outcomes (e.g. recovery, stress tolerance).
 
 
-```{r}
+```{r session-info}
 sessionInfo()
 ```
 
