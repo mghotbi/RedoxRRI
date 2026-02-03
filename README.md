@@ -94,8 +94,9 @@ Each domain is summarized using a **latent variable** derived from multivariate 
 ## Installation
 
 ```r
-# install.packages("remotes")
-remotes::install_github("mghotbi/RedoxRRI", ref = "GLab")
+install.packages("remotes")
+remotes::install_github("mghotbi/RedoxRRI")
+
 ```
 
 ## Example
