@@ -194,6 +194,11 @@ This makes RedoxRRI especially suitable for research contexts where understandin
 #### Citation
 
 If you use RedoxRRI in your research, please cite:
+
+```r
+citation("RedoxRRI")
+```
+
 Ghotbi, M. et al. RedoxRRI: A framework for holobiont-level redox resilience
 (manuscript in preparation)
 
