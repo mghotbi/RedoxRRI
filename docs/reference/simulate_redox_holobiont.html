@@ -128,90 +128,83 @@ commonly encountered in redox ecology and holobiont studies.</p>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> List of 6</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ id          :'data.frame':	600 obs. of  4 variables:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ plot    : Factor w/ 4 levels "P1","P2","P3",..: 1 2 3 4 1 2 3 4 1 2 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ depth   : Factor w/ 2 levels "shallow","deep": 1 1 1 1 2 2 2 2 1 1 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ plant_id: Factor w/ 5 levels "Plant1","Plant2",..: 1 1 1 1 1 1 1 1 2 2 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ plot    : chr [1:600] "P1" "P2" "P3" "P4" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ depth   : chr [1:600] "shallow" "shallow" "shallow" "shallow" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ plant_id: chr [1:600] "Plant1" "Plant1" "Plant1" "Plant1" ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ time    : int [1:600] 1 1 1 1 1 1 1 1 1 1 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..- attr(*, "out.attrs")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ dim     : Named int [1:4] 4 2 5 15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "names")= chr [1:4] "plot" "depth" "plant_id" "time"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ dimnames:List of 4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ plot    : chr [1:4] "plot=P1" "plot=P2" "plot=P3" "plot=P4"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ depth   : chr [1:2] "depth=shallow" "depth=deep"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ plant_id: chr [1:5] "plant_id=Plant1" "plant_id=Plant2" "plant_id=Plant3" "plant_id=Plant4" ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ time    : chr [1:15] "time= 1" "time= 2" "time= 3" "time= 4" ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ ROS_flux    :'data.frame':	600 obs. of  4 variables:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ SPAD   : num [1:600] 40.3 41.6 40.1 40 36.4 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ FvFm   : num [1:600] 0.77 0.814 0.812 0.808 0.751 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ PhiPSII: num [1:600] 0.421 0.45 0.41 0.389 0.338 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ NPQ    : num [1:600] 0.74 1.217 0.694 1.031 1.35 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ Eh_stability:'data.frame':	600 obs. of  4 variables:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ Eh     : num [1:600] 425 384 375 522 391 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ Fe2.Fe3: num [1:600] 0.0973 0.1125 0.0604 0.0328 0.1765 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ Mn2.Mn4: num [1:600] 0.1041 0.3228 0.0637 0.16 0.1424 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ NH4.NO3: num [1:600] 0.202 0.174 0.326 0.144 0.291 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ SPAD   : num [1:600] 39 40.3 39.1 38.4 38.4 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ FvFm   : num [1:600] 0.796 0.782 0.703 0.783 0.684 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ PhiPSII: num [1:600] 0.443 0.398 0.359 0.476 0.333 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ NPQ    : num [1:600] 0.961 1.165 1.297 1.352 1.565 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ Eh_stability:'data.frame':	600 obs. of  5 variables:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ Eh     : num [1:600] 396 355 345 493 362 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ pH     : num [1:600] 6.33 6.37 6.15 6.27 6.2 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ Fe2.Fe3: num [1:600] 0.0671 0.2293 0.0406 0.0918 0.1083 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ Mn2.Mn4: num [1:600] 0.181 0.15 0.324 0.119 0.283 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ NH4.NO3: num [1:600] 0.0877 0.259 0.3485 0.1242 0.4556 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ micro_data  :'data.frame':	600 obs. of  60 variables:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV1 : num [1:600] 2 0 2 0 0 2 6 2 3 2 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV2 : num [1:600] 3 0 0 0 1 0 0 2 2 1 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV3 : num [1:600] 1 0 0 0 1 0 4 1 1 2 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV4 : num [1:600] 1 1 0 0 0 1 2 0 0 0 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV5 : num [1:600] 1 0 0 1 3 1 0 0 0 0 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV6 : num [1:600] 0 0 1 0 0 0 0 0 0 1 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV7 : num [1:600] 1 2 0 1 0 0 0 1 0 3 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV8 : num [1:600] 0 0 1 0 4 2 2 0 1 0 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV9 : num [1:600] 3 0 0 1 0 3 2 1 0 0 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV10: num [1:600] 2 0 0 0 0 0 0 3 0 1 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV11: num [1:600] 0 0 0 1 0 0 5 0 1 0 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV12: num [1:600] 0 2 0 0 2 1 0 2 1 1 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV13: num [1:600] 2 0 3 0 1 2 0 1 1 2 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV14: num [1:600] 2 0 0 2 0 1 0 0 0 0 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV15: num [1:600] 0 0 0 1 0 0 0 2 0 3 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV16: num [1:600] 1 0 0 0 2 0 0 0 1 1 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV17: num [1:600] 4 0 0 0 1 0 0 1 0 2 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV18: num [1:600] 1 1 1 0 1 3 0 1 1 0 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV19: num [1:600] 0 2 2 0 0 0 0 2 2 2 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV20: num [1:600] 0 0 1 0 1 1 1 2 2 0 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV21: num [1:600] 0 0 0 0 1 1 1 1 0 1 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV22: num [1:600] 0 0 0 0 0 1 0 1 0 1 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV23: num [1:600] 0 1 0 0 4 1 1 0 1 0 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV24: num [1:600] 2 0 2 0 0 1 0 1 3 0 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV25: num [1:600] 0 2 3 0 0 0 1 2 0 2 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV26: num [1:600] 1 0 1 4 3 2 2 0 2 2 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV27: num [1:600] 1 0 0 2 1 0 0 1 0 4 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV28: num [1:600] 0 1 0 0 1 3 1 0 0 0 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV29: num [1:600] 0 0 1 0 1 0 4 2 0 2 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV30: num [1:600] 0 0 1 0 0 2 0 0 2 0 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV31: num [1:600] 0 1 0 0 0 2 5 1 0 0 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV32: num [1:600] 2 2 3 0 0 1 0 0 0 0 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV33: num [1:600] 0 0 0 0 0 1 0 1 1 0 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV34: num [1:600] 1 0 0 0 0 0 0 0 4 0 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV35: num [1:600] 2 0 0 0 0 1 0 2 0 1 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV36: num [1:600] 0 0 2 2 0 1 0 1 0 0 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV37: num [1:600] 0 0 3 0 0 0 3 2 1 1 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV38: num [1:600] 1 1 2 0 1 0 2 0 0 2 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV39: num [1:600] 0 1 0 0 5 0 1 1 1 0 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV40: num [1:600] 1 2 0 0 0 0 3 2 0 0 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV41: num [1:600] 1 0 0 0 0 1 0 0 0 0 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV42: num [1:600] 0 3 2 0 0 0 2 0 0 0 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV43: num [1:600] 0 0 0 2 2 0 2 2 0 3 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV44: num [1:600] 0 0 1 2 0 0 1 0 1 1 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV45: num [1:600] 0 0 0 0 0 1 3 3 0 0 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV46: num [1:600] 0 3 0 3 1 0 4 0 0 1 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV47: num [1:600] 0 1 0 1 2 4 1 0 0 2 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV48: num [1:600] 1 0 1 0 2 0 0 0 0 1 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV49: num [1:600] 0 0 1 1 2 3 0 0 3 1 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV50: num [1:600] 0 2 0 1 0 0 0 1 2 0 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV51: num [1:600] 1 3 0 0 3 1 0 0 2 0 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV52: num [1:600] 0 0 0 2 1 0 2 2 4 3 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV53: num [1:600] 0 0 0 1 3 2 0 0 0 0 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV54: num [1:600] 0 0 2 2 3 0 0 2 0 0 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV55: num [1:600] 0 0 2 0 1 0 2 1 0 2 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV56: num [1:600] 0 0 1 1 3 0 0 0 0 0 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV57: num [1:600] 0 0 0 1 2 0 1 2 2 0 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV58: num [1:600] 2 1 0 1 2 0 0 0 1 1 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV59: num [1:600] 1 0 2 0 0 0 1 1 0 0 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV60: num [1:600] 2 1 0 0 5 0 5 0 0 0 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ latent_truth: num [1:600] 0.661 0.653 0.657 0.815 0.494 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV1 : num [1:600] 1 0.7 0 0 0 0 1.4 1.4 0 0 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV2 : num [1:600] 0 0 0 0 2.8 0 0.7 0.6 0 1 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV3 : num [1:600] 1.3 1.7 0 0 0 0.7 0 0 0 2.7 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV4 : num [1:600] 0.7 0.6 0 0.3 0 1.7 2 0 1 0 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV5 : num [1:600] 0 0 0.7 0 0.7 2.7 1.7 1 1 3.5 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV6 : num [1:600] 2 0.3 2.1 0 0.3 0.7 2.8 2.4 0 0 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV7 : num [1:600] 0.7 0 2.8 0 0 2.1 0 0.7 0 0 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV8 : num [1:600] 1.2 1.7 0 0 0 0 0.7 0 0 1.3 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV9 : num [1:600] 2 0.3 2.4 0.3 1 2.4 2.1 1.3 0 0 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV10: num [1:600] 1.7 1.6 2.1 0 1 0 1.4 0.7 0 0 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV11: num [1:600] 0 0.3 0 2.3 0 0 0 2 0.6 0 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV12: num [1:600] 1 2.1 0.7 0.9 2.3 0 1.4 0.7 0 1.7 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV13: num [1:600] 3.8 1.4 0.3 0 2 2.8 0.7 0 0 1.7 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV14: num [1:600] 1 1 1.6 0.3 1 0 0 0 1.3 2.1 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV15: num [1:600] 0.6 2.4 1.7 2.1 0 0.7 0.3 2.7 0 1.7 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV16: num [1:600] 0.7 0 1.6 1.4 0 2 0 1.7 2 1.4 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV17: num [1:600] 0 1.4 0.7 0 0 1.7 1 0 1.6 1 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV18: num [1:600] 0 0.6 0 0 0 0 0 1 0.7 1 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV19: num [1:600] 0.3 1.6 0.3 0 3.1 1 1 2.1 1.7 1.7 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV20: num [1:600] 2 0.6 1.7 0.7 0 1 2.1 1.6 2.7 0.3 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV21: num [1:600] 0.7 2.7 3 0.7 0 0.3 0 2.3 0 0 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV22: num [1:600] 1.7 0 1.3 0 3 2.4 2.7 0.3 1.7 1.7 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV23: num [1:600] 0 1.4 0 0 1.6 2.1 0.7 1 1.4 0 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV24: num [1:600] 0 1 0.7 0 0 0 1.3 0 0.7 0.3 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV25: num [1:600] 0 0 1.3 1.2 1 1 0 0 0 2.4 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV26: num [1:600] 0.6 0 1.6 2.1 0 2 0.3 0.7 0 0.3 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV27: num [1:600] 0.7 1 0 1.4 2.8 2.4 4.1 0 2.8 0.7 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV28: num [1:600] 1.7 2.3 0 0.9 0 1.7 2.4 1.4 0 0 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV29: num [1:600] 0.3 0.6 0.3 0 2.1 1 1.4 0 0 0.3 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV30: num [1:600] 0 0 0.7 0 0 0.3 2.1 3.5 3.1 0.7 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV31: num [1:600] 1.7 0 1.4 0 0.6 0 0.3 0 0.3 1.3 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV32: num [1:600] 0.7 0 2 1.7 0 0 0 0 0.7 0.7 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV33: num [1:600] 2.1 1.4 2.4 0 0 0 0 0 0 1 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV34: num [1:600] 1.3 0 0 0 1.3 1.4 1.7 0.7 0 2 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV35: num [1:600] 0 1 0 0 3.8 2.1 1 0 1 0 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV36: num [1:600] 1.3 1.7 2.8 0.3 0 0 3.4 0 0.3 0 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV37: num [1:600] 1 0 1 0.9 0.3 1 0.7 0 0 0 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV38: num [1:600] 0.6 0 0 0 0.3 0 2.3 1.4 0 0.6 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV39: num [1:600] 0.7 0.7 0.3 0 1.7 0 0 0 0 0 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV40: num [1:600] 0 0 1 1.7 0 0.3 1.3 0 1 1.3 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV41: num [1:600] 0.6 0.3 0 0 0 1 3.1 2.7 0 1.4 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV42: num [1:600] 0 3.1 2.1 3.3 1.3 0.7 0 0 0 1 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV43: num [1:600] 0.3 0 2.1 0 1.7 3.1 0 0.9 0 0 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV44: num [1:600] 1.9 0.3 2.2 0.6 2.3 0 0.7 0.7 0 1.3 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV45: num [1:600] 0 0.3 0 1 0 2.4 1 0 0 0 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV46: num [1:600] 1.4 1.7 2.1 1.3 1.4 0.3 0.3 1.6 1.7 0 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV47: num [1:600] 1.6 2.7 1.3 0 2.4 0 2.1 0 0 2.8 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV48: num [1:600] 0.3 0 2.1 2.3 0 1.4 1.7 1.7 3.1 0 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV49: num [1:600] 1.2 0 0 1.3 2.7 0 0 0 0.3 0 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV50: num [1:600] 2.1 0 1.7 1.7 3 0 0 1.7 0 0 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV51: num [1:600] 0.7 0 1.7 0 0 0 3 1.3 0.3 2 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV52: num [1:600] 0.3 0 0 1 2.7 0.3 0 0 0 0 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV53: num [1:600] 0 1 0 0 1.7 0 0 2.6 0 0.3 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV54: num [1:600] 2.3 0 0.7 1.7 2.4 0 0 0.7 1 1 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV55: num [1:600] 1.6 2.1 0 0.9 0 0 0 1.3 0 0 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV56: num [1:600] 0 1 0 0.6 0 0 4.5 0.3 0 0.7 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV57: num [1:600] 0 0.9 2.8 0 0 0 1.7 1.4 0 2.1 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV58: num [1:600] 2.8 0 1.7 0 1.4 1 0 3 1.3 4.5 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV59: num [1:600] 0 0 0 0.3 0.7 0.3 1.7 0 0 1.4 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ASV60: num [1:600] 1.7 0 0 0 0.7 2.1 0 0.6 0 0 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ latent_truth: num [1:600] 0.616 0.607 0.611 0.77 0.448 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ graph       : NULL</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

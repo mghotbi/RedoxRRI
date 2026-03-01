@@ -117,7 +117,7 @@ also their agreement or joint stability.</p>
 <div class="section level3">
 <h3 id="microbial-domain-as-a-blended-score">Microbial domain as a blended score<a class="anchor" aria-label="anchor" href="#microbial-domain-as-a-blended-score"></a>
 </h3>
-<p>To preserve a three-part (Physiology–Soil–Microbial) ternary
+<p>To preserve a three-part (Physiology-Soil-Microbial) ternary
 representation, microbial resilience is modeled as a single blended
 domain score.</p>
 <p>When both microbial abundance (or functional composition) data and
@@ -158,11 +158,10 @@ species, site, or ecosystem.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">sim</span>, max.level <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## List of 6</span></span>
 <span><span class="co">##  $ id          :'data.frame':    600 obs. of  4 variables:</span></span>
-<span><span class="co">##   ..- attr(*, "out.attrs")=List of 2</span></span>
 <span><span class="co">##  $ ROS_flux    :'data.frame':    600 obs. of  4 variables:</span></span>
-<span><span class="co">##  $ Eh_stability:'data.frame':    600 obs. of  4 variables:</span></span>
+<span><span class="co">##  $ Eh_stability:'data.frame':    600 obs. of  5 variables:</span></span>
 <span><span class="co">##  $ micro_data  :'data.frame':    600 obs. of  60 variables:</span></span>
-<span><span class="co">##  $ latent_truth: num [1:600] 0.63 0.755 0.445 0.67 0.406 ...</span></span>
+<span><span class="co">##  $ latent_truth: num [1:600] 0.61 0.709 0.754 0.578 0.389 ...</span></span>
 <span><span class="co">##  $ graph       : NULL</span></span></code></pre>
 <p>The simulated object contains:</p>
 <p>ROS_flux: plant physiological traits (samples × variables)
@@ -191,13 +190,13 @@ features id: sample metadata (spatial and temporal structure) graph
 <p>The compositional output is stored in res$row_scores_comp.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">row_scores_comp</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##      Physio      Soil      Micro       RRI</span></span>
-<span><span class="co">## 1 0.3811050 0.4892203 0.12967469 0.5971071</span></span>
-<span><span class="co">## 2 0.4086092 0.5059217 0.08546910 0.7635659</span></span>
-<span><span class="co">## 3 0.3870656 0.3311804 0.28175406 0.5211036</span></span>
-<span><span class="co">## 4 0.4216792 0.4938698 0.08445095 0.6770572</span></span>
-<span><span class="co">## 5 0.2985360 0.4838809 0.21758315 0.3746052</span></span>
-<span><span class="co">## 6 0.3577151 0.4995083 0.14277664 0.6609111</span></span></code></pre>
+<pre><code><span><span class="co">##      Physio      Soil       Micro       RRI</span></span>
+<span><span class="co">## 1 0.5034752 0.4145238 0.082001004 0.8046337</span></span>
+<span><span class="co">## 2 0.4205445 0.5326875 0.046767946 0.8496707</span></span>
+<span><span class="co">## 3 0.4830942 0.5147362 0.002169632 0.8479456</span></span>
+<span><span class="co">## 4 0.4485046 0.4936503 0.057845104 0.8338168</span></span>
+<span><span class="co">## 5 0.4137963 0.4325326 0.153671034 0.4848568</span></span>
+<span><span class="co">## 6 0.4104195 0.3993483 0.190232182 0.7409813</span></span></code></pre>
 <p>The domain components satisfy:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">rowSums</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">row_scores_comp</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Physio"</span>, <span class="st">"Soil"</span>, <span class="st">"Micro"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span></span></code></pre></div>
@@ -213,7 +212,7 @@ output also includes the corresponding latent scores:</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">row_scores</span><span class="op">$</span><span class="va">Micro_abundance</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <pre><code><span><span class="co">##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span></span>
-<span><span class="co">##  0.0000  0.1717  0.2631  0.2870  0.3868  1.0000</span></span></code></pre>
+<span><span class="co">##  0.0000  0.1930  0.2936  0.3272  0.4360  1.0000</span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="ternary-visualization">Ternary visualization<a class="anchor" aria-label="anchor" href="#ternary-visualization"></a>
@@ -230,8 +229,8 @@ viridis.</p>
 <span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"Install ggtern, ggplot2, and viridis to enable ternary plotting."</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<pre><code><span><span class="co">## Warning in ggplot2::geom_point(data = centroid, ggplot2::aes(x = Physio, :</span></span>
-<span><span class="co">## Ignoring unknown aesthetics: <span style="color: #00BB00;">z</span></span></span></code></pre>
+<pre><code><span><span class="co">## Warning in ggplot2::geom_point(data = centroid, ggplot2::aes(x = .data$Physio,</span></span>
+<span><span class="co">## : Ignoring unknown aesthetics: <span style="color: #00BB00;">z</span></span></span></code></pre>
 <p><img src="RedoxRRI_files/figure-html/Ternary%20visualization-1.png" class="r-plt" alt="" width="70%" style="display: block; margin: auto;"></p>
 <p>Choosing latent-dimension methods</p>
 <p>Different domains may justify different latent representations:
@@ -258,23 +257,23 @@ packages are available.</p>
 <span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"WGCNA not installed; skipping example."</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<pre><code><span><span class="co">##    Power SFT.R.sq   slope truncated.R.sq  mean.k. median.k.   max.k.</span></span>
-<span><span class="co">## 1      1 0.053200 -19.500          0.212 1.32e+00  1.28e+00 1.600000</span></span>
-<span><span class="co">## 2      2 0.066300 -11.700          0.198 6.18e-01  5.86e-01 0.867000</span></span>
-<span><span class="co">## 3      3 0.076200  -8.860          0.191 3.04e-01  2.83e-01 0.474000</span></span>
-<span><span class="co">## 4      4 0.083300  -7.320          0.194 1.56e-01  1.44e-01 0.262000</span></span>
-<span><span class="co">## 5      5 0.078800  -6.010          0.221 8.26e-02  7.57e-02 0.146000</span></span>
-<span><span class="co">## 6      6 0.084100  -5.350          0.246 4.49e-02  4.12e-02 0.082500</span></span>
-<span><span class="co">## 7      7 0.089600  -4.860          0.278 2.49e-02  2.30e-02 0.047000</span></span>
-<span><span class="co">## 8      8 0.088800  -4.370          0.349 1.41e-02  1.31e-02 0.027100</span></span>
-<span><span class="co">## 9      9 0.095900  -4.090          0.383 8.05e-03  7.57e-03 0.015700</span></span>
-<span><span class="co">## 10    10 0.000452  -0.294          0.544 4.66e-03  4.42e-03 0.009160</span></span>
-<span><span class="co">## 11    12 0.001940  -0.539          0.754 1.60e-03  1.55e-03 0.003180</span></span>
-<span><span class="co">## 12    14 0.006530  -0.878          0.792 5.66e-04  5.52e-04 0.001130</span></span>
-<span><span class="co">## 13    16 0.129000  -3.180          0.641 2.03e-04  2.00e-04 0.000406</span></span>
-<span><span class="co">## 14    18 0.152000  -3.130          0.647 7.38e-05  7.30e-05 0.000147</span></span>
-<span><span class="co">## 15    20 0.173000  -3.070          0.647 2.70e-05  2.68e-05 0.000054</span></span></code></pre>
-<pre><code><span><span class="co">## [1] 0.3976894</span></span></code></pre>
+<pre><code><span><span class="co">##    Power SFT.R.sq slope truncated.R.sq  mean.k. median.k.   max.k.</span></span>
+<span><span class="co">## 1      1 0.000914 -2.84        -0.2370 1.93e+00  1.90e+00 2.260000</span></span>
+<span><span class="co">## 2      2 0.003270 -2.73        -0.2350 9.63e-01  9.26e-01 1.280000</span></span>
+<span><span class="co">## 3      3 0.006970 -2.71        -0.2310 4.95e-01  4.65e-01 0.736000</span></span>
+<span><span class="co">## 4      4 0.007700 -2.17        -0.0903 2.61e-01  2.39e-01 0.425000</span></span>
+<span><span class="co">## 5      5 0.013600 -2.35        -0.0837 1.40e-01  1.26e-01 0.247000</span></span>
+<span><span class="co">## 6      6 0.062900 -4.36        -0.1740 7.72e-02  6.74e-02 0.145000</span></span>
+<span><span class="co">## 7      7 0.072000 -4.07        -0.1650 4.31e-02  3.67e-02 0.085200</span></span>
+<span><span class="co">## 8      8 0.080900 -3.83        -0.1550 2.44e-02  2.03e-02 0.050400</span></span>
+<span><span class="co">## 9      9 0.089300 -3.63        -0.1460 1.40e-02  1.13e-02 0.029900</span></span>
+<span><span class="co">## 10    10 0.097200 -3.46        -0.1360 8.11e-03  6.40e-03 0.017800</span></span>
+<span><span class="co">## 11    12 0.139000 -3.65        -0.0708 2.79e-03  2.08e-03 0.006410</span></span>
+<span><span class="co">## 12    14 0.174000 -3.55        -0.0413 9.84e-04  6.94e-04 0.002330</span></span>
+<span><span class="co">## 13    16 0.180000 -3.18        -0.0362 3.54e-04  2.35e-04 0.000852</span></span>
+<span><span class="co">## 14    18 0.185000 -2.88        -0.0315 1.29e-04  8.01e-05 0.000315</span></span>
+<span><span class="co">## 15    20 0.055500 -2.51         0.0963 4.75e-05  2.75e-05 0.000117</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.3894553</span></span></code></pre>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">specB</span> <span class="op">&lt;-</span> <span class="va">res</span></span>
 <span></span>
@@ -291,7 +290,7 @@ packages are available.</p>
 <span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"uwot not installed; skipping example."</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.4606412</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.4953404</span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="practical-guidance">Practical guidance<a class="anchor" aria-label="anchor" href="#practical-guidance"></a>
