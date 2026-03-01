@@ -1,7 +1,8 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^\.DS_Store$
-^\.git$
-^\.github$
-^\.\.Rcheck$
 ^\.Rcheck$
+^docs$
+^_pkgdown\.yml$
+^\.github$
+^README\.Rmd$

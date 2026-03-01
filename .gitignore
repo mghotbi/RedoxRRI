@@ -1,19 +1,24 @@
-.Rproj.user
-inst/doc
+# RStudio
 .Rproj.user/
-.DS_Store
-.Rhistory
-.RData
-inst/doc
-*.tar.gz
-renv/library/
-renv/local/
-renv/python/
-.Rproj.user
+*.Rproj
+
+# History and workspace
 .Rhistory
 .RData
 .Ruserdata
+
+# macOS
 .DS_Store
-RedoxRRI.Rcheck/
-..Rcheck/
+
+# Build artifacts
 *.tar.gz
+*.Rcheck/
+.Rcheck/
+
+# renv
+renv/library/
+renv/local/
+renv/python/
+
+# Legacy vignette output
+inst/doc/
