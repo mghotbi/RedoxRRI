@@ -1,1 +1,12 @@
-utils::globalVariables(c("Physio", "Soil", "Micro", "RRI"))
+utils::globalVariables(
+  c(
+    "Physio",
+    "Soil",
+    "Micro",
+    "RRI",
+    "Physio_dyn",
+    "Soil_dyn",
+    "Micro_dyn",
+    "RRI_dyn"
+  )
+)
