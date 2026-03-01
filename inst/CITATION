@@ -1,0 +1,16 @@
+citHeader("To cite the RedoxRRI package in publications use:")
+
+bibentry(
+  bibtype  = "Manual",
+  title    = "RedoxRRI: Holobiont Redox Resilience Index for Integrative Stress Biology",
+  author   = c(
+    person("Mitra", "Ghotbi",
+           email = "mitra.ghotbi@gmail.com",
+           comment = "ORCID: 0000-0001-9185-9993"),
+    person("Marjan", "Ghotbi",
+           comment = "ORCID: 0000-0003-4655-6445")
+  ),
+  year     = "2026",
+  note     = "R package version 0.99.0",
+  url      = "https://github.com/mghotbi/RedoxRRI"
+)
