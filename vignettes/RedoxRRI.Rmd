@@ -256,7 +256,7 @@ In this example, we illustrate three advanced features of RedoxRRI:
 This specification more closely reflects longitudinal ecological data 
 where resilience is evaluated through time rather than at a single snapshot.
 
-```{r, geometry and temporal resilience}
+```{r geometry and temporal resilience}
 set.seed(91202)
 
 res_adv <- rri_pipeline_st(
@@ -312,7 +312,7 @@ dynamics among domains.
 
 ## Sensitivity to domain weights
 
-```{r, Sensitivity}
+```{r Aggregation sensitivity analysis}
 
 res_w1 <- rri_pipeline_st(
   ROS_flux = sim$ROS_flux,
@@ -322,9 +322,89 @@ res_w1 <- rri_pipeline_st(
 )
 
 res_w1$meta$rri_index
+ 
+```
+
+### Validation and robustness diagnostics
+
+```{r Validation}
+## Validation utilities
+### 1. Latent recovery  
+
+rri_latent_correlation(res_w1, sim$latent_truth)
+
+## Compensation strength
+rri_compensation_index(res_w1)
+
+## Sensitivity of RRI rankings to aggregation weights
+
+sens <- rri_sensitivity(res_w1)
+
+sens
 
 ```
 
+### Stability of RRI
+RRI rankings remain highly stable (>0.9 Spearman correlation) under moderate perturbations of domain weighting, indicating structural robustness of the aggregation scheme.
+
+```{r RRI Stability }
+if (requireNamespace("ggplot2", quietly = TRUE)) {
+  
+  library(ggplot2)
+  
+  ggplot(sens,
+         aes(x = weight_physio,
+             y = spearman_rank_correlation)) +
+    
+    # Stability reference band
+    geom_hline(yintercept = 0.9,
+               linetype = "dashed",
+               linewidth = 0.6,
+               colour = "grey40") +
+    
+    # Smooth curve
+    geom_line(linewidth = 1.2, colour = "#3B0F70") +
+    
+    # Points
+    geom_point(size = 3.5,
+               shape = 21,
+               fill = "#FDE725",
+               colour = "black",
+               stroke = 0.6) +
+    
+    # Tight limits
+    scale_y_continuous(
+      limits = c(min(0.85, min(sens$spearman_rank_correlation, na.rm = TRUE)),
+                 1),
+      expand = expansion(mult = c(0.02, 0.02))
+    ) +
+    
+    scale_x_continuous(
+      expand = expansion(mult = c(0.02, 0.02))
+    ) +
+    
+    labs(
+      title = "Robustness of RRI to Domain Weight Perturbation",
+      subtitle = "Spearman rank stability relative to baseline configuration",
+      x = "Weight assigned to Physiology domain",
+      y = "Spearman rank correlation"
+    ) +
+    
+    theme_minimal(base_size = 14) +
+    
+    theme(
+      plot.title = element_text(face = "bold", size = 15),
+      plot.subtitle = element_text(size = 12, margin = margin(b = 10)),
+      axis.title = element_text(face = "bold"),
+      panel.grid.minor = element_blank(),
+      panel.grid.major.x = element_blank()
+    )
+  
+} else {
+  message("Install ggplot2 to visualize sensitivity results.")
+}
+
+```
 
 ### Practical guidance
 
