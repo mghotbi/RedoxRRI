@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">RedoxRRI</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.1</span>
       </span>
     </div>
 
@@ -179,7 +179,7 @@ simulated data generated within the package.</p>
 <span><span class="co">##  $ ROS_flux    :'data.frame':    600 obs. of  4 variables:</span></span>
 <span><span class="co">##  $ Eh_stability:'data.frame':    600 obs. of  5 variables:</span></span>
 <span><span class="co">##  $ micro_data  :'data.frame':    600 obs. of  60 variables:</span></span>
-<span><span class="co">##  $ latent_truth: num [1:600] 0.655 0.754 0.799 0.624 0.435 ...</span></span>
+<span><span class="co">##  $ latent_truth: num [1:600] 0.705 0.804 0.849 0.674 0.445 ...</span></span>
 <span><span class="co">##  $ graph       : NULL</span></span></code></pre>
 <p>The simulated object contains: ROS_flux: plant physiological traits
 (samples × variables) Eh_stability: soil redox variables micro_data:
@@ -207,13 +207,13 @@ structure) graph (optional): an igraph network or list of networks</p>
 <p>The compositional output is stored in res$row_scores_comp.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">row_scores_comp</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##      Physio      Soil      Micro       RRI</span></span>
-<span><span class="co">## 1 0.4910052 0.4149515 0.09404332 0.7668215</span></span>
-<span><span class="co">## 2 0.4098182 0.5304822 0.05969960 0.7888943</span></span>
-<span><span class="co">## 3 0.4716554 0.5161167 0.01222785 0.7857795</span></span>
-<span><span class="co">## 4 0.4393544 0.4930525 0.06759305 0.7865607</span></span>
-<span><span class="co">## 5 0.4001940 0.4456543 0.15415177 0.4829038</span></span>
-<span><span class="co">## 6 0.4030361 0.4068304 0.19013351 0.7153436</span></span></code></pre>
+<pre><code><span><span class="co">##      Physio      Soil       Micro       RRI</span></span>
+<span><span class="co">## 1 0.5260730 0.4553936 0.018533365 0.7570227</span></span>
+<span><span class="co">## 2 0.4299748 0.5613843 0.008640927 0.7837603</span></span>
+<span><span class="co">## 3 0.4647108 0.5148212 0.020468039 0.8275326</span></span>
+<span><span class="co">## 4 0.4483013 0.5031847 0.048513952 0.8190651</span></span>
+<span><span class="co">## 5 0.3990414 0.4445511 0.156407447 0.4873383</span></span>
+<span><span class="co">## 6 0.4346432 0.4378077 0.127549110 0.6696186</span></span></code></pre>
 <p>The domain components satisfy:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">rowSums</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">row_scores_comp</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Physio"</span>, <span class="st">"Soil"</span>, <span class="st">"Micro"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span></span></code></pre></div>
@@ -229,7 +229,7 @@ output also includes the corresponding latent scores:</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">row_scores</span><span class="op">$</span><span class="va">Micro_abundance</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <pre><code><span><span class="co">##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span></span>
-<span><span class="co">##  0.0000  0.1518  0.2253  0.2635  0.3359  1.0000</span></span></code></pre>
+<span><span class="co">## 0.00000 0.08426 0.15366 0.20827 0.26940 1.00000</span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="ternary-visualization">Ternary visualization<a class="anchor" aria-label="anchor" href="#ternary-visualization"></a>
@@ -275,22 +275,22 @@ packages are available.</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"WGCNA not installed; skipping example."</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <pre><code><span><span class="co">##    Power SFT.R.sq slope truncated.R.sq  mean.k. median.k.  max.k.</span></span>
-<span><span class="co">## 1      1  0.00545 -6.22        -0.2280 2.090000  2.060000 2.51000</span></span>
-<span><span class="co">## 2      2  0.02040 -6.29        -0.1930 1.140000  1.100000 1.59000</span></span>
-<span><span class="co">## 3      3  0.05410 -6.95        -0.1710 0.646000  0.610000 1.01000</span></span>
-<span><span class="co">## 4      4  0.06500 -5.84        -0.1620 0.377000  0.350000 0.65300</span></span>
-<span><span class="co">## 5      5  0.07540 -5.15        -0.1520 0.226000  0.207000 0.42400</span></span>
-<span><span class="co">## 6      6  0.08520 -4.67        -0.1420 0.139000  0.126000 0.27800</span></span>
-<span><span class="co">## 7      7  0.13600 -5.35        -0.0630 0.087300  0.077900 0.18300</span></span>
-<span><span class="co">## 8      8  0.14500 -4.91        -0.0566 0.055600  0.049000 0.12100</span></span>
-<span><span class="co">## 9      9  0.15200 -4.54        -0.0508 0.035900  0.031300 0.08060</span></span>
-<span><span class="co">## 10    10  0.15900 -4.23        -0.0454 0.023500  0.020200 0.05390</span></span>
-<span><span class="co">## 11    12  0.16900 -3.71        -0.0358 0.010300  0.008580 0.02440</span></span>
-<span><span class="co">## 12    14  0.03450 -2.08        -0.0433 0.004610  0.003720 0.01120</span></span>
-<span><span class="co">## 13    16  0.04380 -2.15        -0.0161 0.002110  0.001630 0.00517</span></span>
-<span><span class="co">## 14    18  0.06720 -2.46         0.0114 0.000975  0.000720 0.00241</span></span>
-<span><span class="co">## 15    20  0.07630 -2.43         0.0281 0.000455  0.000319 0.00113</span></span></code></pre>
-<pre><code><span><span class="co">## [1] 0.3095794</span></span></code></pre>
+<span><span class="co">## 1      1  0.00558 -6.69       -0.22900 2.190000  2.140000 2.59000</span></span>
+<span><span class="co">## 2      2  0.01700 -5.89       -0.22900 1.240000  1.190000 1.70000</span></span>
+<span><span class="co">## 3      3  0.05330 -7.32       -0.17300 0.725000  0.681000 1.12000</span></span>
+<span><span class="co">## 4      4  0.06360 -6.14       -0.16500 0.437000  0.402000 0.74200</span></span>
+<span><span class="co">## 5      5  0.07340 -5.40       -0.15600 0.270000  0.244000 0.49600</span></span>
+<span><span class="co">## 6      6  0.08250 -4.89       -0.14600 0.171000  0.151000 0.33300</span></span>
+<span><span class="co">## 7      7  0.09110 -4.50       -0.13700 0.110000  0.096000 0.22500</span></span>
+<span><span class="co">## 8      8  0.14100 -5.20       -0.06090 0.071700  0.061800 0.15300</span></span>
+<span><span class="co">## 9      9  0.14900 -4.82       -0.05540 0.047400  0.040300 0.10500</span></span>
+<span><span class="co">## 10    10  0.15500 -4.49       -0.05040 0.031700  0.026500 0.07170</span></span>
+<span><span class="co">## 11    12  0.16500 -3.96       -0.04140 0.014500  0.011800 0.03410</span></span>
+<span><span class="co">## 12    14  0.02940 -2.06       -0.05740 0.006830  0.005350 0.01640</span></span>
+<span><span class="co">## 13    16  0.05160 -2.53       -0.01710 0.003270  0.002460 0.00797</span></span>
+<span><span class="co">## 14    18  0.06030 -2.52        0.00605 0.001580  0.001140 0.00390</span></span>
+<span><span class="co">## 15    20  0.06890 -2.50        0.02590 0.000776  0.000531 0.00192</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.3167483</span></span></code></pre>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">specB</span> <span class="op">&lt;-</span> <span class="va">res</span></span>
 <span></span>
@@ -307,7 +307,7 @@ packages are available.</p>
 <span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"uwot not installed; skipping example."</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.5669452</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.4077453</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="second-example-compositional-geometry-and-temporal-resilience">Second example: compositional geometry and temporal resilience<a class="anchor" aria-label="anchor" href="#second-example-compositional-geometry-and-temporal-resilience"></a>
@@ -346,13 +346,13 @@ snapshot.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">res_adv</span><span class="op">$</span><span class="va">row_scores_comp</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##      Physio      Soil      Micro       RRI</span></span>
-<span><span class="co">## 1 0.4655080 0.3986171 0.13587495 0.7195785</span></span>
-<span><span class="co">## 2 0.3968703 0.5372393 0.06589039 0.5268524</span></span>
-<span><span class="co">## 3 0.4587776 0.5090549 0.03216750 0.5691978</span></span>
-<span><span class="co">## 4 0.3963564 0.5183959 0.08524772 0.8525265</span></span>
-<span><span class="co">## 5 0.4465102 0.4611578 0.09233206 0.7179127</span></span>
-<span><span class="co">## 6 0.4396845 0.4238761 0.13643939 0.6057209</span></span></code></pre>
+<pre><code><span><span class="co">##      Physio      Soil        Micro       RRI</span></span>
+<span><span class="co">## 1 0.5221394 0.4587786 1.908198e-02 0.7487045</span></span>
+<span><span class="co">## 2 0.4111453 0.5888547 6.222230e-09 0.6874197</span></span>
+<span><span class="co">## 3 0.4379477 0.5024814 5.957090e-02 0.4486399</span></span>
+<span><span class="co">## 4 0.3980691 0.5285082 7.342264e-02 0.8333942</span></span>
+<span><span class="co">## 5 0.4547408 0.4672573 7.800193e-02 0.6265479</span></span>
+<span><span class="co">## 6 0.4784418 0.4630530 5.850514e-02 0.7512837</span></span></code></pre>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">rowSums</a></span><span class="op">(</span><span class="va">res_adv</span><span class="op">$</span><span class="va">row_scores_comp</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Physio"</span>,<span class="st">"Soil"</span>,<span class="st">"Micro"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 1 1</span></span></code></pre>
@@ -399,7 +399,7 @@ among domains.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">res_w1</span><span class="op">$</span><span class="va">meta</span><span class="op">$</span><span class="va">rri_index</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.3327335</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.3441495</span></span></code></pre>
 <div class="section level3">
 <h3 id="practical-guidance">Practical guidance<a class="anchor" aria-label="anchor" href="#practical-guidance"></a>
 </h3>
@@ -435,7 +435,7 @@ ordering.</li>
 <span><span class="co">## [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] RedoxRRI_0.99.0  BiocStyle_2.38.0</span></span>
+<span><span class="co">## [1] RedoxRRI_0.99.1  BiocStyle_2.38.0</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
 <span><span class="co">##  [1] tidyselect_1.2.1      WGCNA_1.74            viridisLite_0.4.3    </span></span>
