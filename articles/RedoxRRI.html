@@ -401,6 +401,96 @@ among domains.</p>
 <span><span class="va">res_w1</span><span class="op">$</span><span class="va">meta</span><span class="op">$</span><span class="va">rri_index</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 0.3441495</span></span></code></pre>
 <div class="section level3">
+<h3 id="validation-and-robustness-diagnostics">Validation and robustness diagnostics<a class="anchor" aria-label="anchor" href="#validation-and-robustness-diagnostics"></a>
+</h3>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## Validation utilities</span></span>
+<span><span class="co">### 1. Latent recovery  </span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/rri_latent_correlation.html">rri_latent_correlation</a></span><span class="op">(</span><span class="va">res_w1</span>, <span class="va">sim</span><span class="op">$</span><span class="va">latent_truth</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] -0.9526926</span></span></code></pre>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## Compensation strength</span></span>
+<span><span class="fu"><a href="../reference/rri_compensation_index.html">rri_compensation_index</a></span><span class="op">(</span><span class="va">res_w1</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] -0.08967008</span></span></code></pre>
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## Sensitivity of RRI rankings to aggregation weights</span></span>
+<span></span>
+<span><span class="va">sens</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rri_sensitivity.html">rri_sensitivity</a></span><span class="op">(</span><span class="va">res_w1</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">sens</span></span></code></pre></div>
+<pre><code><span><span class="co">##   weight_physio weight_soil weight_micro spearman_rank_correlation</span></span>
+<span><span class="co">## 1           0.2        0.40         0.40                 0.9790174</span></span>
+<span><span class="co">## 2           0.3        0.35         0.35                 0.9883436</span></span>
+<span><span class="co">## 3           0.4        0.30         0.30                 0.9951571</span></span>
+<span><span class="co">## 4           0.5        0.25         0.25                 0.9988137</span></span>
+<span><span class="co">## 5           0.6        0.20         0.20                 0.9996874</span></span></code></pre>
+</div>
+<div class="section level3">
+<h3 id="stability-of-rri">Stability of RRI<a class="anchor" aria-label="anchor" href="#stability-of-rri"></a>
+</h3>
+<p>RRI rankings remain highly stable (&gt;0.9 Spearman correlation)
+under moderate perturbations of domain weighting, indicating structural
+robustness of the aggregation scheme.</p>
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"ggplot2"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  </span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">sens</span>,</span>
+<span>         <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">weight_physio</span>,</span>
+<span>             y <span class="op">=</span> <span class="va">spearman_rank_correlation</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    </span>
+<span>    <span class="co"># Stability reference band</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0.9</span>,</span>
+<span>               linetype <span class="op">=</span> <span class="st">"dashed"</span>,</span>
+<span>               linewidth <span class="op">=</span> <span class="fl">0.6</span>,</span>
+<span>               colour <span class="op">=</span> <span class="st">"grey40"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    </span>
+<span>    <span class="co"># Smooth curve</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">1.2</span>, colour <span class="op">=</span> <span class="st">"#3B0F70"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    </span>
+<span>    <span class="co"># Points</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">3.5</span>,</span>
+<span>               shape <span class="op">=</span> <span class="fl">21</span>,</span>
+<span>               fill <span class="op">=</span> <span class="st">"#FDE725"</span>,</span>
+<span>               colour <span class="op">=</span> <span class="st">"black"</span>,</span>
+<span>               stroke <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    </span>
+<span>    <span class="co"># Tight limits</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous</a></span><span class="op">(</span></span>
+<span>      limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="fl">0.85</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">sens</span><span class="op">$</span><span class="va">spearman_rank_correlation</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>                 <span class="fl">1</span><span class="op">)</span>,</span>
+<span>      expand <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/expansion.html" class="external-link">expansion</a></span><span class="op">(</span>mult <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.02</span>, <span class="fl">0.02</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="op">)</span> <span class="op">+</span></span>
+<span>    </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_continuous</a></span><span class="op">(</span></span>
+<span>      expand <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/expansion.html" class="external-link">expansion</a></span><span class="op">(</span>mult <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.02</span>, <span class="fl">0.02</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="op">)</span> <span class="op">+</span></span>
+<span>    </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>      title <span class="op">=</span> <span class="st">"Robustness of RRI to Domain Weight Perturbation"</span>,</span>
+<span>      subtitle <span class="op">=</span> <span class="st">"Spearman rank stability relative to baseline configuration"</span>,</span>
+<span>      x <span class="op">=</span> <span class="st">"Weight assigned to Physiology domain"</span>,</span>
+<span>      y <span class="op">=</span> <span class="st">"Spearman rank correlation"</span></span>
+<span>    <span class="op">)</span> <span class="op">+</span></span>
+<span>    </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">14</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span></span>
+<span>      plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>face <span class="op">=</span> <span class="st">"bold"</span>, size <span class="op">=</span> <span class="fl">15</span><span class="op">)</span>,</span>
+<span>      plot.subtitle <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">12</span>, margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">margin</a></span><span class="op">(</span>b <span class="op">=</span> <span class="fl">10</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>      axis.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>face <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span>,</span>
+<span>      panel.grid.minor <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>      panel.grid.major.x <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>    <span class="op">)</span></span>
+<span>  </span>
+<span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"Install ggplot2 to visualize sensitivity results."</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<p><img src="RedoxRRI_files/figure-html/RRI%20Stability-1.png" class="r-plt" alt="" width="70%" style="display: block; margin: auto;"></p>
+</div>
+<div class="section level3">
 <h3 id="practical-guidance">Practical guidance<a class="anchor" aria-label="anchor" href="#practical-guidance"></a>
 </h3>
 <p>A recommended workflow:</p>
@@ -412,7 +502,7 @@ ordering.</li>
 <li>Sensitivity-test domain weights and methods.</li>
 <li>Validate RRI against independent outcomes.</li>
 </ul>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## R version 4.5.2 (2025-10-31)</span></span>
 <span><span class="co">## Platform: x86_64-pc-linux-gnu</span></span>
@@ -435,7 +525,7 @@ ordering.</li>
 <span><span class="co">## [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] RedoxRRI_0.99.1  BiocStyle_2.38.0</span></span>
+<span><span class="co">## [1] ggplot2_4.0.2    RedoxRRI_0.99.1  BiocStyle_2.38.0</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
 <span><span class="co">##  [1] tidyselect_1.2.1      WGCNA_1.74            viridisLite_0.4.3    </span></span>
@@ -450,26 +540,26 @@ ordering.</li>
 <span><span class="co">## [28] plyr_1.8.9            RColorBrewer_1.1-3    withr_3.0.2          </span></span>
 <span><span class="co">## [31] foreign_0.8-90        desc_1.4.3            nnet_7.3-20          </span></span>
 <span><span class="co">## [34] dynamicTreeCut_1.63-1 grid_4.5.2            preprocessCore_1.72.0</span></span>
-<span><span class="co">## [37] colorspace_2.1-2      fastcluster_1.3.0     ggplot2_4.0.2        </span></span>
-<span><span class="co">## [40] scales_1.4.0          iterators_1.0.14      MASS_7.3-65          </span></span>
-<span><span class="co">## [43] cli_3.6.5             rmarkdown_2.30        ragg_1.5.0           </span></span>
-<span><span class="co">## [46] generics_0.1.4        otel_0.2.0            RSpectra_0.16-2      </span></span>
-<span><span class="co">## [49] rstudioapi_0.18.0     robustbase_0.99-7     bayesm_3.1-7         </span></span>
-<span><span class="co">## [52] cachem_1.1.0          stringr_1.6.0         splines_4.5.2        </span></span>
-<span><span class="co">## [55] parallel_4.5.2        impute_1.84.0         BiocManager_1.30.27  </span></span>
-<span><span class="co">## [58] matrixStats_1.5.0     base64enc_0.1-6       vctrs_0.7.1          </span></span>
-<span><span class="co">## [61] Matrix_1.7-4          jsonlite_2.0.0        bookdown_0.46        </span></span>
-<span><span class="co">## [64] Formula_1.2-5         htmlTable_2.4.3       ggtern_4.0.0         </span></span>
-<span><span class="co">## [67] systemfonts_1.3.1     foreach_1.5.2         jquerylib_0.1.4      </span></span>
-<span><span class="co">## [70] hexbin_1.28.5         proto_1.0.0           glue_1.8.0           </span></span>
-<span><span class="co">## [73] pkgdown_2.2.0         DEoptimR_1.1-4        codetools_0.2-20     </span></span>
-<span><span class="co">## [76] uwot_0.2.4            stringi_1.8.7         gtable_0.3.6         </span></span>
-<span><span class="co">## [79] tibble_3.3.1          pillar_1.11.1         compositions_2.0-9   </span></span>
-<span><span class="co">## [82] htmltools_0.5.9       R6_2.6.1              textshaping_1.0.4    </span></span>
-<span><span class="co">## [85] doParallel_1.0.17     evaluate_1.0.5        lattice_0.22-7       </span></span>
-<span><span class="co">## [88] backports_1.5.0       bslib_0.10.0          Rcpp_1.1.1           </span></span>
-<span><span class="co">## [91] gridExtra_2.3         checkmate_2.3.4       xfun_0.56            </span></span>
-<span><span class="co">## [94] fs_1.6.6              pkgconfig_2.0.3</span></span></code></pre>
+<span><span class="co">## [37] colorspace_2.1-2      fastcluster_1.3.0     scales_1.4.0         </span></span>
+<span><span class="co">## [40] iterators_1.0.14      MASS_7.3-65           cli_3.6.5            </span></span>
+<span><span class="co">## [43] rmarkdown_2.30        ragg_1.5.0            generics_0.1.4       </span></span>
+<span><span class="co">## [46] otel_0.2.0            RSpectra_0.16-2       rstudioapi_0.18.0    </span></span>
+<span><span class="co">## [49] robustbase_0.99-7     bayesm_3.1-7          cachem_1.1.0         </span></span>
+<span><span class="co">## [52] stringr_1.6.0         splines_4.5.2         parallel_4.5.2       </span></span>
+<span><span class="co">## [55] impute_1.84.0         BiocManager_1.30.27   matrixStats_1.5.0    </span></span>
+<span><span class="co">## [58] base64enc_0.1-6       vctrs_0.7.1           Matrix_1.7-4         </span></span>
+<span><span class="co">## [61] jsonlite_2.0.0        bookdown_0.46         Formula_1.2-5        </span></span>
+<span><span class="co">## [64] htmlTable_2.4.3       ggtern_4.0.0          systemfonts_1.3.1    </span></span>
+<span><span class="co">## [67] foreach_1.5.2         jquerylib_0.1.4       hexbin_1.28.5        </span></span>
+<span><span class="co">## [70] proto_1.0.0           glue_1.8.0            pkgdown_2.2.0        </span></span>
+<span><span class="co">## [73] DEoptimR_1.1-4        codetools_0.2-20      uwot_0.2.4           </span></span>
+<span><span class="co">## [76] stringi_1.8.7         gtable_0.3.6          tibble_3.3.1         </span></span>
+<span><span class="co">## [79] pillar_1.11.1         compositions_2.0-9    htmltools_0.5.9      </span></span>
+<span><span class="co">## [82] R6_2.6.1              textshaping_1.0.4     doParallel_1.0.17    </span></span>
+<span><span class="co">## [85] evaluate_1.0.5        lattice_0.22-7        backports_1.5.0      </span></span>
+<span><span class="co">## [88] bslib_0.10.0          Rcpp_1.1.1            gridExtra_2.3        </span></span>
+<span><span class="co">## [91] checkmate_2.3.4       xfun_0.56             fs_1.6.6             </span></span>
+<span><span class="co">## [94] pkgconfig_2.0.3</span></span></code></pre>
 </div>
 </div>
   </div>
