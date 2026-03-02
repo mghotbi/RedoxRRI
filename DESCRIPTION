@@ -1,15 +1,9 @@
 Package: RedoxRRI
 Type: Package
 Title: Holobiont Redox Resilience Index for Integrative Stress Biology
-Version: 0.99.0
-Authors@R: c(
-    person("Mitra", "Ghotbi", email = "mitra.ghotbi@gmail.com", role = c("aut", "cre"),
-           comment = c(ORCID = "0000-0001-9185-9993")),
-    person("Marjan", "Ghotbi", email = "ghotbi.marjan@gmail.com", role = "ctb",
-           comment = c(ORCID = "0000-0003-4655-6445"))
- )
-Description:
-    Provides a unified framework for quantifying holobiont-level redox
+Version: 0.99.1
+Authors@R: c(person("Mitra", "Ghotbi", email = "mitra.ghotbi@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0001-9185-9993")), person("Marjan", "Ghotbi", email = "ghotbi.marjan@gmail.com", role = "ctb", comment = c(ORCID = "0000-0003-4655-6445")))
+Description: Provides a unified framework for quantifying holobiont-level redox
     resilience by integrating plant physiological traits, soil redox
     chemistry, and microbial features into a single interpretable index.
     The package implements the Redox Resilience Index (RRI), a weighted

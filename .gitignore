@@ -24,3 +24,5 @@ renv/python/
 inst/doc/
 /doc/
 /Meta/
+RedoxRRI.Rcheck/
+*.tar.gz

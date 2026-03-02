@@ -12,6 +12,7 @@ simulate_redox_holobiont(
   p_micro = 60,
   seed = 123,
   include_graph = FALSE,
+  depth_labels = NULL,
   disturbance_strength = 0.4,
   disturbance_center = NULL,
   disturbance_width = 0.1,
@@ -21,69 +22,78 @@ simulate_redox_holobiont(
   decoupling = 0.3,
   zero_inflation = 0.4,
   MNAR_strength = 0.4,
-  Eh_dropout_threshold = 0.25
+  Eh_dropout_threshold = 0.25,
+  micro_mean = 8,
+  micro_slope = 3,
+  micro_lambda_min = 1e-08,
+  micro_lambda_max = 1e+06
 )
 }
 \arguments{
-\item{n_plot}{Integer greater than or equal to 1. Number of plots.}
+\item{n_plot}{Integer >= 1. Number of plots.}
 
-\item{n_depth}{Integer (1 or 2). Number of soil depths.}
+\item{n_depth}{Integer >= 1. Number of soil depth strata.}
 
-\item{n_plant}{Integer greater than or equal to 1. Number of plants per plot–depth.}
+\item{n_plant}{Integer >= 1. Number of plants per plot–depth.}
 
-\item{n_time}{Integer greater than or equal to 2. Number of time points per plant.}
+\item{n_time}{Integer >= 2. Number of time points per plant.}
 
-\item{p_micro}{Integer greater than or equal to 1. Number of microbial features.}
+\item{p_micro}{Integer >= 1. Number of microbial features.}
 
 \item{seed}{Optional integer seed. Use \code{NULL} for stochastic runs.}
 
 \item{include_graph}{Logical. If \code{TRUE} and \pkg{igraph} is available,
-returns a simulated system-level network.}
+return a simulated network as \code{graph}.}
 
-\item{disturbance_strength}{Numeric between 0 and 1. Magnitude of the
-mid-season disturbance pulse.}
+\item{depth_labels}{Optional character vector of length \code{n_depth}.
+If \code{NULL}, depths are labeled \code{"D1", "D2", ...}.}
 
-\item{disturbance_center}{Optional numeric. If \code{NULL}, the disturbance
-is centred at the median time point.}
+\item{disturbance_strength}{Numeric in \code{[0, 1]}. Magnitude of disturbance pulse.}
 
-\item{disturbance_width}{Numeric greater than 0. Controls pulse width
-as a fraction of the total season length.}
+\item{disturbance_center}{Optional numeric. If \code{NULL}, centered at median time.}
 
-\item{seasonal_amp}{Numeric greater than or equal to 0. Amplitude of
-seasonal forcing.}
+\item{disturbance_width}{Numeric > 0. Pulse width as fraction of season length.}
 
-\item{seasonal_phase}{Numeric. Phase shift for the seasonal sine wave (radians).}
+\item{seasonal_amp}{Numeric >= 0. Amplitude of seasonal forcing.}
 
-\item{stochastic_reassembly}{Logical. If \code{TRUE}, microbial communities
-combine deterministic structure with a stochastic reassembly component.}
+\item{seasonal_phase}{Numeric. Phase shift for seasonal sine wave (radians).}
 
-\item{decoupling}{Numeric between 0 and 1 indicating cross-domain
-decoupling (0 = tightly coupled, 1 = fully decoupled).}
+\item{stochastic_reassembly}{Logical. If \code{TRUE}, microbial counts include a
+stochastic reassembly component (mixture of intensities).}
 
-\item{zero_inflation}{Numeric between 0 and 1 giving the probability that
-a microbial entry is set to zero.}
+\item{decoupling}{Numeric in \code{[0, 1]}. Cross-domain decoupling (0=tightly coupled).}
 
-\item{MNAR_strength}{Numeric between 0 and 1 controlling the strength of
-missing-not-at-random Eh dropout under strongly reduced states.}
+\item{zero_inflation}{Numeric in \code{[0, 1]}. Probability a microbial entry is set to 0.}
 
-\item{Eh_dropout_threshold}{Numeric between 0 and 1 specifying the latent
-redox threshold below which Eh dropout may occur.}
+\item{MNAR_strength}{Numeric in \code{[0, 1]}. Strength of MNAR Eh dropout in reduced states.}
+
+\item{Eh_dropout_threshold}{Numeric in \code{[0, 1]}. Latent threshold below which dropout can occur.}
+
+\item{micro_mean}{Numeric > 0. Baseline mean intensity for microbial counts.}
+
+\item{micro_slope}{Numeric >= 0. Coupling strength between latent redox state and microbial intensity.}
+
+\item{micro_lambda_min}{Numeric > 0. Lower bound for microbial Poisson intensity.}
+
+\item{micro_lambda_max}{Numeric > 0. Upper bound for microbial Poisson intensity.}
 }
 \value{
-A named list containing:
+A named list with:
 \itemize{
-\item \code{id}: Experimental design structure.
-\item \code{ROS_flux}: Simulated plant physiological indicators.
-\item \code{Eh_stability}: Soil redox chemistry variables.
-\item \code{micro_data}: Microbial feature matrix.
-\item \code{latent_truth}: Simulated underlying redox state scaled between 0 and 1.
-\item \code{graph}: Optional \code{igraph} object if requested.
+\item \code{id}: Data frame of experimental design (plot, depth, plant_id, time).
+\item \code{ROS_flux}: Plant physiological indicators (data frame).
+\item \code{Eh_stability}: Soil redox chemistry variables (data frame; Eh may include NA).
+\item \code{micro_data}: Microbial feature matrix (data frame; non-negative integers).
+\item \code{latent_truth}: Underlying latent redox state in \code{[0, 1]}.
+\item \code{graph}: Optional \code{igraph} object if requested and available.
 }
 }
 \description{
-Generates a synthetic plant–soil–microbe dataset with structured redox
-dynamics, disturbance forcing, partial cross-domain decoupling, configurable
-sparsity (zero inflation), and missing-not-at-random (MNAR) Eh dropout.
-The simulator is intended for benchmarking, methodological validation,
-and demonstration of RedoxRRI workflows.
+Generate a synthetic plant–soil–microbiome dataset with (i) a latent redox
+state evolving over time, (ii) a mid-season disturbance pulse, (iii) partial
+cross-domain decoupling, (iv) configurable microbial sparsity (zero inflation),
+and (v) missing-not-at-random (MNAR) Eh dropout under strongly reduced states.
+
+The simulator is designed for benchmarking, validation, and demonstration of
+RedoxRRI workflows. It is not intended to represent any real ecosystem.
 }

@@ -20,7 +20,7 @@
 #' @param depth_labels Optional character vector of length \code{n_depth}.
 #'   If \code{NULL}, depths are labeled \code{"D1", "D2", ...}.
 #'
-#' @param disturbance_strength Numeric in [0,1]. Magnitude of disturbance pulse.
+#' @param disturbance_strength Numeric in \code{[0, 1]}. Magnitude of disturbance pulse.
 #' @param disturbance_center Optional numeric. If \code{NULL}, centered at median time.
 #' @param disturbance_width Numeric > 0. Pulse width as fraction of season length.
 #'
@@ -29,12 +29,12 @@
 #'
 #' @param stochastic_reassembly Logical. If \code{TRUE}, microbial counts include a
 #'   stochastic reassembly component (mixture of intensities).
-#' @param decoupling Numeric in [0,1]. Cross-domain decoupling (0=tightly coupled).
+#' @param decoupling Numeric in \code{[0, 1]}. Cross-domain decoupling (0=tightly coupled).
 #'
-#' @param zero_inflation Numeric in [0,1]. Probability a microbial entry is set to 0.
+#' @param zero_inflation Numeric in \code{[0, 1]}. Probability a microbial entry is set to 0.
 #'
-#' @param MNAR_strength Numeric in [0,1]. Strength of MNAR Eh dropout in reduced states.
-#' @param Eh_dropout_threshold Numeric in [0,1]. Latent threshold below which dropout can occur.
+#' @param MNAR_strength Numeric in \code{[0, 1]}. Strength of MNAR Eh dropout in reduced states.
+#' @param Eh_dropout_threshold Numeric in \code{[0, 1]}. Latent threshold below which dropout can occur.
 #'
 #' @param micro_mean Numeric > 0. Baseline mean intensity for microbial counts.
 #' @param micro_slope Numeric >= 0. Coupling strength between latent redox state and microbial intensity.
@@ -47,7 +47,7 @@
 #'   \item \code{ROS_flux}: Plant physiological indicators (data frame).
 #'   \item \code{Eh_stability}: Soil redox chemistry variables (data frame; Eh may include NA).
 #'   \item \code{micro_data}: Microbial feature matrix (data frame; non-negative integers).
-#'   \item \code{latent_truth}: Underlying latent redox state in [0,1].
+#'   \item \code{latent_truth}: Underlying latent redox state in \code{[0, 1]}.
 #'   \item \code{graph}: Optional \code{igraph} object if requested and available.
 #' }
 #'
@@ -171,7 +171,7 @@ simulate_redox_holobiont <- function(
   n <- nrow(id)
   plot_eff <- as.integer(factor(id$plot))
   
-  # Depth numeric effect scaled to [0,1] (D1 shallow-ish -> 0; deepest -> 1)
+  # Depth numeric effect scaled to \code{[0, 1]} (D1 shallow-ish -> 0; deepest -> 1)
   depth_idx <- as.integer(factor(id$depth, levels = depth_levels))
   depth_num <- (depth_idx - 1) / max(n_depth - 1, 1)
   
