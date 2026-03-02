@@ -1,8 +1,73 @@
-#' Holobiont Redox Resilience Index (RRI) with spatio-temporal dynamics
+#' @title Holobiont Redox Resilience Index (RRI) with Spatio-Temporal Dynamics
 #'
+#' @description
 #' Computes a holobiont-level Redox Resilience Index (RRI) by integrating
-#' plant physiology, soil redox chemistry, and microbial resilience into a unified,
-#' directionally identifiable index with explicit support for spatial and temporal designs.
+#' plant physiological traits, soil redox chemistry, and microbial resilience
+#' into a unified, directionally identifiable index. The framework supports
+#' static (snapshot), rolling-window, and event-based resilience modes,
+#' optional compositional geometry (clr), multiblock reduction via MFA,
+#' and covariance-based compensation.
+#'
+#' @param ROS_flux Data frame of plant physiological variables (rows = samples).
+#' @param Eh_stability Data frame of soil redox chemistry variables (rows = samples).
+#' @param micro_data Optional data frame of microbial abundance or functional features.
+#' @param graph Optional \code{igraph} object or list of \code{igraph} objects
+#'   representing microbial network structure.
+#' @param id Optional data frame describing experimental design (same number of rows as inputs).
+#' @param time_col Optional character. Name of time column in \code{id}.
+#' @param group_cols Optional character vector of grouping variables in \code{id}.
+#' @param mode Character. One of \code{"snapshot"}, \code{"rolling"}, or \code{"event"}.
+#' @param window Integer >= 2. Rolling window size (for mode = "rolling").
+#' @param align Character. Alignment rule for rolling window:
+#'   \code{"right"}, \code{"center"}, or \code{"left"}.
+#' @param event_col Optional character. Column in \code{id} identifying event phases.
+#' @param baseline_label Character. Label identifying baseline phase.
+#' @param recovery_labels Character vector identifying recovery phases.
+#' @param alpha_micro Numeric between 0 and 1 controlling blending of microbial
+#'   abundance and network components.
+#' @param method_phys Character. Reduction method for plant block.
+#' @param method_soil Character. Reduction method for soil block.
+#' @param method_micro Character. Reduction method for microbial block.
+#' @param direction_phys Character. Orientation rule for plant latent dimension.
+#' @param direction_soil Character. Orientation rule for soil latent dimension.
+#' @param direction_micro Character. Orientation rule for microbial latent dimension.
+#' @param direction_anchor_phys Optional character. Anchor variable for plant orientation.
+#' @param direction_anchor_soil Optional character. Anchor variable for soil orientation.
+#' @param direction_anchor_micro Optional character. Anchor variable for microbial orientation.
+#' @param scale_by Optional character vector of grouping variables used for scaling.
+#' @param network_agg Character. Network aggregation method: \code{"equation"} or \code{"mean"}.
+#' @param w1 Numeric weight for plant domain.
+#' @param w2 Numeric weight for soil domain.
+#' @param w3 Numeric weight for microbial domain. Must sum with w1 and w2 to 1.
+#' @param add_coupling Logical. If TRUE, adds cross-domain coherence term.
+#' @param coupling_weight Numeric between 0 and 1 controlling weight of coupling term.
+#' @param coupling_fun Character. Coupling function: \code{"geometric_mean"} or \code{"agreement"}.
+#' @param norm_method Optional character. If provided, overrides block-specific methods.
+#' @param reducer Character. Reduction strategy: \code{"per_domain"} or \code{"mfa"}.
+#' @param scaling Character. Scaling rule: \code{"minmax_legacy"} or \code{"pnorm"}.
+#' @param comp_space Character. Compositional projection method:
+#'   \code{"closure_legacy"} or \code{"clr"}.
+#' @param ref_stats Optional list of reference statistics used for scaling.
+#' @param add_compensation Logical. If TRUE, includes covariance-based compensation term.
+#' @param compensation_weight Numeric between 0 and 1 controlling compensation weight.
+#'
+#' @details
+#' When \code{reducer = "mfa"}, blocks are integrated using
+#' \pkg{FactoMineR} multiple factor analysis. If partial coordinates are
+#' unavailable, the function safely falls back to per-domain reduction.
+#'
+#' When \code{comp_space = "clr"}, domain scores are projected into
+#' Aitchison geometry using centered log-ratio transformation and
+#' returned in simplex form for ternary visualization.
+#'
+#' @return
+#' A list of class \code{"RRI"} containing:
+#' \itemize{
+#'   \item \code{row_scores}: Raw domain and RRI values.
+#'   \item \code{row_scores_comp}: Compositional domain scores and RRI.
+#'   \item \code{dyn_scores}: Dynamic resilience metrics (if applicable).
+#'   \item \code{meta}: Metadata describing model configuration.
+#' }
 #'
 #' @importFrom stats prcomp lm sd coef cor median cov complete.cases pnorm
 #' @export

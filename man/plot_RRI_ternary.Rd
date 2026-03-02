@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_RRI_ternary.R
 \name{plot_RRI_ternary}
 \alias{plot_RRI_ternary}
-\title{Plot the Holobiont Redox Resilience Ternary Diagram}
+\title{Ternary Plot of Holobiont Redox Resilience Allocation}
 \usage{
 plot_RRI_ternary(
   ternary_df,
@@ -13,70 +13,47 @@ plot_RRI_ternary(
   show_centroid = TRUE,
   centroid_shape = 23,
   centroid_size = 1.4,
-  tolerance = 1e-06
+  tolerance = 1e-06,
+  renormalize = FALSE,
+  centroid_method = c("auto", "simplex_mean", "aitchison_mean")
 )
 }
 \arguments{
-\item{ternary_df}{A data frame with columns \code{Physio}, \code{Soil},
-\code{Micro} (compositional; sum to 1), and \code{RRI}.}
+\item{ternary_df}{A data frame containing compositional columns
+\code{Physio}, \code{Soil}, \code{Micro}, and \code{RRI}.}
 
-\item{point_size}{Numeric. Point size (default: 5).}
+\item{point_size}{Numeric; size of ternary points.}
 
-\item{point_alpha}{Numeric in (0,1]. Point transparency (default: 0.9).}
+\item{point_alpha}{Numeric between 0 and 1 controlling point transparency.}
 
-\item{palette}{Character. Viridis palette option
-(default: \code{"plasma"}).}
+\item{palette}{Character; viridis palette option.}
 
-\item{show_subtitle}{Logical. Show system-level mean RRI subtitle.}
+\item{show_subtitle}{Logical; display system-level RRI mean in subtitle.}
 
-\item{show_centroid}{Logical. Overlay centroid (mean composition).}
+\item{show_centroid}{Logical; add compositional centroid marker.}
 
-\item{centroid_shape}{Integer. Shape for centroid marker (default: 23).}
+\item{centroid_shape}{Numeric; ggplot2 shape for centroid marker.}
 
-\item{centroid_size}{Numeric. Size multiplier for centroid.}
+\item{centroid_size}{Numeric multiplier for centroid size.}
 
-\item{tolerance}{Numeric. Closure tolerance (default: \code{1e-6}).}
+\item{tolerance}{Numeric; tolerance used for compositional closure checks.}
+
+\item{renormalize}{Logical; if TRUE, renormalises rows that do not sum to 1.}
+
+\item{centroid_method}{Character; one of \code{"auto"},
+\code{"simplex_mean"}, or \code{"aitchison_mean"}.}
 }
 \value{
-A \pkg{ggtern} plot object (inherits from \pkg{ggplot2}).
+A \code{ggtern} object.
 }
 \description{
-This function visualizes holobiont redox resilience in ternary space,
-where each point represents the relative contribution of plant physiology,
-soil redox chemistry, and microbial resilience.
-
-The input must contain compositional domain coordinates that sum to 1 per row.
-Rows with undefined compositions (e.g. all-zero domains or missing values)
-are automatically excluded.
+Creates a ternary diagram visualising the compositional allocation of
+holobiont redox buffering capacity across plant physiology (\code{Physio}),
+soil redox chemistry (\code{Soil}), and microbial resilience (\code{Micro}).
+Points are filled according to per-sample \code{RRI} values.
 }
 \details{
-Creates an ISME-style ternary plot of holobiont redox resilience based on
-compositional domain contributions (\code{Physio}, \code{Soil}, \code{Micro})
-and filled by per-sample \code{RRI}.
-}
-\section{Suggested packages}{
-
-\itemize{
-\item \pkg{ggtern}
-\item \pkg{ggplot2}
-\item \pkg{viridis}
-}
-}
-
-\examples{
-sim <- simulate_redox_holobiont(seed = 1)
-
-res <- rri_pipeline_st(
-  ROS_flux = sim$ROS_flux,
-  Eh_stability = sim$Eh_stability,
-  micro_data = sim$micro_data,
-  id = sim$id,
-  direction_phys = "auto",
-  direction_anchor_phys = "FvFm",
-  direction_soil = "auto",
-  direction_anchor_soil = "Eh"
-)
-
-plot_RRI_ternary(res$row_scores_comp)
-
+If clr-transformed coordinates are attached as an attribute (\code{"clr"}),
+the centroid can be computed using the Aitchison mean, ensuring geometric
+coherence in compositional space. Otherwise, a simplex arithmetic mean is used.
 }

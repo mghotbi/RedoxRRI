@@ -27,18 +27,12 @@ library(RedoxRRI)
 
 ### Overview
 
-RedoxRRI formalises holobiont resilience as coordinated redox buffering 
-across plant, soil, and microbial compartments. Rather than analysing 
-each domain independently, the framework models resilience as an emergent, 
-cross-domain property that can be expressed either as a scalar index (RRI) 
-or as a compositional allocation in simplex space.
 
 RedoxRRI provides a transparent and extensible framework to quantify
 holobiont redox resilience by integrating three complementary domains:
- 
-- Plant physiology (oxidative / nitrosative buffering and stress traits)
-- Soil redox stability (Eh and redox-coupled chemistry)
-- Microbial resilience
+grep -R "GLab" .
+./.git/refs/remotes/origin/HEAD:ref: refs/remotes/origin/GLabPlant physiology (oxidative / nitrosative buffering and stress traits)
+Soil redox stability (Eh and redox-coupled chemistry)
 
 Microbial resilience, represented as a single blended domain that can
 incorporate:
@@ -106,13 +100,8 @@ spatial grouping and temporal structure
 The simulation does not represent any real experiment, species, site,
 or ecosystem.
 
-### Reproducibility
-
-All analyses in this vignette are fully reproducible and rely only on 
-simulated data generated within the package.
 
 ```{r simulate-example}
-set.seed(1342)
 sim <- simulate_redox_holobiont()
 # sim <- simulate_redox_holobiont(seed = 1)
 
@@ -123,6 +112,7 @@ str(sim, max.level = 1)
 
 
 The simulated object contains:
+
 ROS_flux: plant physiological traits (samples × variables)
 Eh_stability: soil redox variables
 micro_data: microbial functional features
@@ -245,96 +235,16 @@ if (requireNamespace("uwot", quietly = TRUE)) {
 }
 ```
 
-## Second example: compositional geometry and temporal resilience
-
-In this example, we illustrate three advanced features of RedoxRRI:
-
-1. Compositional projection using clr geometry  
-2. A covariance-based compensation term  
-3. Rolling temporal resilience dynamics  
-
-This specification more closely reflects longitudinal ecological data 
-where resilience is evaluated through time rather than at a single snapshot.
-
-```{r, geometry and temporal resilience}
-set.seed(91202)
-
-res_adv <- rri_pipeline_st(
-  ROS_flux        = sim$ROS_flux,
-  Eh_stability    = sim$Eh_stability,
-  micro_data      = sim$micro_data,
-  id              = sim$id,
-  time_col        = "time",
-  group_cols      = c("plot", "depth"),
-  mode            = "rolling",
-  window          = 4,
-  comp_space      = "clr",
-  add_compensation = TRUE,
-  compensation_weight = 0.2,
-  direction_phys  = "auto",
-  direction_anchor_phys = "FvFm",
-  direction_soil  = "auto",
-  direction_anchor_soil = "Eh"
-)
-
-head(res_adv$row_scores_comp)
-range(rowSums(res_adv$row_scores_comp[, c("Physio","Soil","Micro")]))
-
-
-if (requireNamespace("ggtern", quietly = TRUE) &&
-    requireNamespace("ggplot2", quietly = TRUE) &&
-    requireNamespace("viridis", quietly = TRUE)) {
-
-  plot_RRI_ternary(
-    res_adv$row_scores_comp,
-    centroid_method = "auto"
-  )
-
-} else {
-  message("Install ggtern, ggplot2, and viridis to enable ternary plotting.")
-}
-```
-
-### Interpretation
-
-The ternary representation expresses the relative allocation of 
-holobiont redox buffering among plant physiology, soil chemistry, 
-and microbial resilience.
-
-When `comp_space = "clr"` is used, compositional geometry follows 
-Aitchison principles, and the centroid is computed in clr space 
-when available. This ensures geometric coherence and avoids 
-spurious averaging in simplex space.
-
-The optional compensation term increases RRI when negative 
-cross-domain covariance is detected, reflecting compensatory 
-dynamics among domains.
-
-## Sensitivity to domain weights
-
-```{r, Sensitivity}
-
-res_w1 <- rri_pipeline_st(
-  ROS_flux = sim$ROS_flux,
-  Eh_stability = sim$Eh_stability,
-  micro_data = sim$micro_data,
-  w1 = 0.6, w2 = 0.25, w3 = 0.15
-)
-
-res_w1$meta$rri_index
-
-```
-
 
 ### Practical guidance
 
-A recommended workflow:
+A recommended workflow is:
+Assemble domain matrices with samples in rows and consistent ordering.
+Choose latent methods appropriate to each domain.
+Decide microbial blending parameter alpha_micro.
+Sensitivity-test domain weights and methods.
+Validate RRI against independent outcomes (e.g. recovery, stress tolerance).
 
-- Assemble domain matrices with samples in rows and consistent ordering.
-- Choose latent methods appropriate to each domain.
-- Decide microbial blending parameter `alpha_micro`.
-- Sensitivity-test domain weights and methods.
-- Validate RRI against independent outcomes.
 
 ```{r session-info}
 sessionInfo()

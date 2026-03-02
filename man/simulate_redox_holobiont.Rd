@@ -2,7 +2,7 @@
 % Please edit documentation in R/simulate_redox_holobiont.R
 \name{simulate_redox_holobiont}
 \alias{simulate_redox_holobiont}
-\title{Simulate a holobiont redox dataset with spatio-temporal structure}
+\title{Simulate a Holobiont Redox Dataset with Spatio-Temporal Structure}
 \usage{
 simulate_redox_holobiont(
   n_plot = 4,
@@ -11,42 +11,79 @@ simulate_redox_holobiont(
   n_time = 15,
   p_micro = 60,
   seed = 123,
-  include_graph = FALSE
+  include_graph = FALSE,
+  disturbance_strength = 0.4,
+  disturbance_center = NULL,
+  disturbance_width = 0.1,
+  seasonal_amp = 0.08,
+  seasonal_phase = 0,
+  stochastic_reassembly = TRUE,
+  decoupling = 0.3,
+  zero_inflation = 0.4,
+  MNAR_strength = 0.4,
+  Eh_dropout_threshold = 0.25
 )
 }
 \arguments{
-\item{n_plot}{Integer >= 1. Number of plots.}
+\item{n_plot}{Integer greater than or equal to 1. Number of plots.}
 
-\item{n_depth}{Integer equal to 1 or 2. Number of soil depths (shallow/deep).}
+\item{n_depth}{Integer (1 or 2). Number of soil depths.}
 
-\item{n_plant}{Integer >= 1. Number of plants per plot–depth.}
+\item{n_plant}{Integer greater than or equal to 1. Number of plants per plot–depth.}
 
-\item{n_time}{Integer >= 2. Number of time points per plant.}
+\item{n_time}{Integer greater than or equal to 2. Number of time points per plant.}
 
-\item{p_micro}{Integer >= 1. Number of microbial features (e.g. ASVs).}
+\item{p_micro}{Integer greater than or equal to 1. Number of microbial features.}
 
-\item{seed}{Optional integer seed; use \code{NULL} for stochastic simulation.}
+\item{seed}{Optional integer seed. Use \code{NULL} for stochastic runs.}
 
-\item{include_graph}{Logical. If TRUE and \pkg{igraph} is available, returns a network.}
+\item{include_graph}{Logical. If \code{TRUE} and \pkg{igraph} is available,
+returns a simulated system-level network.}
+
+\item{disturbance_strength}{Numeric between 0 and 1. Magnitude of the
+mid-season disturbance pulse.}
+
+\item{disturbance_center}{Optional numeric. If \code{NULL}, the disturbance
+is centred at the median time point.}
+
+\item{disturbance_width}{Numeric greater than 0. Controls pulse width
+as a fraction of the total season length.}
+
+\item{seasonal_amp}{Numeric greater than or equal to 0. Amplitude of
+seasonal forcing.}
+
+\item{seasonal_phase}{Numeric. Phase shift for the seasonal sine wave (radians).}
+
+\item{stochastic_reassembly}{Logical. If \code{TRUE}, microbial communities
+combine deterministic structure with a stochastic reassembly component.}
+
+\item{decoupling}{Numeric between 0 and 1 indicating cross-domain
+decoupling (0 = tightly coupled, 1 = fully decoupled).}
+
+\item{zero_inflation}{Numeric between 0 and 1 giving the probability that
+a microbial entry is set to zero.}
+
+\item{MNAR_strength}{Numeric between 0 and 1 controlling the strength of
+missing-not-at-random Eh dropout under strongly reduced states.}
+
+\item{Eh_dropout_threshold}{Numeric between 0 and 1 specifying the latent
+redox threshold below which Eh dropout may occur.}
 }
 \value{
-A named list with components:
-\describe{
-\item{id}{data.frame of sample identifiers: plot, depth, plant_id, time.}
-\item{ROS_flux}{data.frame of plant physiological traits.}
-\item{Eh_stability}{data.frame of soil redox chemistry variables.}
-\item{micro_data}{data.frame of zero-inflated microbial abundances.}
-\item{latent_truth}{Numeric vector scaled to \eqn{[0,1]} representing latent redox state.}
-\item{graph}{Optional \pkg{igraph} object (system-level network).}
+A named list containing:
+\itemize{
+\item \code{id}: Experimental design structure.
+\item \code{ROS_flux}: Simulated plant physiological indicators.
+\item \code{Eh_stability}: Soil redox chemistry variables.
+\item \code{micro_data}: Microbial feature matrix.
+\item \code{latent_truth}: Simulated underlying redox state scaled between 0 and 1.
+\item \code{graph}: Optional \code{igraph} object if requested.
 }
 }
 \description{
-Generates a synthetic plant–soil–microbe dataset with realistic properties
-commonly encountered in redox ecology and holobiont studies.
-}
-\examples{
-set.seed(1)
-sim <- simulate_redox_holobiont(seed = 1)
-str(sim)
-
+Generates a synthetic plant–soil–microbe dataset with structured redox
+dynamics, disturbance forcing, partial cross-domain decoupling, configurable
+sparsity (zero inflation), and missing-not-at-random (MNAR) Eh dropout.
+The simulator is intended for benchmarking, methodological validation,
+and demonstration of RedoxRRI workflows.
 }

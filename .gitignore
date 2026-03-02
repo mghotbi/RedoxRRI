@@ -22,3 +22,5 @@ renv/python/
 
 # Legacy vignette output
 inst/doc/
+/doc/
+/Meta/

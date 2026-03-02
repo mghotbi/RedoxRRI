@@ -80,10 +80,21 @@
 <div class="section level3">
 <h3 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h3>
+<p>RedoxRRI formalises holobiont resilience as coordinated redox
+buffering across plant, soil, and microbial compartments. Rather than
+analysing each domain independently, the framework models resilience as
+an emergent, cross-domain property that can be expressed either as a
+scalar index (RRI) or as a compositional allocation in simplex
+space.</p>
 <p>RedoxRRI provides a transparent and extensible framework to quantify
-holobiont redox resilience by integrating three complementary domains:
-Plant physiology (oxidative / nitrosative buffering and stress traits)
-Soil redox stability (Eh and redox-coupled chemistry)</p>
+holobiont redox resilience by integrating three complementary
+domains:</p>
+<ul>
+<li>Plant physiology (oxidative / nitrosative buffering and stress
+traits)</li>
+<li>Soil redox stability (Eh and redox-coupled chemistry)</li>
+<li>Microbial resilience</li>
+</ul>
 <p>Microbial resilience, represented as a single blended domain that can
 incorporate: microbial abundance or functional composition (micro_data)
 microbial network organization (igraph network metrics) The primary
@@ -151,8 +162,15 @@ correlated plant physiological traits soil redox gradients and stability
 microbial functional heterogeneity spatial grouping and temporal
 structure The simulation does not represent any real experiment,
 species, site, or ecosystem.</p>
+</div>
+<div class="section level3">
+<h3 id="reproducibility">Reproducibility<a class="anchor" aria-label="anchor" href="#reproducibility"></a>
+</h3>
+<p>All analyses in this vignette are fully reproducible and rely only on
+simulated data generated within the package.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simulate_redox_holobiont.html">simulate_redox_holobiont</a></span><span class="op">(</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1342</span><span class="op">)</span></span>
+<span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simulate_redox_holobiont.html">simulate_redox_holobiont</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co"># sim &lt;- simulate_redox_holobiont(seed = 1)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">sim</span>, max.level <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
@@ -161,13 +179,12 @@ species, site, or ecosystem.</p>
 <span><span class="co">##  $ ROS_flux    :'data.frame':    600 obs. of  4 variables:</span></span>
 <span><span class="co">##  $ Eh_stability:'data.frame':    600 obs. of  5 variables:</span></span>
 <span><span class="co">##  $ micro_data  :'data.frame':    600 obs. of  60 variables:</span></span>
-<span><span class="co">##  $ latent_truth: num [1:600] 0.61 0.709 0.754 0.578 0.389 ...</span></span>
+<span><span class="co">##  $ latent_truth: num [1:600] 0.655 0.754 0.799 0.624 0.435 ...</span></span>
 <span><span class="co">##  $ graph       : NULL</span></span></code></pre>
-<p>The simulated object contains:</p>
-<p>ROS_flux: plant physiological traits (samples × variables)
-Eh_stability: soil redox variables micro_data: microbial functional
-features id: sample metadata (spatial and temporal structure) graph
-(optional): an igraph network or list of networks</p>
+<p>The simulated object contains: ROS_flux: plant physiological traits
+(samples × variables) Eh_stability: soil redox variables micro_data:
+microbial functional features id: sample metadata (spatial and temporal
+structure) graph (optional): an igraph network or list of networks</p>
 </div>
 <div class="section level3">
 <h3 id="computing-the-redox-resilience-index">Computing the Redox Resilience Index<a class="anchor" aria-label="anchor" href="#computing-the-redox-resilience-index"></a>
@@ -190,13 +207,13 @@ features id: sample metadata (spatial and temporal structure) graph
 <p>The compositional output is stored in res$row_scores_comp.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">row_scores_comp</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##      Physio      Soil       Micro       RRI</span></span>
-<span><span class="co">## 1 0.5034752 0.4145238 0.082001004 0.8046337</span></span>
-<span><span class="co">## 2 0.4205445 0.5326875 0.046767946 0.8496707</span></span>
-<span><span class="co">## 3 0.4830942 0.5147362 0.002169632 0.8479456</span></span>
-<span><span class="co">## 4 0.4485046 0.4936503 0.057845104 0.8338168</span></span>
-<span><span class="co">## 5 0.4137963 0.4325326 0.153671034 0.4848568</span></span>
-<span><span class="co">## 6 0.4104195 0.3993483 0.190232182 0.7409813</span></span></code></pre>
+<pre><code><span><span class="co">##      Physio      Soil      Micro       RRI</span></span>
+<span><span class="co">## 1 0.4910052 0.4149515 0.09404332 0.7668215</span></span>
+<span><span class="co">## 2 0.4098182 0.5304822 0.05969960 0.7888943</span></span>
+<span><span class="co">## 3 0.4716554 0.5161167 0.01222785 0.7857795</span></span>
+<span><span class="co">## 4 0.4393544 0.4930525 0.06759305 0.7865607</span></span>
+<span><span class="co">## 5 0.4001940 0.4456543 0.15415177 0.4829038</span></span>
+<span><span class="co">## 6 0.4030361 0.4068304 0.19013351 0.7153436</span></span></code></pre>
 <p>The domain components satisfy:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">rowSums</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">row_scores_comp</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Physio"</span>, <span class="st">"Soil"</span>, <span class="st">"Micro"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span></span></code></pre></div>
@@ -212,7 +229,7 @@ output also includes the corresponding latent scores:</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">row_scores</span><span class="op">$</span><span class="va">Micro_abundance</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <pre><code><span><span class="co">##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span></span>
-<span><span class="co">##  0.0000  0.1930  0.2936  0.3272  0.4360  1.0000</span></span></code></pre>
+<span><span class="co">##  0.0000  0.1518  0.2253  0.2635  0.3359  1.0000</span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="ternary-visualization">Ternary visualization<a class="anchor" aria-label="anchor" href="#ternary-visualization"></a>
@@ -257,23 +274,23 @@ packages are available.</p>
 <span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"WGCNA not installed; skipping example."</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<pre><code><span><span class="co">##    Power SFT.R.sq slope truncated.R.sq  mean.k. median.k.   max.k.</span></span>
-<span><span class="co">## 1      1 0.000914 -2.84        -0.2370 1.93e+00  1.90e+00 2.260000</span></span>
-<span><span class="co">## 2      2 0.003270 -2.73        -0.2350 9.63e-01  9.26e-01 1.280000</span></span>
-<span><span class="co">## 3      3 0.006970 -2.71        -0.2310 4.95e-01  4.65e-01 0.736000</span></span>
-<span><span class="co">## 4      4 0.007700 -2.17        -0.0903 2.61e-01  2.39e-01 0.425000</span></span>
-<span><span class="co">## 5      5 0.013600 -2.35        -0.0837 1.40e-01  1.26e-01 0.247000</span></span>
-<span><span class="co">## 6      6 0.062900 -4.36        -0.1740 7.72e-02  6.74e-02 0.145000</span></span>
-<span><span class="co">## 7      7 0.072000 -4.07        -0.1650 4.31e-02  3.67e-02 0.085200</span></span>
-<span><span class="co">## 8      8 0.080900 -3.83        -0.1550 2.44e-02  2.03e-02 0.050400</span></span>
-<span><span class="co">## 9      9 0.089300 -3.63        -0.1460 1.40e-02  1.13e-02 0.029900</span></span>
-<span><span class="co">## 10    10 0.097200 -3.46        -0.1360 8.11e-03  6.40e-03 0.017800</span></span>
-<span><span class="co">## 11    12 0.139000 -3.65        -0.0708 2.79e-03  2.08e-03 0.006410</span></span>
-<span><span class="co">## 12    14 0.174000 -3.55        -0.0413 9.84e-04  6.94e-04 0.002330</span></span>
-<span><span class="co">## 13    16 0.180000 -3.18        -0.0362 3.54e-04  2.35e-04 0.000852</span></span>
-<span><span class="co">## 14    18 0.185000 -2.88        -0.0315 1.29e-04  8.01e-05 0.000315</span></span>
-<span><span class="co">## 15    20 0.055500 -2.51         0.0963 4.75e-05  2.75e-05 0.000117</span></span></code></pre>
-<pre><code><span><span class="co">## [1] 0.3894553</span></span></code></pre>
+<pre><code><span><span class="co">##    Power SFT.R.sq slope truncated.R.sq  mean.k. median.k.  max.k.</span></span>
+<span><span class="co">## 1      1  0.00545 -6.22        -0.2280 2.090000  2.060000 2.51000</span></span>
+<span><span class="co">## 2      2  0.02040 -6.29        -0.1930 1.140000  1.100000 1.59000</span></span>
+<span><span class="co">## 3      3  0.05410 -6.95        -0.1710 0.646000  0.610000 1.01000</span></span>
+<span><span class="co">## 4      4  0.06500 -5.84        -0.1620 0.377000  0.350000 0.65300</span></span>
+<span><span class="co">## 5      5  0.07540 -5.15        -0.1520 0.226000  0.207000 0.42400</span></span>
+<span><span class="co">## 6      6  0.08520 -4.67        -0.1420 0.139000  0.126000 0.27800</span></span>
+<span><span class="co">## 7      7  0.13600 -5.35        -0.0630 0.087300  0.077900 0.18300</span></span>
+<span><span class="co">## 8      8  0.14500 -4.91        -0.0566 0.055600  0.049000 0.12100</span></span>
+<span><span class="co">## 9      9  0.15200 -4.54        -0.0508 0.035900  0.031300 0.08060</span></span>
+<span><span class="co">## 10    10  0.15900 -4.23        -0.0454 0.023500  0.020200 0.05390</span></span>
+<span><span class="co">## 11    12  0.16900 -3.71        -0.0358 0.010300  0.008580 0.02440</span></span>
+<span><span class="co">## 12    14  0.03450 -2.08        -0.0433 0.004610  0.003720 0.01120</span></span>
+<span><span class="co">## 13    16  0.04380 -2.15        -0.0161 0.002110  0.001630 0.00517</span></span>
+<span><span class="co">## 14    18  0.06720 -2.46         0.0114 0.000975  0.000720 0.00241</span></span>
+<span><span class="co">## 15    20  0.07630 -2.43         0.0281 0.000455  0.000319 0.00113</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.3095794</span></span></code></pre>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">specB</span> <span class="op">&lt;-</span> <span class="va">res</span></span>
 <span></span>
@@ -290,17 +307,112 @@ packages are available.</p>
 <span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"uwot not installed; skipping example."</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.4953404</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.5012396</span></span></code></pre>
 </div>
+<div class="section level2">
+<h2 id="second-example-compositional-geometry-and-temporal-resilience">Second example: compositional geometry and temporal resilience<a class="anchor" aria-label="anchor" href="#second-example-compositional-geometry-and-temporal-resilience"></a>
+</h2>
+<p>In this example, we illustrate three advanced features of
+RedoxRRI:</p>
+<ol style="list-style-type: decimal">
+<li>Compositional projection using clr geometry<br>
+</li>
+<li>A covariance-based compensation term<br>
+</li>
+<li>Rolling temporal resilience dynamics</li>
+</ol>
+<p>This specification more closely reflects longitudinal ecological data
+where resilience is evaluated through time rather than at a single
+snapshot.</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">91202</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">res_adv</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rri_pipeline_st.html">rri_pipeline_st</a></span><span class="op">(</span></span>
+<span>  ROS_flux        <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">ROS_flux</span>,</span>
+<span>  Eh_stability    <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">Eh_stability</span>,</span>
+<span>  micro_data      <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">micro_data</span>,</span>
+<span>  id              <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">id</span>,</span>
+<span>  time_col        <span class="op">=</span> <span class="st">"time"</span>,</span>
+<span>  group_cols      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"plot"</span>, <span class="st">"depth"</span><span class="op">)</span>,</span>
+<span>  mode            <span class="op">=</span> <span class="st">"rolling"</span>,</span>
+<span>  window          <span class="op">=</span> <span class="fl">4</span>,</span>
+<span>  comp_space      <span class="op">=</span> <span class="st">"clr"</span>,</span>
+<span>  add_compensation <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  compensation_weight <span class="op">=</span> <span class="fl">0.2</span>,</span>
+<span>  direction_phys  <span class="op">=</span> <span class="st">"auto"</span>,</span>
+<span>  direction_anchor_phys <span class="op">=</span> <span class="st">"FvFm"</span>,</span>
+<span>  direction_soil  <span class="op">=</span> <span class="st">"auto"</span>,</span>
+<span>  direction_anchor_soil <span class="op">=</span> <span class="st">"Eh"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">res_adv</span><span class="op">$</span><span class="va">row_scores_comp</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##      Physio      Soil      Micro       RRI</span></span>
+<span><span class="co">## 1 0.4655080 0.3986171 0.13587495 0.7195785</span></span>
+<span><span class="co">## 2 0.3968703 0.5372393 0.06589039 0.5268524</span></span>
+<span><span class="co">## 3 0.4587776 0.5090549 0.03216750 0.5691978</span></span>
+<span><span class="co">## 4 0.3963564 0.5183959 0.08524772 0.8525265</span></span>
+<span><span class="co">## 5 0.4465102 0.4611578 0.09233206 0.7179127</span></span>
+<span><span class="co">## 6 0.4396845 0.4238761 0.13643939 0.6057209</span></span></code></pre>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">rowSums</a></span><span class="op">(</span><span class="va">res_adv</span><span class="op">$</span><span class="va">row_scores_comp</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Physio"</span>,<span class="st">"Soil"</span>,<span class="st">"Micro"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] 1 1</span></span></code></pre>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"ggtern"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">&amp;&amp;</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"ggplot2"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">&amp;&amp;</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"viridis"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span></span>
+<span>  <span class="fu"><a href="../reference/plot_RRI_ternary.html">plot_RRI_ternary</a></span><span class="op">(</span></span>
+<span>    <span class="va">res_adv</span><span class="op">$</span><span class="va">row_scores_comp</span>,</span>
+<span>    centroid_method <span class="op">=</span> <span class="st">"auto"</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"Install ggtern, ggplot2, and viridis to enable ternary plotting."</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning in ggplot2::geom_point(data = centroid, ggplot2::aes(x = .data$Physio,</span></span>
+<span><span class="co">## : Ignoring unknown aesthetics: <span style="color: #00BB00;">z</span></span></span></code></pre>
+<p><img src="RedoxRRI_files/figure-html/geometry%20and%20temporal%20resilience-1.png" class="r-plt" alt="" width="70%" style="display: block; margin: auto;"></p>
+<div class="section level3">
+<h3 id="interpretation">Interpretation<a class="anchor" aria-label="anchor" href="#interpretation"></a>
+</h3>
+<p>The ternary representation expresses the relative allocation of
+holobiont redox buffering among plant physiology, soil chemistry, and
+microbial resilience.</p>
+<p>When <code>comp_space = "clr"</code> is used, compositional geometry
+follows Aitchison principles, and the centroid is computed in clr space
+when available. This ensures geometric coherence and avoids spurious
+averaging in simplex space.</p>
+<p>The optional compensation term increases RRI when negative
+cross-domain covariance is detected, reflecting compensatory dynamics
+among domains.</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="sensitivity-to-domain-weights">Sensitivity to domain weights<a class="anchor" aria-label="anchor" href="#sensitivity-to-domain-weights"></a>
+</h2>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">res_w1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rri_pipeline_st.html">rri_pipeline_st</a></span><span class="op">(</span></span>
+<span>  ROS_flux <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">ROS_flux</span>,</span>
+<span>  Eh_stability <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">Eh_stability</span>,</span>
+<span>  micro_data <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">micro_data</span>,</span>
+<span>  w1 <span class="op">=</span> <span class="fl">0.6</span>, w2 <span class="op">=</span> <span class="fl">0.25</span>, w3 <span class="op">=</span> <span class="fl">0.15</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">res_w1</span><span class="op">$</span><span class="va">meta</span><span class="op">$</span><span class="va">rri_index</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] 0.3327335</span></span></code></pre>
 <div class="section level3">
 <h3 id="practical-guidance">Practical guidance<a class="anchor" aria-label="anchor" href="#practical-guidance"></a>
 </h3>
-<p>A recommended workflow is: Assemble domain matrices with samples in
-rows and consistent ordering. Choose latent methods appropriate to each
-domain. Decide microbial blending parameter alpha_micro.
-Sensitivity-test domain weights and methods. Validate RRI against
-independent outcomes (e.g. recovery, stress tolerance).</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<p>A recommended workflow:</p>
+<ul>
+<li>Assemble domain matrices with samples in rows and consistent
+ordering.</li>
+<li>Choose latent methods appropriate to each domain.</li>
+<li>Decide microbial blending parameter <code>alpha_micro</code>.</li>
+<li>Sensitivity-test domain weights and methods.</li>
+<li>Validate RRI against independent outcomes.</li>
+</ul>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## R version 4.5.1 (2025-06-13)</span></span>
 <span><span class="co">## Platform: aarch64-apple-darwin20</span></span>
@@ -355,6 +467,7 @@ independent outcomes (e.g. recovery, stress tolerance).</p>
 <span><span class="co">## [88] backports_1.5.0       bslib_0.10.0          Rcpp_1.1.1           </span></span>
 <span><span class="co">## [91] gridExtra_2.3         checkmate_2.3.4       xfun_0.56            </span></span>
 <span><span class="co">## [94] fs_1.6.6              pkgconfig_2.0.3</span></span></code></pre>
+</div>
 </div>
   </div>
 

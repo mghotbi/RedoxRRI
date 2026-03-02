@@ -6,3 +6,5 @@
 ^_pkgdown\.yml$
 ^\.github$
 ^README\.Rmd$
+^doc$
+^Meta$

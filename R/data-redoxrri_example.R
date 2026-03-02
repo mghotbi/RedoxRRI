@@ -33,7 +33,7 @@
 #'   \item{ROS_flux}{data.frame; plant physiological traits.}
 #'   \item{Eh_stability}{data.frame; soil redox chemistry variables.}
 #'   \item{micro_data}{data.frame; sparse microbial abundance matrix.}
-#'   \item{latent_truth}{numeric vector; underlying simulated redox state scaled to [0,1].}
+#'   \item{latent_truth}{numeric vector; underlying simulated redox state scaled between 0 and 1.}
 #'   \item{graph}{Optional \pkg{igraph} object representing a microbial association network.}
 #' }
 #'

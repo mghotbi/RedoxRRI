@@ -1,8 +1,31 @@
-#' @title Plot the Holobiont Redox Resilience Ternary Diagram
+#' @title Ternary Plot of Holobiont Redox Resilience Allocation
 #'
-#' Creates a ternary plot of holobiont redox resilience based on
-#' compositional domain contributions (\code{Physio}, \code{Soil}, \code{Micro})
-#' and filled by per-sample \code{RRI}.
+#' @description
+#' Creates a ternary diagram visualising the compositional allocation of
+#' holobiont redox buffering capacity across plant physiology (\code{Physio}),
+#' soil redox chemistry (\code{Soil}), and microbial resilience (\code{Micro}).
+#' Points are filled according to per-sample \code{RRI} values.
+#'
+#' @param ternary_df A data frame containing compositional columns
+#'   \code{Physio}, \code{Soil}, \code{Micro}, and \code{RRI}.
+#' @param point_size Numeric; size of ternary points.
+#' @param point_alpha Numeric between 0 and 1 controlling point transparency.
+#' @param palette Character; viridis palette option.
+#' @param show_subtitle Logical; display system-level RRI mean in subtitle.
+#' @param show_centroid Logical; add compositional centroid marker.
+#' @param centroid_shape Numeric; ggplot2 shape for centroid marker.
+#' @param centroid_size Numeric multiplier for centroid size.
+#' @param tolerance Numeric; tolerance used for compositional closure checks.
+#' @param renormalize Logical; if TRUE, renormalises rows that do not sum to 1.
+#' @param centroid_method Character; one of \code{"auto"},
+#'   \code{"simplex_mean"}, or \code{"aitchison_mean"}.
+#'
+#' @details
+#' If clr-transformed coordinates are attached as an attribute (\code{"clr"}),
+#' the centroid can be computed using the Aitchison mean, ensuring geometric
+#' coherence in compositional space. Otherwise, a simplex arithmetic mean is used.
+#'
+#' @return A \code{ggtern} object.
 #'
 #' @importFrom rlang .data
 #' @export
@@ -16,12 +39,13 @@ plot_RRI_ternary <- function(
     centroid_shape = 23,
     centroid_size = 1.4,
     tolerance = 1e-6,
-    renormalize = TRUE,
+    renormalize = FALSE,
     centroid_method = c("auto", "simplex_mean", "aitchison_mean")
 ) {
+  
   centroid_method <- match.arg(centroid_method)
   
-  # ---- dependency checks --------------------------------------------------
+  # ---- dependency checks ----
   if (!requireNamespace("ggtern", quietly = TRUE)) {
     stop("plot_RRI_ternary() requires the {ggtern} package.")
   }
@@ -40,38 +64,41 @@ plot_RRI_ternary <- function(
     stop("Missing required columns: ", paste(missing, collapse = ", "))
   }
   
-  # ---- ensure numeric -----------------------------------------------------
+  # ---- ensure numeric ----
   for (nm in required) {
     ternary_df[[nm]] <- suppressWarnings(as.numeric(ternary_df[[nm]]))
   }
   
-  # ---- drop undefined / degenerate rows ----------------------------------
+  # ---- remove invalid rows ----
   comps <- ternary_df[, c("Physio", "Soil", "Micro")]
   rs <- rowSums(comps)
-  keep <- is.finite(rs) & rs > tolerance &
-    stats::complete.cases(comps) & is.finite(ternary_df$RRI)
+  
+  keep <- is.finite(rs) &
+    rs > tolerance &
+    stats::complete.cases(comps) &
+    is.finite(ternary_df$RRI)
+  
   ternary_df <- ternary_df[keep, , drop = FALSE]
   
   if (nrow(ternary_df) == 0) {
     stop("No valid compositional rows available for ternary plotting.")
   }
   
-  # ---- closure handling ---------------------------------------------------
+  # ---- closure validation ----
   comps <- ternary_df[, c("Physio", "Soil", "Micro")]
   rs2 <- rowSums(comps)
   
   if (any(abs(rs2 - 1) > tolerance)) {
     if (isTRUE(renormalize)) {
-      # Renormalize (visualization-safe); guard against zeros
       rs2[rs2 == 0] <- NA_real_
       comps <- comps / rs2
       ternary_df[, c("Physio", "Soil", "Micro")] <- comps
     } else {
-      stop("Physio, Soil, and Micro must sum to 1 (compositional input required).")
+      stop("Physio, Soil, and Micro must sum to 1 within tolerance; set renormalize = TRUE to override.")
     }
   }
   
-  # ---- subtitle -----------------------------------------------------------
+  # ---- subtitle ----
   rri_index <- attr(ternary_df, "RRI_index")
   if (is.null(rri_index) || !is.finite(rri_index)) {
     rri_index <- mean(ternary_df$RRI, na.rm = TRUE)
@@ -83,10 +110,11 @@ plot_RRI_ternary <- function(
     NULL
   }
   
-  # ---- centroid -----------------------------------------------------------
+  # ---- centroid ----
   centroid <- NULL
+  
   if (isTRUE(show_centroid)) {
-    # Decide centroid method
+    
     use_aitchison <- FALSE
     if (centroid_method == "aitchison_mean") use_aitchison <- TRUE
     if (centroid_method == "auto" && !is.null(attr(ternary_df, "clr"))) use_aitchison <- TRUE
@@ -94,19 +122,18 @@ plot_RRI_ternary <- function(
     if (use_aitchison) {
       clr <- attr(ternary_df, "clr")
       
-      # If attribute exists but doesn't match rows, fall back gracefully
-      if (is.matrix(clr) && nrow(clr) == nrow(ternary_df) && ncol(clr) == 3) {
-        # Aitchison mean: mean in clr space -> back-transform -> closure
+      if (is.matrix(clr) &&
+          nrow(clr) == nrow(ternary_df) &&
+          ncol(clr) == 3) {
+        
         mu <- colMeans(clr, na.rm = TRUE)
         x <- exp(mu)
-        centroid <- data.frame(
-          Physio = x[1],
-          Soil   = x[2],
-          Micro  = x[3]
-        )
+        centroid <- as.data.frame(t(x))
+        names(centroid) <- c("Physio", "Soil", "Micro")
         centroid <- centroid / sum(centroid)
+        
       } else {
-        # Fallback to simplex mean
+        
         centroid <- data.frame(
           Physio = mean(ternary_df$Physio, na.rm = TRUE),
           Soil   = mean(ternary_df$Soil, na.rm = TRUE),
@@ -114,8 +141,9 @@ plot_RRI_ternary <- function(
         )
         centroid <- centroid / sum(centroid)
       }
+      
     } else {
-      # Simplex arithmetic mean (legacy)
+      
       centroid <- data.frame(
         Physio = mean(ternary_df$Physio, na.rm = TRUE),
         Soil   = mean(ternary_df$Soil, na.rm = TRUE),
@@ -125,7 +153,7 @@ plot_RRI_ternary <- function(
     }
   }
   
-  # ---- base plot ----------------------------------------------------------
+  # ---- base plot ----
   p <- ggtern::ggtern(
     data = ternary_df,
     ggplot2::aes(
@@ -156,7 +184,6 @@ plot_RRI_ternary <- function(
     ggtern::theme_showarrows() +
     ggtern::theme_clockwise()
   
-  # ---- centroid layer -----------------------------------------------------
   if (isTRUE(show_centroid) && !is.null(centroid)) {
     p <- p +
       ggplot2::geom_point(
@@ -171,5 +198,5 @@ plot_RRI_ternary <- function(
       )
   }
   
-  p
+  return(p)
 }
