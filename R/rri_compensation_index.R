@@ -1,21 +1,28 @@
 #' @title Cross-Domain Compensation Index
 #'
 #' @description
-#' Quantifies cross-domain compensation as the negative sum of
-#' off-diagonal covariances among Physio, Soil, and Micro domain scores.
+#' Computes a scale-invariant cross-domain compensation index
+#' based on mean pairwise correlations among Physio, Soil,
+#' and Micro domain scores.
 #'
 #' @param res An object returned by \code{rri_pipeline_st()}.
 #'
-#' @return A single numeric compensation index. Larger positive values
-#'   indicate stronger cross-domain compensation.
+#' @return A single numeric compensation index in \eqn{[-1, 1]}.
+#'   Positive values indicate compensatory dynamics
+#'   (negative cross-domain correlations),
+#'   while negative values indicate synchrony.
 #'
 #' @details
 #' The compensation index is defined as:
 #'
-#' \deqn{- \sum_{i<j} Cov(D_i, D_j)}
+#' \deqn{
+#'   \mathrm{Comp} = -\frac{2}{k(k-1)} \sum_{i<j} \mathrm{Cor}(D_i, D_j)
+#' }
 #'
-#' where \eqn{D_i} are domain-level scores. Negative covariance
-#' reflects compensatory buffering between domains.
+#' where \eqn{k = 3} and \eqn{D_i} are domain-level scores.
+#'
+#' Using correlations rather than covariances ensures scale invariance
+#' and boundedness across datasets.
 #'
 #' @export
 rri_compensation_index <- function(res) {
@@ -30,10 +37,17 @@ rri_compensation_index <- function(res) {
   dom <- res$row_scores[, required_cols]
   dom <- stats::na.omit(dom)
   
-  if (nrow(dom) < 2) {
-    stop("Not enough observations to compute covariance.", call. = FALSE)
+  if (nrow(dom) < 3) {
+    stop("Not enough observations to compute correlations.",
+         call. = FALSE)
   }
   
-  comp_cov <- stats::cov(dom)
-  -sum(comp_cov[upper.tri(comp_cov)])
+  k <- ncol(dom)
+  
+  cor_mat <- stats::cor(dom, use = "pairwise.complete.obs")
+  
+  comp_val <- - (2 / (k * (k - 1))) *
+    sum(cor_mat[upper.tri(cor_mat)])
+  
+  as.numeric(comp_val)
 }

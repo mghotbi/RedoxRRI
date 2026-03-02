@@ -10,18 +10,25 @@ rri_compensation_index(res)
 \item{res}{An object returned by \code{rri_pipeline_st()}.}
 }
 \value{
-A single numeric compensation index. Larger positive values
-indicate stronger cross-domain compensation.
+A single numeric compensation index in \eqn{[-1, 1]}.
+Positive values indicate compensatory dynamics
+(negative cross-domain correlations),
+while negative values indicate synchrony.
 }
 \description{
-Quantifies cross-domain compensation as the negative sum of
-off-diagonal covariances among Physio, Soil, and Micro domain scores.
+Computes a scale-invariant cross-domain compensation index
+based on mean pairwise correlations among Physio, Soil,
+and Micro domain scores.
 }
 \details{
 The compensation index is defined as:
 
-\deqn{- \sum_{i<j} Cov(D_i, D_j)}
+\deqn{
+  \mathrm{Comp} = -\frac{2}{k(k-1)} \sum_{i<j} \mathrm{Cor}(D_i, D_j)
+}
 
-where \eqn{D_i} are domain-level scores. Negative covariance
-reflects compensatory buffering between domains.
+where \eqn{k = 3} and \eqn{D_i} are domain-level scores.
+
+Using correlations rather than covariances ensures scale invariance
+and boundedness across datasets.
 }
