@@ -31,14 +31,14 @@ Depends:
 Imports:
     stats,
     igraph,
-    FactoMineR,
     rlang
 Suggests:
+    FactoMineR,
     WGCNA,
-    withr,
     psych,
     uwot,
     NMF,
+    withr,
     ggtern,
     ggplot2,
     viridis,
