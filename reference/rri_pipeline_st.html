@@ -282,6 +282,90 @@ Aitchison geometry using centered log-ratio transformation and
 returned in simplex form for ternary visualization.</p>
     </div>
 
+    <div id="ref-examples">
+    <h2>Examples</h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># ---- Simulate small holobiont dataset ----</span></span></span>
+<span class="r-in"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="simulate_redox_holobiont.html">simulate_redox_holobiont</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  n_plot <span class="op">=</span> <span class="fl">10</span>,</span></span>
+<span class="r-in"><span>  n_depth <span class="op">=</span> <span class="fl">10</span>,</span></span>
+<span class="r-in"><span>  n_plant <span class="op">=</span> <span class="fl">4</span>,</span></span>
+<span class="r-in"><span>  n_time <span class="op">=</span> <span class="fl">8</span>,</span></span>
+<span class="r-in"><span>  p_micro <span class="op">=</span> <span class="fl">20</span>,</span></span>
+<span class="r-in"><span>  seed <span class="op">=</span> <span class="fl">1234</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># ---- Snapshot RRI computation ----</span></span></span>
+<span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">rri_pipeline_st</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  ROS_flux <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">ROS_flux</span>,</span></span>
+<span class="r-in"><span>  Eh_stability <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">Eh_stability</span>,</span></span>
+<span class="r-in"><span>  micro_data <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">micro_data</span>,</span></span>
+<span class="r-in"><span>  id <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">id</span>,</span></span>
+<span class="r-in"><span>  reducer <span class="op">=</span> <span class="st">"per_domain"</span>,</span></span>
+<span class="r-in"><span>  scaling <span class="op">=</span> <span class="st">"pnorm"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Per-sample domain scores and RRI</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">row_scores</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       Physio       Soil     Micro        RRI Micro_abundance Micro_network</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.12645864 0.27279357 0.2549676 0.16626299       0.2549676            NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 0.06540984 0.07158139 0.2339642 0.09034629       0.2339642            NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 0.32618020 0.23589246 0.2764347 0.24136082       0.2764347            NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 0.24398316 0.04555534 0.2174682 0.13056096       0.2174682            NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5 0.09059057 0.08666867 0.1287014 0.08393124       0.1287014            NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6 0.07421309 0.27507927 0.1888545 0.13473642       0.1888545            NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Micro_mfa</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1        NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2        NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3        NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4        NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5        NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6        NA</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Compositional (ternary-ready) allocation</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">row_scores_comp</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      Physio       Soil     Micro        RRI</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.1932969 0.41697538 0.3897278 0.16626299</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 0.1763280 0.19296492 0.6307071 0.09034629</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 0.3890010 0.28132425 0.3296748 0.24136082</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 0.4812228 0.08985155 0.4289257 0.13056096</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5 0.2960857 0.28326743 0.4206469 0.08393124</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6 0.1379049 0.51116024 0.3509349 0.13473642</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># ---- Rolling dynamic mode example ----</span></span></span>
+<span class="r-in"><span><span class="va">res_roll</span> <span class="op">&lt;-</span> <span class="fu">rri_pipeline_st</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  ROS_flux <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">ROS_flux</span>,</span></span>
+<span class="r-in"><span>  Eh_stability <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">Eh_stability</span>,</span></span>
+<span class="r-in"><span>  micro_data <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">micro_data</span>,</span></span>
+<span class="r-in"><span>  id <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">id</span>,</span></span>
+<span class="r-in"><span>  mode <span class="op">=</span> <span class="st">"rolling"</span>,</span></span>
+<span class="r-in"><span>  time_col <span class="op">=</span> <span class="st">"time"</span>,</span></span>
+<span class="r-in"><span>  group_cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"plot"</span>, <span class="st">"depth"</span>, <span class="st">"plant_id"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  window <span class="op">=</span> <span class="fl">2</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Note: The first (window - 1) rows per group are NA</span></span></span>
+<span class="r-in"><span><span class="co"># due to right-aligned rolling windows.</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">res_roll</span><span class="op">$</span><span class="va">dyn_scores</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     P_level P_stability   S_level S_stability    M_level M_stability Physio_dyn</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1        NA          NA        NA          NA         NA          NA         NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 0.1132156   0.8398890 0.1664783   0.8500662 0.08284815   0.9880108  0.1327787</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 0.2129241   0.9808981 0.1399550   0.8875758 0.09741222   0.9913925  0.3322787</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 0.4821401   0.6001690 0.5150332   0.5819835 0.55174934   0.3660778  0.2398599</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5 0.8824317   0.8337333 0.9053078   0.8660850 0.78810327   0.7003328  0.7651818</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6 0.6677582   0.5301391 0.8094827   0.7305679 0.59126873   0.9786988  0.3356560</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    Soil_dyn Micro_dyn   RRI_dyn</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1        NA        NA        NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 0.1853902 0.2306539 0.1769542</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 0.1944970 0.2455451 0.2676863</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 0.2520957 0.1036692 0.2129845</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5 0.8111031 0.5771562 0.7614496</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6 0.6193377 0.6448105 0.5291372</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># System-level mean RRI</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">row_scores_comp</span>, <span class="st">"RRI_index"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.4792014</span>
+</code></pre></div>
+    </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>
