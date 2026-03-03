@@ -97,3 +97,32 @@ and (v) missing-not-at-random (MNAR) Eh dropout under strongly reduced states.
 The simulator is designed for benchmarking, validation, and demonstration of
 RedoxRRI workflows. It is not intended to represent any real ecosystem.
 }
+\examples{
+# ---- Simulate small holobiont dataset ----
+sim <- simulate_redox_holobiont(
+  n_plot = 2,
+  n_depth = 1,
+  n_plant = 2,
+  n_time = 8,
+  p_micro = 20,
+  seed = 1
+)
+
+# ---- Compute RedoxRRI ----
+res <- rri_pipeline_st(
+  ROS_flux = sim$ROS_flux,
+  Eh_stability = sim$Eh_stability,
+  micro_data = sim$micro_data,
+  id = sim$id,
+  reducer = "per_domain",
+  scaling = "pnorm"
+)
+
+# ---- Correlation with known latent truth (simulation only) ----
+cor_val <- rri_latent_correlation(
+  res,
+  latent_truth = sim$latent_truth,
+  method = "pearson"
+)
+
+}

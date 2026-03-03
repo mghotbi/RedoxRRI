@@ -32,3 +32,28 @@ where \eqn{k = 3} and \eqn{D_i} are domain-level scores.
 Using correlations rather than covariances ensures scale invariance
 and boundedness across datasets.
 }
+\examples{
+# ---- Simulate small holobiont dataset ----
+sim <- simulate_redox_holobiont(
+  n_plot = 2,
+  n_depth = 1,
+  n_plant = 2,
+  n_time = 8,
+  p_micro = 20,
+  seed = 1
+)
+
+# ---- Compute RedoxRRI ----
+res <- rri_pipeline_st(
+  ROS_flux = sim$ROS_flux,
+  Eh_stability = sim$Eh_stability,
+  micro_data = sim$micro_data,
+  id = sim$id,
+  reducer = "per_domain",
+  scaling = "pnorm"
+)
+
+# ---- Compute cross-domain compensation index ----
+comp <- rri_compensation_index(res)
+
+}

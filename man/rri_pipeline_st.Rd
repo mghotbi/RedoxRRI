@@ -152,3 +152,49 @@ When \code{comp_space = "clr"}, domain scores are projected into
 Aitchison geometry using centered log-ratio transformation and
 returned in simplex form for ternary visualization.
 }
+\examples{
+# ---- Simulate small holobiont dataset ----
+sim <- simulate_redox_holobiont(
+  n_plot = 10,
+  n_depth = 10,
+  n_plant = 4,
+  n_time = 8,
+  p_micro = 20,
+  seed = 1234
+)
+
+# ---- Snapshot RRI computation ----
+res <- rri_pipeline_st(
+  ROS_flux = sim$ROS_flux,
+  Eh_stability = sim$Eh_stability,
+  micro_data = sim$micro_data,
+  id = sim$id,
+  reducer = "per_domain",
+  scaling = "pnorm"
+)
+
+# Per-sample domain scores and RRI
+head(res$row_scores)
+
+# Compositional (ternary-ready) allocation
+head(res$row_scores_comp)
+
+# ---- Rolling dynamic mode example ----
+res_roll <- rri_pipeline_st(
+  ROS_flux = sim$ROS_flux,
+  Eh_stability = sim$Eh_stability,
+  micro_data = sim$micro_data,
+  id = sim$id,
+  mode = "rolling",
+  time_col = "time",
+  group_cols = c("plot", "depth", "plant_id"),
+  window = 2
+)
+
+# Note: The first (window - 1) rows per group are NA
+# due to right-aligned rolling windows.
+head(res_roll$dyn_scores)
+
+# System-level mean RRI
+attr(res$row_scores_comp, "RRI_index")
+}

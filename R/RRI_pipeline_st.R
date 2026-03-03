@@ -1,7 +1,6 @@
 #' @title Holobiont Redox Resilience Index (RRI) with Spatio-Temporal Dynamics
 #'
-#' @description
-#' Computes a holobiont-level Redox Resilience Index (RRI) by integrating
+#' @description Computes a holobiont-level Redox Resilience Index (RRI) by integrating
 #' plant physiological traits, soil redox chemistry, and microbial resilience
 #' into a unified, directionally identifiable index. The framework supports
 #' static (snapshot), rolling-window, and event-based resilience modes,
@@ -70,6 +69,51 @@
 #' }
 #'
 #' @importFrom stats prcomp lm sd coef cor median cov complete.cases pnorm
+#' @examples
+#' # ---- Simulate small holobiont dataset ----
+#' sim <- simulate_redox_holobiont(
+#'   n_plot = 10,
+#'   n_depth = 10,
+#'   n_plant = 4,
+#'   n_time = 8,
+#'   p_micro = 20,
+#'   seed = 1234
+#' )
+#'
+#' # ---- Snapshot RRI computation ----
+#' res <- rri_pipeline_st(
+#'   ROS_flux = sim$ROS_flux,
+#'   Eh_stability = sim$Eh_stability,
+#'   micro_data = sim$micro_data,
+#'   id = sim$id,
+#'   reducer = "per_domain",
+#'   scaling = "pnorm"
+#' )
+#'
+#' # Per-sample domain scores and RRI
+#' head(res$row_scores)
+#'
+#' # Compositional (ternary-ready) allocation
+#' head(res$row_scores_comp)
+#'
+#' # ---- Rolling dynamic mode example ----
+#' res_roll <- rri_pipeline_st(
+#'   ROS_flux = sim$ROS_flux,
+#'   Eh_stability = sim$Eh_stability,
+#'   micro_data = sim$micro_data,
+#'   id = sim$id,
+#'   mode = "rolling",
+#'   time_col = "time",
+#'   group_cols = c("plot", "depth", "plant_id"),
+#'   window = 2
+#' )
+#'
+#' # Note: The first (window - 1) rows per group are NA
+#' # due to right-aligned rolling windows.
+#' head(res_roll$dyn_scores)
+#'
+#' # System-level mean RRI
+#' attr(res$row_scores_comp, "RRI_index")
 #' @export
 rri_pipeline_st <- function(
     ROS_flux,
@@ -104,8 +148,6 @@ rri_pipeline_st <- function(
     coupling_weight = 0,
     coupling_fun = c("geometric_mean", "agreement"),
     norm_method = NULL,
-    
-    # ---- extensions (backward compatible) ----
     reducer = c("per_domain", "mfa"),
     scaling = c("minmax_legacy", "pnorm"),
     comp_space = c("closure_legacy", "clr"),
@@ -139,7 +181,7 @@ rri_pipeline_st <- function(
   Eh_stability <- as.data.frame(Eh_stability)
   
   if (nrow(ROS_flux) != nrow(Eh_stability)) {
-    stop("ROS_flux and Eh_stability must have the same number of rows (samples).")
+    stop("`ROS_flux` and `Eh_stability` must have the same number of rows.")
   }
   n <- nrow(ROS_flux)
   
@@ -153,14 +195,18 @@ rri_pipeline_st <- function(
   }
   
   if (any(!is.finite(c(w1, w2, w3))) || any(c(w1, w2, w3) < 0)) {
-    stop("w1, w2, w3 must be finite and >= 0.")
+    stop("`w1`, `w2`, `w3` must be finite and >= 0.")
   }
-  if (abs(w1 + w2 + w3 - 1) > 1e-8) stop("w1 + w2 + w3 must sum to 1.")
+  if (abs(w1 + w2 + w3 - 1) > 1e-8) stop("`w1 + w2 + w3` must sum to 1.")
   
-  if (!is.finite(alpha_micro) || alpha_micro < 0 || alpha_micro > 1) stop("alpha_micro must be in [0,1].")
-  if (!is.finite(coupling_weight) || coupling_weight < 0 || coupling_weight > 1) stop("coupling_weight must be in [0,1].")
+  if (!is.finite(alpha_micro) || alpha_micro < 0 || alpha_micro > 1) {
+    stop("`alpha_micro` must be in [0, 1].")
+  }
+  if (!is.finite(coupling_weight) || coupling_weight < 0 || coupling_weight > 1) {
+    stop("`coupling_weight` must be in [0, 1].")
+  }
   if (!is.finite(compensation_weight) || compensation_weight < 0 || compensation_weight > 1) {
-    stop("compensation_weight must be in [0,1].")
+    stop("`compensation_weight` must be in [0, 1].")
   }
   
   if (mode != "snapshot") {
@@ -170,7 +216,9 @@ rri_pipeline_st <- function(
     if (is.null(group_cols) || any(!group_cols %in% names(id))) {
       stop("For mode != 'snapshot', provide valid `group_cols` in `id`.")
     }
-    if (!is.numeric(window) || length(window) != 1 || window < 2) stop("`window` must be a single integer >= 2.")
+    if (!is.numeric(window) || length(window) != 1 || window < 2) {
+      stop("`window` must be a single integer >= 2.")
+    }
   }
   
   if (is.null(scale_by) && !is.null(group_cols)) scale_by <- group_cols
@@ -236,7 +284,11 @@ rri_pipeline_st <- function(
   }
   
   scale_vec <- function(v, stats = NULL) {
-    if (scaling == "minmax_legacy") scale_01(v) else scale_pnorm(v, stats)
+    if (scaling == "minmax_legacy") {
+      scale_01(v)
+    } else {
+      scale_pnorm(v, stats)
+    }
   }
   
   scale_vec_by <- function(v, id, by, stats = NULL) {
@@ -267,6 +319,8 @@ rri_pipeline_st <- function(
   
   latent_dimension <- function(df, method) {
     df <- as_numeric_df(df)
+    
+    if (ncol(df) == 0L) return(rep(NA_real_, nrow(df)))
     if (ncol(df) == 1L) return(df[[1L]])
     
     if (method == "mean") return(rowMeans(df, na.rm = TRUE))
@@ -274,18 +328,18 @@ rri_pipeline_st <- function(
     if (method == "pca") return(stats::prcomp(df, center = TRUE, scale. = TRUE)$x[, 1])
     
     if (method == "fa") {
-      if (!requireNamespace("psych", quietly = TRUE)) stop("method = 'fa' requires {psych}.")
+      if (!requireNamespace("psych", quietly = TRUE)) stop("`method = 'fa'` requires {psych}.")
       fa <- psych::fa(df, nfactors = 1, rotate = "none", scores = "regression")
       return(as.numeric(fa$scores[, 1]))
     }
     
     if (method == "umap") {
-      if (!requireNamespace("uwot", quietly = TRUE)) stop("method = 'umap' requires {uwot}.")
+      if (!requireNamespace("uwot", quietly = TRUE)) stop("`method = 'umap'` requires {uwot}.")
       return(as.numeric(uwot::umap(df, n_components = 1)))
     }
     
     if (method == "nmf") {
-      if (!requireNamespace("NMF", quietly = TRUE)) stop("method = 'nmf' requires {NMF}.")
+      if (!requireNamespace("NMF", quietly = TRUE)) stop("`method = 'nmf'` requires {NMF}.")
       x <- as.matrix(df)
       mins <- apply(x, 2, min, na.rm = TRUE)
       shift <- pmax(0, -mins)
@@ -295,7 +349,7 @@ rri_pipeline_st <- function(
     }
     
     if (method == "wgcna") {
-      if (!requireNamespace("WGCNA", quietly = TRUE)) stop("method = 'wgcna' requires {WGCNA}.")
+      if (!requireNamespace("WGCNA", quietly = TRUE)) stop("`method = 'wgcna'` requires {WGCNA}.")
       gsg <- WGCNA::goodSamplesGenes(df, verbose = 0)
       df2 <- df
       if (!gsg$allOK) df2 <- df2[gsg$goodSamples, gsg$goodGenes, drop = FALSE]
@@ -336,14 +390,14 @@ rri_pipeline_st <- function(
       
       out <- rep(NA_real_, nrow(df))
       out[as.integer(rownames(df2))] <- as.numeric(eig[, 1])
-      return(out)
+      out
+    } else {
+      stop("Unknown method: ", method)
     }
-    
-    stop("Unknown method: ", method)
   }
   
   network_scalar <- function(g, agg) {
-    if (!requireNamespace("igraph", quietly = TRUE)) stop("`graph` requires {igraph} (Suggested).")
+    if (!requireNamespace("igraph", quietly = TRUE)) stop("`graph` requires {igraph}.")
     g <- igraph::simplify(g)
     
     comm <- igraph::cluster_louvain(g)
@@ -371,6 +425,7 @@ rri_pipeline_st <- function(
   roll_apply <- function(x, window, fun, align) {
     nloc <- length(x)
     out <- rep(NA_real_, nloc)
+    
     for (i in seq_len(nloc)) {
       if (align == "right") {
         idx <- (i - window + 1):i
@@ -380,10 +435,12 @@ rri_pipeline_st <- function(
         half <- floor(window / 2)
         idx <- (i - half):(i - half + window - 1)
       }
+      
       idx <- idx[idx >= 1 & idx <= nloc]
       if (length(idx) < window) next
       out[i] <- fun(x[idx])
     }
+    
     out
   }
   
@@ -398,8 +455,8 @@ rri_pipeline_st <- function(
     stress_idx <- which(e != baseline_label)
     
     if (length(base_idx) < 1) return(list(baseline = NA_real_, pulse = NA_real_, recovery = NA_real_))
-    baseline <- mean(z[base_idx])
     
+    baseline <- mean(z[base_idx])
     pulse <- if (length(stress_idx) >= 1) max(abs(z[stress_idx] - baseline)) else NA_real_
     recovery <- if (length(rec_idx) >= 1) 1 - abs(mean(z[rec_idx]) - baseline) else NA_real_
     
@@ -407,7 +464,11 @@ rri_pipeline_st <- function(
   }
   
   coupling_term <- function(P, S, M, fun) {
-    if (fun == "geometric_mean") (P * S * M)^(1 / 3) else (1 - stats::sd(c(P, S, M)))
+    if (fun == "geometric_mean") {
+      (P * S * M)^(1 / 3)
+    } else {
+      1 - stats::sd(c(P, S, M))
+    }
   }
   
   compensation_index <- function(P, S, M) {
@@ -423,64 +484,66 @@ rri_pipeline_st <- function(
     gm <- exp(rowMeans(log(X)))
     log(X / gm)
   }
+  
   clr_to_simplex <- function(CLR) {
     X <- exp(CLR)
     X / rowSums(X)
   }
   
-  # ---- MFA partial extractor (ONLY if available; otherwise fallback) -------
   extract_mfa_group_dim1 <- function(mfa, group_names) {
-    # Some FactoMineR versions expose partial coords, others don't.
     part <- NULL
     
     if (!is.null(mfa$partial) &&
         !is.null(mfa$partial$ind) &&
         !is.null(mfa$partial$ind$coord)) {
       part <- mfa$partial$ind$coord
-    } else if (!is.null(mfa$ind) &&
-               !is.null(mfa$ind$coord.partiel)) {
+    }
+    
+    if (is.null(part) &&
+        !is.null(mfa$ind) &&
+        !is.null(mfa$ind$coord.partiel)) {
       part <- mfa$ind$coord.partiel
-    } else if (!is.null(mfa$ind) &&
-               !is.null(mfa$ind$coord.partial)) {
+    }
+    
+    if (is.null(part) &&
+        !is.null(mfa$ind) &&
+        !is.null(mfa$ind$coord.partial)) {
       part <- mfa$ind$coord.partial
     }
     
     if (is.null(part)) return(NULL)
     
-    # Case 1: true 3D array [n x ncp x g]
     if (length(dim(part)) == 3) {
       out <- lapply(seq_along(group_names), function(k) as.numeric(part[, 1, k]))
       names(out) <- group_names
       return(out)
     }
     
-    # Case 2: data.frame/matrix with per-group Dim1 columns
     part_df <- as.data.frame(part)
     cn <- colnames(part_df)
     
-    pick <- function(g) {
-      # common FactoMineR naming variants
-      pats <- c(
+    pick_col <- function(g) {
+      patterns <- c(
         paste0("^", g, "\\.Dim\\.?1$"),
         paste0("^", g, "\\.Dim\\.1$"),
         paste0("^", g, ".*Dim\\.?1$"),
         paste0("^", g, ".*1$")
       )
-      for (p in pats) {
+      for (p in patterns) {
         hit <- which(grepl(p, cn))
         if (length(hit) == 1) return(hit)
       }
       integer(0)
     }
     
-    idxs <- lapply(group_names, pick)
+    idxs <- lapply(group_names, pick_col)
+    
     if (all(vapply(idxs, length, integer(1)) == 1L)) {
-      out <- lapply(group_names, function(g) as.numeric(part_df[[idxs[[g]]]]))
+      out <- lapply(seq_along(group_names), function(i) as.numeric(part_df[[idxs[[i]]]]))
       names(out) <- group_names
       return(out)
     }
     
-    # If it’s only ncp columns (like you saw: ncol=5), it’s NOT partials.
     NULL
   }
   
@@ -505,7 +568,7 @@ rri_pipeline_st <- function(
     if (inherits(graph, "igraph")) {
       micro_net_raw <- rep(network_scalar(graph, network_agg), n)
     } else if (is.list(graph)) {
-      if (length(graph) != n) stop("If `graph` is a list, it must have length nrow(ROS_flux).")
+      if (length(graph) != n) stop("If `graph` is a list, it must have length `nrow(ROS_flux)`.")
       micro_net_raw <- vapply(graph, function(g) network_scalar(g, network_agg), numeric(1))
     } else {
       stop("`graph` must be NULL, an igraph object, or a list of igraph objects.")
@@ -516,104 +579,130 @@ rri_pipeline_st <- function(
     stop("Provide microbial input via `micro_data` and/or `graph`.")
   }
   
-  # ---- Physio & Soil raw scores + MFA (robust) -----------------------------
+  # ---- domain raw scores (per-domain default) ------------------------------
+  phys_raw <- orient_latent(
+    latent_dimension(ROS_flux, method_phys),
+    ROS_flux,
+    direction_phys,
+    direction_anchor_phys
+  )
+  
+  soil_raw <- orient_latent(
+    latent_dimension(Eh_stability, method_soil),
+    Eh_stability,
+    direction_soil,
+    direction_anchor_soil
+  )
+  
+  # Only defined/used for MFA; keep as NA otherwise.
+  micro_mfa_raw <- rep(NA_real_, n)
+  
+  # ---- MFA integration (robust & version-safe) ------------------------------
   mfa_global_dim1 <- rep(NA_real_, n)
   mfa_used_partials <- FALSE
   mfa_fallback_to_per_domain <- FALSE
   
   if (reducer == "mfa") {
+    
     if (!requireNamespace("FactoMineR", quietly = TRUE)) {
-      stop("reducer = 'mfa' requires {FactoMineR}.")
+      stop("`reducer = 'mfa'` requires {FactoMineR}.")
     }
     
+    # ---- Build microbial block ----
     micro_block <- NULL
-    if (!is.null(micro_data)) micro_block <- as_numeric_df(micro_data)
+    if (!is.null(micro_data)) {
+      micro_block <- as_numeric_df(micro_data)
+    }
+    
     if (!all(is.na(micro_net_raw))) {
       micro_net_df <- data.frame(net_resilience = as.numeric(micro_net_raw))
       micro_block <- if (is.null(micro_block)) micro_net_df else cbind(micro_block, micro_net_df)
     }
-    if (is.null(micro_block)) stop("MFA requires microbial input via `micro_data` and/or `graph`.")
     
+    if (is.null(micro_block)) {
+      stop("MFA requires microbial input.")
+    }
+    
+    # ---- Numeric blocks ----
     blocks <- list(
-      Physio = as_numeric_df(ROS_flux),
-      Soil   = as_numeric_df(Eh_stability),
-      Micro  = as_numeric_df(micro_block)
+      Physio = scale(as_numeric_df(ROS_flux)),
+      Soil   = scale(as_numeric_df(Eh_stability)),
+      Micro  = scale(as_numeric_df(micro_block))
     )
     
     X <- do.call(cbind, blocks)
     groups <- vapply(blocks, ncol, integer(1))
-    group_names <- names(groups)
     
     mfa <- FactoMineR::MFA(
       X,
       group = groups,
       type = rep("s", length(groups)),
-      name.group = group_names,
       ncp = 5,
       graph = FALSE
     )
     
-    if (!is.null(mfa$ind) && !is.null(mfa$ind$coord) && ncol(mfa$ind$coord) >= 1) {
-      mfa_global_dim1 <- as.numeric(mfa$ind$coord[, 1])
+    # Global axis
+    mfa_global_dim1 <- as.numeric(mfa$ind$coord[, 1])
+    
+    # ---- Domain projections via regression onto global axis ----
+    project_block <- function(block, global_axis) {
+      block <- as.matrix(block)
+      storage.mode(block) <- "double"
+      as.numeric(block %*% stats::coef(stats::lm(global_axis ~ block))[ -1 ])
     }
     
-    parts <- extract_mfa_group_dim1(mfa, group_names = group_names)
+    phys_raw  <- project_block(blocks$Physio, mfa_global_dim1)
+    soil_raw  <- project_block(blocks$Soil,   mfa_global_dim1)
+    micro_mfa_raw <- project_block(blocks$Micro,  mfa_global_dim1)
     
-    if (!is.null(parts)) {
-      # TRUE partials exist -> safe, non-degenerate ternary
-      mfa_used_partials <- TRUE
-      phys_raw <- as.numeric(parts$Physio)
-      soil_raw <- as.numeric(parts$Soil)
-      micro_mfa_raw <- as.numeric(parts$Micro)
-      
-      phys_raw <- orient_latent(phys_raw, ROS_flux, direction_phys, direction_anchor_phys)
-      soil_raw <- orient_latent(soil_raw, Eh_stability, direction_soil, direction_anchor_soil)
-      
-      micro_anchor_df <- if (!is.null(micro_data)) micro_data else micro_block
-      micro_mfa_raw <- orient_latent(micro_mfa_raw, micro_anchor_df, direction_micro, direction_anchor_micro)
-      
-    } else {
-      # No partials available -> fallback to per_domain for domain scores
-      mfa_fallback_to_per_domain <- TRUE
-      
-      phys_raw <- orient_latent(
-        latent_dimension(ROS_flux, method_phys),
-        ROS_flux,
-        direction_phys,
-        direction_anchor_phys
-      )
-      soil_raw <- orient_latent(
-        latent_dimension(Eh_stability, method_soil),
-        Eh_stability,
-        direction_soil,
-        direction_anchor_soil
-      )
-      micro_mfa_raw <- rep(NA_real_, n)
-    }
-    
-  } else {
+    # ---- Orientation ----
     phys_raw <- orient_latent(
-      latent_dimension(ROS_flux, method_phys),
+      phys_raw,
       ROS_flux,
       direction_phys,
       direction_anchor_phys
     )
+    
     soil_raw <- orient_latent(
-      latent_dimension(Eh_stability, method_soil),
+      soil_raw,
       Eh_stability,
       direction_soil,
       direction_anchor_soil
     )
-    micro_mfa_raw <- rep(NA_real_, n)
+    
+    micro_anchor_df <- if (!is.null(micro_data)) micro_data else micro_block
+    
+    micro_mfa_raw <- orient_latent(
+      micro_mfa_raw,
+      micro_anchor_df,
+      direction_micro,
+      direction_anchor_micro
+    )
+    
+    mfa_used_partials <- TRUE
   }
-  
-  # ---- scale to [0,1] ------------------------------------------------------
+  # ---- scale to [0, 1] -----------------------------------------------------
   phys <- scale_vec_by(phys_raw, id, scale_by, stats = if (is.list(ref_stats)) ref_stats$phys else NULL)
   soil <- scale_vec_by(soil_raw, id, scale_by, stats = if (is.list(ref_stats)) ref_stats$soil else NULL)
   
-  micro_abund <- scale_vec_by(micro_abund_raw, id, scale_by, stats = if (is.list(ref_stats)) ref_stats$micro_abund else NULL)
-  micro_net <- scale_vec_by(micro_net_raw, id, scale_by, stats = if (is.list(ref_stats)) ref_stats$micro_net else NULL)
-  micro_mfa <- scale_vec_by(micro_mfa_raw, id, scale_by, stats = if (is.list(ref_stats)) ref_stats$micro_mfa else NULL)
+  micro_abund <- scale_vec_by(
+    micro_abund_raw,
+    id,
+    scale_by,
+    stats = if (is.list(ref_stats)) ref_stats$micro_abund else NULL
+  )
+  micro_net <- scale_vec_by(
+    micro_net_raw,
+    id,
+    scale_by,
+    stats = if (is.list(ref_stats)) ref_stats$micro_net else NULL
+  )
+  micro_mfa <- scale_vec_by(
+    micro_mfa_raw,
+    id,
+    scale_by,
+    stats = if (is.list(ref_stats)) ref_stats$micro_mfa else NULL
+  )
   
   # ---- blend microbial domain ---------------------------------------------
   micro <- if (all(is.na(micro_abund))) {
@@ -621,15 +710,17 @@ rri_pipeline_st <- function(
   } else if (all(is.na(micro_net))) {
     micro_abund
   } else {
-    scale_vec(alpha_micro * micro_abund + (1 - alpha_micro) * micro_net,
-              stats = if (is.list(ref_stats)) ref_stats$micro else NULL
+    scale_vec(
+      alpha_micro * micro_abund + (1 - alpha_micro) * micro_net,
+      stats = if (is.list(ref_stats)) ref_stats$micro else NULL
     )
   }
   
-  # If MFA partials exist, optionally blend MFA-micro with legacy micro estimate
+  # If MFA partials exist, blend the MFA micro score with the legacy micro score
   if (reducer == "mfa" && isTRUE(mfa_used_partials) && !all(is.na(micro_mfa))) {
-    micro <- scale_vec(0.5 * micro + 0.5 * micro_mfa,
-                       stats = if (is.list(ref_stats)) ref_stats$micro else NULL
+    micro <- scale_vec(
+      0.5 * micro + 0.5 * micro_mfa,
+      stats = if (is.list(ref_stats)) ref_stats$micro else NULL
     )
   }
   
@@ -639,7 +730,10 @@ rri_pipeline_st <- function(
   if (isTRUE(add_compensation) && compensation_weight > 0) {
     comp_term <- rep(NA_real_, n)
     
-    if (!is.null(id) && !is.null(group_cols) && length(group_cols) > 0 && all(group_cols %in% names(id))) {
+    if (!is.null(id) &&
+        !is.null(group_cols) &&
+        length(group_cols) > 0 &&
+        all(group_cols %in% names(id))) {
       keyc <- interaction(id[, group_cols, drop = FALSE], drop = TRUE, lex.order = TRUE)
       for (k in unique(keyc)) {
         idx <- which(keyc == k)
@@ -648,15 +742,16 @@ rri_pipeline_st <- function(
     } else {
       comp_term[] <- compensation_index(phys, soil, micro)
     }
+    
     comp_term01 <- scale_vec(
       comp_term,
       stats = if (is.list(ref_stats)) ref_stats$comp else NULL
     )
-    
-    # Guard against numerical pathologies
     comp_term01[!is.finite(comp_term01)] <- 0
+    
     ww <- c(w1, w2, w3)
     ww <- ww / sum(ww) * (1 - compensation_weight)
+    
     base_rri <- ww[1] * phys + ww[2] * soil + ww[3] * micro + compensation_weight * comp_term01
   }
   
@@ -755,9 +850,10 @@ rri_pipeline_st <- function(
         Micro_dyn = M_dyn,
         RRI_dyn = rri_dyn
       )
-      
     } else if (mode == "event") {
-      if (is.null(event_col) || !event_col %in% names(id_ord)) stop("mode = 'event' requires `event_col` in `id`.")
+      if (is.null(event_col) || !event_col %in% names(id_ord)) {
+        stop("mode = 'event' requires `event_col` in `id`.")
+      }
       e <- id_ord[[event_col]]
       
       out_list <- vector("list", length(unique(key_ord)))
@@ -818,13 +914,14 @@ rri_pipeline_st <- function(
       add_compensation = add_compensation,
       compensation_weight = compensation_weight,
       weights = list(
-        w1 = w1, w2 = w2, w3 = w3,
+        w1 = w1,
+        w2 = w2,
+        w3 = w3,
         add_coupling = add_coupling,
         coupling_weight = coupling_weight,
         coupling_fun = coupling_fun
       ),
       rri_index = rri_index,
-      # new but harmless fields:
       mfa_global_dim1 = mfa_global_dim1,
       mfa_used_partials = mfa_used_partials,
       mfa_fallback_to_per_domain = mfa_fallback_to_per_domain

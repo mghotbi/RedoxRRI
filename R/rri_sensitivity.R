@@ -14,7 +14,34 @@
 #' This function perturbs only the aggregation step and does not
 #' recompute latent domain scores. It therefore evaluates stability
 #' of domain integration rather than reducer sensitivity.
+#' @examples
+#' # ---- Simulate a small holobiont dataset ----
+#' sim <- simulate_redox_holobiont(
+#'   n_plot = 2,
+#'   n_depth = 4,
+#'   n_plant = 2,
+#'   n_time = 8,
+#'   p_micro = 20,
+#'   seed = 1
+#' )
 #'
+#' # ---- Compute RedoxRRI ----
+#' res <- rri_pipeline_st(
+#'   ROS_flux = sim$ROS_flux,
+#'   Eh_stability = sim$Eh_stability,
+#'   micro_data = sim$micro_data,
+#'   id = sim$id,
+#'   reducer = "per_domain",
+#'   scaling = "pnorm"
+#' )
+#'
+#' # ---- Evaluate aggregation sensitivity ----
+#' sens <- rri_sensitivity(
+#'   res,
+#'   weight_grid = seq(0.3, 0.5, by = 0.1)
+#' )
+#'
+#' 
 #' @export
 rri_sensitivity <- function(res,
                             weight_grid = seq(0.2, 0.6, by = 0.1)) {

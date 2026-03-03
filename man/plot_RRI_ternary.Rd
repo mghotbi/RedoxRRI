@@ -57,3 +57,35 @@ If clr-transformed coordinates are attached as an attribute (\code{"clr"}),
 the centroid can be computed using the Aitchison mean, ensuring geometric
 coherence in compositional space. Otherwise, a simplex arithmetic mean is used.
 }
+\examples{
+# ---- Simulate holobiont dataset (snapshot) ----
+sim <- simulate_redox_holobiont(
+  n_plot = 20,
+  n_depth = 30,
+  n_plant = 8,
+  n_time = 10,
+  p_micro = 30,
+  seed = 1234
+)
+
+# ---- Compute RedoxRRI ----
+res <- rri_pipeline_st(
+  ROS_flux = sim$ROS_flux,
+  Eh_stability = sim$Eh_stability,
+  micro_data = sim$micro_data,
+  id = sim$id,
+  reducer = "per_domain",
+  scaling = "pnorm"
+)
+
+# ---- Extract compositional scores ----
+ternary_df <- res$row_scores_comp
+
+# ---- Plot ternary allocation ----
+p <- plot_RRI_ternary(
+  ternary_df,
+  point_size = 3,
+  show_centroid = TRUE
+)
+
+}
