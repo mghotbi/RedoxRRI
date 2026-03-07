@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
   fig.align = "center",
   dev = "png",
   fig.crop = FALSE,
-  dpi = 90
+  dpi = 80
 )
 
 if (!requireNamespace("patchwork", quietly = TRUE)) {
@@ -301,7 +301,7 @@ if (requireNamespace("ggtern", quietly = TRUE) &&
     requireNamespace("ggplot2", quietly = TRUE) &&
     requireNamespace("viridis", quietly = TRUE)) {
 
- PRT<-plot_RRI_ternary(
+  plot_RRI_ternary(
     res_adv$row_scores_comp,
     centroid_method = "auto"
   )

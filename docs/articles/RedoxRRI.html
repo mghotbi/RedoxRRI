@@ -169,6 +169,20 @@ species, site, or ecosystem.</p>
 <p>All analyses in this vignette are fully reproducible and rely only on
 simulated data generated within the package.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning: package 'dplyr' was built under R version 4.5.2</span></span></code></pre>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">## Attaching package: 'dplyr'</span></span></code></pre>
+<pre><code><span><span class="co">## The following objects are masked from 'package:stats':</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##     filter, lag</span></span></code></pre>
+<pre><code><span><span class="co">## The following objects are masked from 'package:base':</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##     intersect, setdiff, setequal, union</span></span></code></pre>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tibble.tidyverse.org/" class="external-link">tibble</a></span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning: package 'tibble' was built under R version 4.5.2</span></span></code></pre>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1342</span><span class="op">)</span></span>
 <span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simulate_redox_holobiont.html">simulate_redox_holobiont</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co"># sim &lt;- simulate_redox_holobiont(seed = 1)</span></span>
@@ -191,8 +205,12 @@ structure) graph (optional): an igraph network or list of networks</p>
 </h3>
 <p>Resistance = immediate deviation in redox potential after disturbance
 Resilience = rate or magnitude of redox recovery</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rri_pipeline_st.html">rri_pipeline_st</a></span><span class="op">(</span></span>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"FactoMineR"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/knitr/man/opts_chunk.html" class="external-link">opts_chunk</a></span><span class="op">$</span><span class="fu">set</span><span class="op">(</span>eval <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rri_pipeline_st.html">rri_pipeline_st</a></span><span class="op">(</span></span>
 <span>  ROS_flux <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">ROS_flux</span>,</span>
 <span>  Eh_stability <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">Eh_stability</span>,</span>
 <span>  micro_data <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">micro_data</span>,</span>
@@ -207,7 +225,7 @@ Resilience = rate or magnitude of redox recovery</p>
 <h3 id="interpreting-the-compositional-output">Interpreting the compositional output<a class="anchor" aria-label="anchor" href="#interpreting-the-compositional-output"></a>
 </h3>
 <p>The compositional output is stored in res$row_scores_comp.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">row_scores_comp</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##      Physio      Soil       Micro       RRI</span></span>
 <span><span class="co">## 1 0.5260730 0.4553936 0.018533365 0.7570227</span></span>
@@ -217,7 +235,7 @@ Resilience = rate or magnitude of redox recovery</p>
 <span><span class="co">## 5 0.3990414 0.4445511 0.156407447 0.4873383</span></span>
 <span><span class="co">## 6 0.4346432 0.4378077 0.127549110 0.6696186</span></span></code></pre>
 <p>The domain components satisfy:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">rowSums</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">row_scores_comp</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Physio"</span>, <span class="st">"Soil"</span>, <span class="st">"Micro"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 1 1 1 1 1 1</span></span></code></pre>
 </div>
@@ -226,7 +244,7 @@ Resilience = rate or magnitude of redox recovery</p>
 </h3>
 <p>When microbial abundance and/or network data are available, the
 output also includes the corresponding latent scores:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="st">"Micro_abundance"</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">row_scores</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">row_scores</span><span class="op">$</span><span class="va">Micro_abundance</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
@@ -238,20 +256,19 @@ output also includes the corresponding latent scores:</p>
 </h3>
 <p>This plot requires suggested packages: ggtern, ggplot2, and
 viridis.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"ggtern"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">&amp;&amp;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"ggplot2"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">&amp;&amp;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"patchwork"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">&amp;&amp;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"viridis"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  </span>
-<span>  <span class="fu"><a href="../reference/plot_RRI_ternary.html">plot_RRI_ternary</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">row_scores_comp</span><span class="op">)</span></span>
+<span> <span class="va">pt1</span><span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_RRI_ternary.html">plot_RRI_ternary</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">row_scores_comp</span><span class="op">)</span></span>
 <span>  </span>
 <span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"Install ggtern, ggplot2, and viridis to enable ternary plotting."</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <pre><code><span><span class="co">## Warning in ggplot2::geom_point(data = centroid, ggplot2::aes(x = .data$Physio,</span></span>
 <span><span class="co">## : Ignoring unknown aesthetics: <span style="color: #00BB00;">z</span></span></span></code></pre>
-<p><img src="RedoxRRI_files/figure-html/Ternary%20visualization-1.png" class="r-plt" alt="" width="70%" style="display: block; margin: auto;"></p>
 <p>Choosing latent-dimension methods</p>
 <p>Different domains may justify different latent representations:
 physiology: pca, fa soil: pca, wgcna (when co-regulated redox syndromes
@@ -259,7 +276,7 @@ are expected) microbial abundance: pca, nmf, wgcna nonlinear regimes:
 umap</p>
 <p>Below we illustrate alternative specifications when suggested
 packages are available.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">specA</span> <span class="op">&lt;-</span> <span class="va">res</span></span>
 <span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"WGCNA"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
@@ -294,7 +311,7 @@ packages are available.</p>
 <span><span class="co">## 14    18  0.06030 -2.52        0.00605 0.001580  0.001140 0.00390</span></span>
 <span><span class="co">## 15    20  0.06890 -2.50        0.02590 0.000776  0.000531 0.00192</span></span></code></pre>
 <pre><code><span><span class="co">## [1] 0.3167483</span></span></code></pre>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">specB</span> <span class="op">&lt;-</span> <span class="va">res</span></span>
 <span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"uwot"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
@@ -327,7 +344,7 @@ RedoxRRI:</p>
 <p>This specification more closely reflects longitudinal ecological data
 where resilience is evaluated through time rather than at a single
 snapshot.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">91202</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">res_adv</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rri_pipeline_st.html">rri_pipeline_st</a></span><span class="op">(</span></span>
@@ -356,10 +373,10 @@ snapshot.</p>
 <span><span class="co">## 4 0.3980691 0.5285082 7.342264e-02 0.8333942</span></span>
 <span><span class="co">## 5 0.4547408 0.4672573 7.800193e-02 0.6265479</span></span>
 <span><span class="co">## 6 0.4784418 0.4630530 5.850514e-02 0.7512837</span></span></code></pre>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">rowSums</a></span><span class="op">(</span><span class="va">res_adv</span><span class="op">$</span><span class="va">row_scores_comp</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Physio"</span>,<span class="st">"Soil"</span>,<span class="st">"Micro"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 1 1</span></span></code></pre>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"ggtern"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">&amp;&amp;</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"ggplot2"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">&amp;&amp;</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"viridis"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
@@ -380,7 +397,7 @@ snapshot.</p>
 </h3>
 <p>direction_phys = “lower_is_better” direction_soil = “lower_is_better”
 direction_micro = “higher_is_better”</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">47162</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simulate_redox_holobiont.html">simulate_redox_holobiont</a></span><span class="op">(</span></span>
@@ -508,42 +525,18 @@ direction_micro = “higher_is_better”</p>
 <div class="section level3">
 <h3 id="compensation-robustness">Compensation robustness<a class="anchor" aria-label="anchor" href="#compensation-robustness"></a>
 </h3>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/mghotbi/RedoxRRI" class="external-link">RedoxRRI</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Warning: package 'dplyr' was built under R version 4.5.2</span></span></code></pre>
-<pre><code><span><span class="co">## </span></span>
-<span><span class="co">## Attaching package: 'dplyr'</span></span></code></pre>
-<pre><code><span><span class="co">## The following objects are masked from 'package:stats':</span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">##     filter, lag</span></span></code></pre>
-<pre><code><span><span class="co">## The following objects are masked from 'package:base':</span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">##     intersect, setdiff, setequal, union</span></span></code></pre>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Warning: package 'ggplot2' was built under R version 4.5.2</span></span></code></pre>
-<pre><code><span><span class="co">## Warning: package 'tibble' was built under R version 4.5.2</span></span></code></pre>
-<pre><code><span><span class="co">## Warning: package 'tidyr' was built under R version 4.5.2</span></span></code></pre>
-<pre><code><span><span class="co">## Warning: package 'readr' was built under R version 4.5.2</span></span></code></pre>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tibble.tidyverse.org/" class="external-link">tibble</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://purrr.tidyverse.org/" class="external-link">purrr</a></span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Warning: package 'purrr' was built under R version 4.5.2</span></span></code></pre>
-<pre><code><span><span class="co">## Warning: package 'lubridate' was built under R version 4.5.2</span></span></code></pre>
-<pre><code><span><span class="co">## ── <span style="font-weight: bold;">Attaching core tidyverse packages</span> ──────────────────────── tidyverse 2.0.0 ──</span></span>
-<span><span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">forcats  </span> 1.0.1     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">readr    </span> 2.2.0</span></span>
-<span><span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">ggplot2  </span> 4.0.2     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">stringr  </span> 1.6.0</span></span>
-<span><span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">lubridate</span> 1.9.5     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">tibble   </span> 3.3.1</span></span>
-<span><span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">purrr    </span> 1.2.1     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">tidyr    </span> 1.3.2</span></span></code></pre>
-<pre><code><span><span class="co">## ── <span style="font-weight: bold;">Conflicts</span> ────────────────────────────────────────── tidyverse_conflicts() ──</span></span>
-<span><span class="co">## <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">dplyr</span>::<span style="color: #00BB00;">filter()</span> masks <span style="color: #0000BB;">stats</span>::filter()</span></span>
-<span><span class="co">## <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">dplyr</span>::<span style="color: #00BB00;">lag()</span>    masks <span style="color: #0000BB;">stats</span>::lag()</span></span>
-<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Use the conflicted package (<span style="color: #0000BB; font-style: italic;">&lt;http://conflicted.r-lib.org/&gt;</span>) to force all conflicts to become errors</span></span></code></pre>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tibble.tidyverse.org/" class="external-link">tibble</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://purrr.tidyverse.org/" class="external-link">purrr</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com" class="external-link">patchwork</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">scale01</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com" class="external-link">patchwork</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning: package 'ggplot2' was built under R version 4.5.2</span></span></code></pre>
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">scale01</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">rng</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span>  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diff.html" class="external-link">diff</a></span><span class="op">(</span><span class="va">rng</span><span class="op">)</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
@@ -675,9 +668,8 @@ decomposition:</p>
 <p>Higher decoupling should reduce coordination among domains and
 therefore we expect these metrics to decline with increasing
 decoupling.</p>
-<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com" class="external-link">patchwork</a></span><span class="op">)</span></span>
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com" class="external-link">patchwork</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">dec_grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">0.8</span>, by <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span>
 <span></span>
@@ -793,9 +785,12 @@ decoupling.</p>
 <p><img src="RedoxRRI_files/figure-html/unnamed-chunk-4-1.png" class="r-plt" alt="" width="70%" style="display: block; margin: auto;"></p>
 <p>####Single-domain indicators vs integrated RRI plot × depth ×
 plant_id × time</p>
-<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com" class="external-link">patchwork</a></span><span class="op">)</span></span>
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"dplyr"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"tibble"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tibble.tidyverse.org/" class="external-link">tibble</a></span><span class="op">)</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"patchwork"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com" class="external-link">patchwork</a></span><span class="op">)</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"ggplot2"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
+<span></span>
 <span></span>
 <span> </span>
 <span><span class="co"># ---- Helpers ----</span></span>
@@ -908,19 +903,19 @@ plant_id × time</p>
 <span><span class="va">pA</span> <span class="op">&lt;-</span> <span class="fu">make_panel</span><span class="op">(</span><span class="va">df_s2</span>, <span class="st">"eh"</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Soil Eh ("</span>, <span class="va">eh_col</span>, <span class="st">"; scaled 0–1)"</span><span class="op">)</span>, tag <span class="op">=</span> <span class="st">"A"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Warning in annotate("label", x = 0.02, y = 0.98, hjust = 0, vjust = 1, size =</span></span>
 <span><span class="co">## 3.2, : Ignoring unknown parameters: `label.size`</span></span></code></pre>
-<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pB</span> <span class="op">&lt;-</span> <span class="fu">make_panel</span><span class="op">(</span><span class="va">df_s2</span>, <span class="st">"fvfm"</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Plant Fv/Fm ("</span>, <span class="va">fvfm_col</span>, <span class="st">"; scaled 0–1)"</span><span class="op">)</span>, tag <span class="op">=</span> <span class="st">"B"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Warning in annotate("label", x = 0.02, y = 0.98, hjust = 0, vjust = 1, size =</span></span>
 <span><span class="co">## 3.2, : Ignoring unknown parameters: `label.size`</span></span></code></pre>
-<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pC</span> <span class="op">&lt;-</span> <span class="fu">make_panel</span><span class="op">(</span><span class="va">df_s2</span>, <span class="st">"micro_pc1"</span>, <span class="st">"Microbiome indicator (PC1 of micro_data; scaled 0–1)"</span>, tag <span class="op">=</span> <span class="st">"C"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Warning in annotate("label", x = 0.02, y = 0.98, hjust = 0, vjust = 1, size =</span></span>
 <span><span class="co">## 3.2, : Ignoring unknown parameters: `label.size`</span></span></code></pre>
-<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pD</span> <span class="op">&lt;-</span> <span class="fu">make_panel</span><span class="op">(</span><span class="va">df_s2</span>, <span class="st">"rri"</span>, <span class="st">"Redox Resilience Index (RRI; scaled 0–1)"</span>, tag <span class="op">=</span> <span class="st">"D"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Warning in annotate("label", x = 0.02, y = 0.98, hjust = 0, vjust = 1, size =</span></span>
 <span><span class="co">## 3.2, : Ignoring unknown parameters: `label.size`</span></span></code></pre>
-<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fig_s2</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">pA</span> <span class="op">|</span> <span class="va">pB</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="va">pC</span> <span class="op">|</span> <span class="va">pD</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://patchwork.data-imaginist.com/reference/plot_annotation.html" class="external-link">plot_annotation</a></span><span class="op">(</span></span>
 <span>    title <span class="op">=</span> <span class="st">"Single-domain indicators versus integrated RRI"</span>,</span>
@@ -945,7 +940,7 @@ plant_id × time</p>
 | Indicator | r | | ————– | —– | | Soil Eh | ~0.97 | | Plant Fv/Fm |
 ~0.93 | | Microbiome PC1 | ~0.95 | | RRI | ~0.75 |</p>
 <p>###RRI plotting</p>
-<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># ---- Theme   ----</span></span>
 <span> </span>
 <span><span class="va">theme_ems</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">base_size</span> <span class="op">=</span> <span class="fl">12</span><span class="op">)</span> <span class="op">{</span></span>
@@ -976,7 +971,7 @@ plant_id × time</p>
 <span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Warning in ggplot2::geom_point(data = centroid, ggplot2::aes(x = .data$Physio,</span></span>
 <span><span class="co">## : Ignoring unknown aesthetics: <span style="color: #00BB00;">z</span></span></span></code></pre>
-<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_roll</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rri_pipeline_st.html">rri_pipeline_st</a></span><span class="op">(</span></span>
 <span>  ROS_flux     <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">ROS_flux</span>,</span>
 <span>  Eh_stability <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">Eh_stability</span>,</span>
@@ -998,7 +993,7 @@ plant_id × time</p>
 <span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Warning in ggplot2::geom_point(data = centroid, ggplot2::aes(x = .data$Physio,</span></span>
 <span><span class="co">## : Ignoring unknown aesthetics: <span style="color: #00BB00;">z</span></span></span></code></pre>
-<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p_A</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_RRI_ternary.html">plot_RRI_ternary</a></span><span class="op">(</span></span>
 <span>  <span class="va">res_snap</span><span class="op">$</span><span class="va">row_scores_comp</span>,</span>
 <span>  point_size  <span class="op">=</span> <span class="fl">2.6</span>,</span>
@@ -1015,10 +1010,7 @@ plant_id × time</p>
 <span>  <span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Warning in ggplot2::geom_point(data = centroid, ggplot2::aes(x = .data$Physio,</span></span>
 <span><span class="co">## : Ignoring unknown aesthetics: <span style="color: #00BB00;">z</span></span></span></code></pre>
-<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">p_A</span></span></code></pre></div>
-<p><img src="RedoxRRI_files/figure-html/unnamed-chunk-6-1.png" class="r-plt" alt="" width="70%" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p_B</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_RRI_ternary.html">plot_RRI_ternary</a></span><span class="op">(</span></span>
 <span>  <span class="va">res_roll</span><span class="op">$</span><span class="va">row_scores_comp</span>,</span>
 <span>  point_size  <span class="op">=</span> <span class="fl">2.6</span>,</span>
@@ -1035,9 +1027,6 @@ plant_id × time</p>
 <span>  <span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Warning in ggplot2::geom_point(data = centroid, ggplot2::aes(x = .data$Physio,</span></span>
 <span><span class="co">## : Ignoring unknown aesthetics: <span style="color: #00BB00;">z</span></span></span></code></pre>
-<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">p_B</span></span></code></pre></div>
-<p><img src="RedoxRRI_files/figure-html/unnamed-chunk-6-2.png" class="r-plt" alt="" width="70%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
 <h3 id="interpretation">Interpretation<a class="anchor" aria-label="anchor" href="#interpretation"></a>
@@ -1057,7 +1046,7 @@ among domains.</p>
 <div class="section level2">
 <h2 id="sensitivity-to-domain-weights">Sensitivity to domain weights<a class="anchor" aria-label="anchor" href="#sensitivity-to-domain-weights"></a>
 </h2>
-<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_w1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rri_pipeline_st.html">rri_pipeline_st</a></span><span class="op">(</span></span>
 <span>  ROS_flux <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">ROS_flux</span>,</span>
 <span>  Eh_stability <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">Eh_stability</span>,</span>
@@ -1070,17 +1059,17 @@ among domains.</p>
 <div class="section level3">
 <h3 id="validation-and-robustness-diagnostics">Validation and robustness diagnostics<a class="anchor" aria-label="anchor" href="#validation-and-robustness-diagnostics"></a>
 </h3>
-<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Validation utilities</span></span>
 <span><span class="co">### 1. Latent recovery  </span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/rri_latent_correlation.html">rri_latent_correlation</a></span><span class="op">(</span><span class="va">res_w1</span>, <span class="va">sim</span><span class="op">$</span><span class="va">latent_truth</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] -0.9417382</span></span></code></pre>
-<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Compensation strength</span></span>
 <span><span class="fu"><a href="../reference/rri_compensation_index.html">rri_compensation_index</a></span><span class="op">(</span><span class="va">res_w1</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 0.3186399</span></span></code></pre>
-<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Sensitivity of RRI rankings to aggregation weights</span></span>
 <span></span>
 <span><span class="va">sens</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rri_sensitivity.html">rri_sensitivity</a></span><span class="op">(</span><span class="va">res_w1</span><span class="op">)</span></span>
@@ -1099,7 +1088,7 @@ among domains.</p>
 <p>RRI rankings remain highly stable (&gt;0.9 Spearman correlation)
 under moderate perturbations of domain weighting, indicating structural
 robustness of the aggregation scheme.</p>
-<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"ggplot2"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  </span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
@@ -1169,7 +1158,7 @@ ordering.</li>
 <li>Sensitivity-test domain weights and methods.</li>
 <li>Validate RRI against independent outcomes.</li>
 </ul>
-<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## R version 4.5.1 (2025-06-13)</span></span>
 <span><span class="co">## Platform: aarch64-apple-darwin20</span></span>
@@ -1189,50 +1178,47 @@ ordering.</li>
 <span><span class="co">## [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">##  [1] patchwork_1.3.2  lubridate_1.9.5  forcats_1.0.1    stringr_1.6.0   </span></span>
-<span><span class="co">##  [5] purrr_1.2.1      readr_2.2.0      tidyr_1.3.2      tibble_3.3.1    </span></span>
-<span><span class="co">##  [9] ggplot2_4.0.2    tidyverse_2.0.0  dplyr_1.2.0      RedoxRRI_0.99.3 </span></span>
-<span><span class="co">## [13] BiocStyle_2.38.0</span></span>
+<span><span class="co">## [1] ggplot2_4.0.2    patchwork_1.3.2  purrr_1.2.1      tibble_3.3.1    </span></span>
+<span><span class="co">## [5] dplyr_1.2.0      RedoxRRI_0.99.3  BiocStyle_2.38.0</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
 <span><span class="co">##   [1] gridExtra_2.3         sandwich_3.1-1        rlang_1.1.7          </span></span>
 <span><span class="co">##   [4] magrittr_2.0.4        multcomp_1.4-29       otel_0.2.0           </span></span>
 <span><span class="co">##   [7] matrixStats_1.5.0     compiler_4.5.1        mgcv_1.9-4           </span></span>
-<span><span class="co">##  [10] systemfonts_1.3.1     vctrs_0.7.1           pkgconfig_2.0.3      </span></span>
-<span><span class="co">##  [13] fastmap_1.2.0         backports_1.5.0       labeling_0.4.3       </span></span>
-<span><span class="co">##  [16] rmarkdown_2.30        tzdb_0.5.0            preprocessCore_1.72.0</span></span>
+<span><span class="co">##  [10] systemfonts_1.3.1     vctrs_0.7.1           stringr_1.6.0        </span></span>
+<span><span class="co">##  [13] pkgconfig_2.0.3       fastmap_1.2.0         backports_1.5.0      </span></span>
+<span><span class="co">##  [16] labeling_0.4.3        rmarkdown_2.30        preprocessCore_1.72.0</span></span>
 <span><span class="co">##  [19] ragg_1.5.0            xfun_0.56             cachem_1.1.0         </span></span>
-<span><span class="co">##  [22] flashClust_1.1-4      jsonlite_2.0.0        parallel_4.5.1       </span></span>
-<span><span class="co">##  [25] cluster_2.1.8.2       R6_2.6.1              bslib_0.10.0         </span></span>
-<span><span class="co">##  [28] stringi_1.8.7         RColorBrewer_1.1-3    compositions_2.0-9   </span></span>
+<span><span class="co">##  [22] jsonlite_2.0.0        flashClust_1.1-4      parallel_4.5.1       </span></span>
+<span><span class="co">##  [25] cluster_2.1.8.2       R6_2.6.1              stringi_1.8.7        </span></span>
+<span><span class="co">##  [28] bslib_0.10.0          RColorBrewer_1.1-3    compositions_2.0-9   </span></span>
 <span><span class="co">##  [31] rpart_4.1.24          jquerylib_0.1.4       estimability_1.5.1   </span></span>
 <span><span class="co">##  [34] Rcpp_1.1.1            bookdown_0.46         iterators_1.0.14     </span></span>
 <span><span class="co">##  [37] knitr_1.51            zoo_1.8-15            WGCNA_1.74           </span></span>
-<span><span class="co">##  [40] base64enc_0.1-6       FNN_1.1.4.1           timechange_0.4.0     </span></span>
-<span><span class="co">##  [43] Matrix_1.7-4          splines_4.5.1         nnet_7.3-20          </span></span>
-<span><span class="co">##  [46] tidyselect_1.2.1      rstudioapi_0.18.0     yaml_2.3.12          </span></span>
-<span><span class="co">##  [49] viridis_0.6.5         doParallel_1.0.17     codetools_0.2-20     </span></span>
-<span><span class="co">##  [52] lattice_0.22-9        plyr_1.8.9            withr_3.0.2          </span></span>
-<span><span class="co">##  [55] S7_0.2.1              coda_0.19-4.1         evaluate_1.0.5       </span></span>
-<span><span class="co">##  [58] foreign_0.8-91        desc_1.4.3            survival_3.8-6       </span></span>
-<span><span class="co">##  [61] isoband_0.3.0         ggtern_4.0.0          bayesm_3.1-7         </span></span>
-<span><span class="co">##  [64] pillar_1.11.1         BiocManager_1.30.27   tensorA_0.36.2.1     </span></span>
-<span><span class="co">##  [67] DT_0.34.0             checkmate_2.3.4       foreach_1.5.2        </span></span>
-<span><span class="co">##  [70] generics_0.1.4        hms_1.1.4             scales_1.4.0         </span></span>
-<span><span class="co">##  [73] xtable_1.8-8          leaps_3.2             glue_1.8.0           </span></span>
-<span><span class="co">##  [76] scatterplot3d_0.3-45  emmeans_2.0.1         Hmisc_5.2-5          </span></span>
-<span><span class="co">##  [79] tools_4.5.1           hexbin_1.28.5         robustbase_0.99-7    </span></span>
-<span><span class="co">##  [82] data.table_1.18.2.1   RSpectra_0.16-2       fs_1.6.6             </span></span>
-<span><span class="co">##  [85] mvtnorm_1.3-3         fastcluster_1.3.0     grid_4.5.1           </span></span>
-<span><span class="co">##  [88] impute_1.84.0         colorspace_2.1-2      nlme_3.1-168         </span></span>
-<span><span class="co">##  [91] htmlTable_2.4.3       proto_1.0.0           Formula_1.2-5        </span></span>
-<span><span class="co">##  [94] cli_3.6.5             latex2exp_0.9.8       textshaping_1.0.4    </span></span>
-<span><span class="co">##  [97] viridisLite_0.4.3     uwot_0.2.4            gtable_0.3.6         </span></span>
-<span><span class="co">## [100] DEoptimR_1.1-4        dynamicTreeCut_1.63-1 sass_0.4.10          </span></span>
-<span><span class="co">## [103] digest_0.6.39         ggrepel_0.9.7         TH.data_1.1-5        </span></span>
-<span><span class="co">## [106] FactoMineR_2.13       htmlwidgets_1.6.4     farver_2.1.2         </span></span>
-<span><span class="co">## [109] htmltools_0.5.9       pkgdown_2.2.0         lifecycle_1.0.5      </span></span>
-<span><span class="co">## [112] multcompView_0.1-11   MASS_7.3-65</span></span></code></pre>
+<span><span class="co">##  [40] base64enc_0.1-6       FNN_1.1.4.1           Matrix_1.7-4         </span></span>
+<span><span class="co">##  [43] splines_4.5.1         nnet_7.3-20           tidyselect_1.2.1     </span></span>
+<span><span class="co">##  [46] rstudioapi_0.18.0     yaml_2.3.12           viridis_0.6.5        </span></span>
+<span><span class="co">##  [49] doParallel_1.0.17     codetools_0.2-20      lattice_0.22-9       </span></span>
+<span><span class="co">##  [52] plyr_1.8.9            withr_3.0.2           S7_0.2.1             </span></span>
+<span><span class="co">##  [55] coda_0.19-4.1         evaluate_1.0.5        foreign_0.8-91       </span></span>
+<span><span class="co">##  [58] desc_1.4.3            survival_3.8-6        isoband_0.3.0        </span></span>
+<span><span class="co">##  [61] ggtern_4.0.0          bayesm_3.1-7          pillar_1.11.1        </span></span>
+<span><span class="co">##  [64] BiocManager_1.30.27   tensorA_0.36.2.1      checkmate_2.3.4      </span></span>
+<span><span class="co">##  [67] DT_0.34.0             foreach_1.5.2         generics_0.1.4       </span></span>
+<span><span class="co">##  [70] scales_1.4.0          xtable_1.8-8          leaps_3.2            </span></span>
+<span><span class="co">##  [73] glue_1.8.0            emmeans_2.0.1         scatterplot3d_0.3-45 </span></span>
+<span><span class="co">##  [76] Hmisc_5.2-5           tools_4.5.1           hexbin_1.28.5        </span></span>
+<span><span class="co">##  [79] data.table_1.18.2.1   robustbase_0.99-7     RSpectra_0.16-2      </span></span>
+<span><span class="co">##  [82] fs_1.6.6              mvtnorm_1.3-3         fastcluster_1.3.0    </span></span>
+<span><span class="co">##  [85] grid_4.5.1            impute_1.84.0         colorspace_2.1-2     </span></span>
+<span><span class="co">##  [88] nlme_3.1-168          htmlTable_2.4.3       proto_1.0.0          </span></span>
+<span><span class="co">##  [91] Formula_1.2-5         cli_3.6.5             latex2exp_0.9.8      </span></span>
+<span><span class="co">##  [94] textshaping_1.0.4     viridisLite_0.4.3     uwot_0.2.4           </span></span>
+<span><span class="co">##  [97] gtable_0.3.6          DEoptimR_1.1-4        dynamicTreeCut_1.63-1</span></span>
+<span><span class="co">## [100] sass_0.4.10           digest_0.6.39         ggrepel_0.9.7        </span></span>
+<span><span class="co">## [103] TH.data_1.1-5         FactoMineR_2.13       htmlwidgets_1.6.4    </span></span>
+<span><span class="co">## [106] farver_2.1.2          htmltools_0.5.9       pkgdown_2.2.0        </span></span>
+<span><span class="co">## [109] lifecycle_1.0.5       multcompView_0.1-11   MASS_7.3-65</span></span></code></pre>
 </div>
 </div>
   </div>
