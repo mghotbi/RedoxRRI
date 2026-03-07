@@ -20,7 +20,7 @@ Points are filled according to per-sample RRI values."><!-- mathjax --><script s
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">RedoxRRI</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.3</span>
       </span>
     </div>
 
@@ -135,6 +135,41 @@ the centroid can be computed using the Aitchison mean, ensuring geometric
 coherence in compositional space. Otherwise, a simplex arithmetic mean is used.</p>
     </div>
 
+    <div id="ref-examples">
+    <h2>Examples</h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># ---- Simulate holobiont dataset (snapshot) ----</span></span></span>
+<span class="r-in"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="simulate_redox_holobiont.html">simulate_redox_holobiont</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  n_plot <span class="op">=</span> <span class="fl">20</span>,</span></span>
+<span class="r-in"><span>  n_depth <span class="op">=</span> <span class="fl">30</span>,</span></span>
+<span class="r-in"><span>  n_plant <span class="op">=</span> <span class="fl">8</span>,</span></span>
+<span class="r-in"><span>  n_time <span class="op">=</span> <span class="fl">10</span>,</span></span>
+<span class="r-in"><span>  p_micro <span class="op">=</span> <span class="fl">30</span>,</span></span>
+<span class="r-in"><span>  seed <span class="op">=</span> <span class="fl">1234</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># ---- Compute RedoxRRI ----</span></span></span>
+<span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="rri_pipeline_st.html">rri_pipeline_st</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  ROS_flux <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">ROS_flux</span>,</span></span>
+<span class="r-in"><span>  Eh_stability <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">Eh_stability</span>,</span></span>
+<span class="r-in"><span>  micro_data <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">micro_data</span>,</span></span>
+<span class="r-in"><span>  id <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">id</span>,</span></span>
+<span class="r-in"><span>  reducer <span class="op">=</span> <span class="st">"per_domain"</span>,</span></span>
+<span class="r-in"><span>  scaling <span class="op">=</span> <span class="st">"pnorm"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># ---- Extract compositional scores ----</span></span></span>
+<span class="r-in"><span><span class="va">ternary_df</span> <span class="op">&lt;-</span> <span class="va">res</span><span class="op">$</span><span class="va">row_scores_comp</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># ---- Plot ternary allocation ----</span></span></span>
+<span class="r-in"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">plot_RRI_ternary</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">ternary_df</span>,</span></span>
+<span class="r-in"><span>  point_size <span class="op">=</span> <span class="fl">3</span>,</span></span>
+<span class="r-in"><span>  show_centroid <span class="op">=</span> <span class="cn">TRUE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Ignoring unknown aesthetics: <span style="color: #00BB00;">z</span></span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
+    </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>

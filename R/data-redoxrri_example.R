@@ -1,55 +1,46 @@
-#' Example data for RedoxRRI
+#' @title Example workflow for RedoxRRI
 #'
-#' A small synthetic dataset bundled with \pkg{RedoxRRI} to demonstrate
-#' the complete workflow for computing the Holobiont Redox Resilience
-#' Index (RRI) and visualizing plant–soil–microbe contributions.
+#' @name redoxrri_example
+#'
+#' @description
+#' Demonstrates the complete workflow for computing the
+#' Holobiont Redox Resilience Index (RRI) using simulated
+#' plant, soil, and microbiome data.
 #'
 #' @details
-#' This dataset is \strong{fully synthetic} and generated using
-#' \code{\link{simulate_redox_holobiont}}.
+#' This example generates a fully synthetic dataset using
+#' \code{\link{simulate_redox_holobiont}} and then computes the
+#' Redox Resilience Index using \code{\link{rri_pipeline_st}}.
 #'
-#' It is intended exclusively for:
-#' \itemize{
-#'   \item Function examples
-#'   \item Unit tests
-#'   \item Vignettes and tutorials
-#' }
+#' The simulation framework represents a simplified
+#' soil–plant–microbiome system and includes:
 #'
-#' The simulation includes:
 #' \itemize{
 #'   \item Disturbance forcing over time
-#'   \item Partial plant–soil–microbe decoupling
-#'   \item pH–Eh interaction in the soil block
-#'   \item Zero-inflated high-dimensional microbial data
+#'   \item Partial plant–soil–microbiome decoupling
+#'   \item pH–Eh interaction within the soil redox domain
+#'   \item Zero-inflated high-dimensional microbial abundance data
 #'   \item Optional stochastic microbial reassembly
-#'   \item A system-level microbial association network (if igraph available)
+#'   \item A microbial association network generated using \pkg{igraph}
 #' }
 #'
-#' The data do \emph{not} represent any real biological system.
-#'
-#' @format A named list with components:
-#' \describe{
-#'   \item{id}{data.frame; sample identifiers (plot, depth, plant_id, time).}
-#'   \item{ROS_flux}{data.frame; plant physiological traits.}
-#'   \item{Eh_stability}{data.frame; soil redox chemistry variables.}
-#'   \item{micro_data}{data.frame; sparse microbial abundance matrix.}
-#'   \item{latent_truth}{numeric vector; underlying simulated redox state scaled between 0 and 1.}
-#'   \item{graph}{Optional \pkg{igraph} object representing a microbial association network.}
-#' }
-#'
-#' @source Generated via \code{simulate_redox_holobiont(seed = 1)}.
+#' The simulated data do \emph{not} represent any real biological
+#' system and are provided solely for demonstration purposes.
 #'
 #' @examples
-#' data("redoxrri_example")
+#' # Generate a synthetic dataset
+#' sim <- simulate_redox_holobiont(seed = 1)
 #'
-#' str(redoxrri_example)
+#' # Inspect structure
+#' str(sim)
 #'
+#' # Compute the Redox Resilience Index
 #' res <- rri_pipeline_st(
-#'   ROS_flux = redoxrri_example$ROS_flux,
-#'   Eh_stability = redoxrri_example$Eh_stability,
-#'   micro_data = redoxrri_example$micro_data,
-#'   graph = redoxrri_example$graph,
-#'   id = redoxrri_example$id,
+#'   ROS_flux = sim$ROS_flux,
+#'   Eh_stability = sim$Eh_stability,
+#'   micro_data = sim$micro_data,
+#'   graph = sim$graph,
+#'   id = sim$id,
 #'   group_cols = c("plot", "depth"),
 #'   scale_by = c("plot", "depth"),
 #'   direction_phys = "auto",
@@ -61,6 +52,9 @@
 #' head(res$row_scores)
 #' head(res$row_scores_comp)
 #'
-#' @docType data
-#' @name redoxrri_example
+#' @seealso
+#' \code{\link{simulate_redox_holobiont}},
+#' \code{\link{rri_pipeline_st}},
+#' \code{\link{plot_RRI_ternary}}
+#'
 NULL

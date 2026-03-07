@@ -16,8 +16,14 @@ knitr::opts_chunk$set(
   fig.height = 10,
   out.width = "70%",
   fig.align = "center",
-  dpi = 120
+  dev = "png",
+  fig.crop = FALSE,
+  dpi = 90
 )
+
+if (!requireNamespace("patchwork", quietly = TRUE)) {
+  message("Optional package 'patchwork' not installed.")
+}
 ```
 
 
@@ -112,6 +118,9 @@ All analyses in this vignette are fully reproducible and rely only on
 simulated data generated within the package.
 
 ```{r simulate-example}
+library(dplyr)
+library(tibble)
+
 set.seed(1342)
 sim <- simulate_redox_holobiont()
 # sim <- simulate_redox_holobiont(seed = 1)
@@ -132,8 +141,14 @@ graph (optional): an igraph network or list of networks
 
 
 ### Computing the Redox Resilience Index
+Resistance = immediate deviation in redox potential after disturbance
+Resilience = rate or magnitude of redox recovery
 
 ```{r run-pipeline}
+if (!requireNamespace("FactoMineR", quietly = TRUE)) {
+  knitr::opts_chunk$set(eval = FALSE)
+}
+
 res <- rri_pipeline_st(
   ROS_flux = sim$ROS_flux,
   Eh_stability = sim$Eh_stability,
@@ -183,9 +198,10 @@ viridis.
 ```{r Ternary visualization}
 if (requireNamespace("ggtern", quietly = TRUE) &&
   requireNamespace("ggplot2", quietly = TRUE) &&
+  requireNamespace("patchwork", quietly = TRUE) &&
   requireNamespace("viridis", quietly = TRUE)) {
   
-  plot_RRI_ternary(res$row_scores_comp)
+ pt1<- plot_RRI_ternary(res$row_scores_comp)
   
 } else {
   message("Install ggtern, ggplot2, and viridis to enable ternary plotting.")
@@ -285,7 +301,7 @@ if (requireNamespace("ggtern", quietly = TRUE) &&
     requireNamespace("ggplot2", quietly = TRUE) &&
     requireNamespace("viridis", quietly = TRUE)) {
 
-  plot_RRI_ternary(
+ PRT<-plot_RRI_ternary(
     res_adv$row_scores_comp,
     centroid_method = "auto"
   )
@@ -293,7 +309,634 @@ if (requireNamespace("ggtern", quietly = TRUE) &&
 } else {
   message("Install ggtern, ggplot2, and viridis to enable ternary plotting.")
 }
+
 ```
+
+
+### set the domain directions as:
+direction_phys = "lower_is_better"
+direction_soil = "lower_is_better"
+direction_micro = "higher_is_better"
+
+```{r}
+ 
+set.seed(47162)
+
+sim <- simulate_redox_holobiont(
+  seed = 47162,
+  n_plot = 4,
+  n_depth = 4,
+  n_plant = 4,
+  n_time = 50,
+  p_micro = 240,
+  disturbance_strength = 0.6,
+  decoupling = 0.6,
+  zero_inflation = 0.4,
+  MNAR_strength = 0.5,
+  stochastic_reassembly = TRUE
+)
+res_main <- rri_pipeline_st(
+  ROS_flux = sim$ROS_flux,
+  Eh_stability = sim$Eh_stability,
+  micro_data = sim$micro_data,
+  id = sim$id,
+  time_col = "time",
+  group_cols = c("plot", "depth", "plant_id"),
+  mode = "snapshot",
+  reducer = "mfa",
+  scaling = "pnorm",
+  comp_space = "clr",
+  add_compensation = TRUE,
+  compensation_weight = 0.2,
+  direction_phys = "lower_is_better",
+  direction_soil = "lower_is_better",
+  direction_micro = "higher_is_better"
+)
+
+df_val <- tibble::tibble(
+  latent = sim$latent_truth,
+  rri = res_main$row_scores$RRI,
+  time = sim$id$time,
+  plot = sim$id$plot,
+  depth = sim$id$depth,
+  plant_id = sim$id$plant_id
+)
+
+cor_complete <- function(x, y, method = "pearson") {
+  stats::cor(x, y, use = "complete.obs", method = method)
+}
+
+n_obs <- nrow(df_val)
+cor_val <- cor_complete(df_val$latent, df_val$rri)
+lm_fit <- stats::lm(rri ~ latent, data = df_val)
+r_sq <- summary(lm_fit)$r.squared
+
+stat_label <- paste0(
+  "r = ", round(cor_val, 2),
+  ", R² = ", round(r_sq, 2),
+  ", n = ", n_obs
+)
+
+p2A <- ggplot2::ggplot(df_val, ggplot2::aes(x = latent, y = rri)) +
+  ggplot2::geom_point(alpha = 0.25, size = 1.1) +
+  ggplot2::geom_smooth(
+    method = "lm",
+    se = TRUE,
+    color = "#B2182B",
+    linewidth = 0.9
+  ) +
+  ggplot2::annotate(
+    "text",
+    x = min(df_val$latent, na.rm = TRUE),
+    y = max(df_val$rri, na.rm = TRUE),
+    hjust = 0,
+    vjust = 1,
+    size = 3.2,
+    label = stat_label
+  ) +
+  ggplot2::labs(
+    x = "True latent redox state",
+    y = "Redox Resilience Index (RRI)"
+  ) +
+  theme_ems()
+
+df_ts <- df_val |>
+  dplyr::group_by(time) |>
+  dplyr::summarise(
+    latent_mean = mean(latent, na.rm = TRUE),
+    rri_mean = mean(rri, na.rm = TRUE),
+    rri_se = stats::sd(rri, na.rm = TRUE) / sqrt(dplyr::n()),
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(
+    rri_lo = rri_mean - 1.96 * rri_se,
+    rri_hi = rri_mean + 1.96 * rri_se
+  )
+
+p2B <- ggplot2::ggplot(df_ts, ggplot2::aes(x = time)) +
+  ggplot2::geom_line(
+    ggplot2::aes(y = latent_mean),
+    color = "grey35",
+    linewidth = 1
+  ) +
+  ggplot2::geom_ribbon(
+    ggplot2::aes(ymin = rri_lo, ymax = rri_hi),
+    fill = "#2C7BB6",
+    alpha = 0.18
+  ) +
+  ggplot2::geom_line(
+    ggplot2::aes(y = rri_mean),
+    color = "#2C7BB6",
+    linewidth = 1.2
+  ) +
+  ggplot2::labs(
+    x = "Time",
+    y = "Scaled value (0–1)"
+  ) +
+  theme_ems()
+
+p2 <- p2A + p2B +
+  patchwork::plot_annotation(
+    title = "Validation of latent recovery and temporal tracking",
+    tag_levels = "A"
+  )
+p2
+```
+
+### Compensation robustness
+
+```{r}
+library(RedoxRRI)
+library(dplyr)
+library(tibble)
+library(purrr)
+library(patchwork)
+library(ggplot2)
+
+scale01 <- function(x) {
+  rng <- range(x, na.rm = TRUE)
+  if (diff(rng) == 0) {
+    return(rep(0.5, length(x)))
+  }
+  (x - rng[1]) / diff(rng)
+}
+
+cor_complete <- function(x, y, method = "spearman") {
+  stats::cor(x, y, use = "complete.obs", method = method)
+}
+
+# Simulate one reference dataset -----------------------------------------
+
+set.seed(4716254)
+
+sim <- simulate_redox_holobiont(
+  seed = 4716254,
+  n_plot = 4,
+  n_depth = 4,
+  n_plant = 4,
+  n_time = 50,
+  p_micro = 240,
+  disturbance_strength = 0.6,
+  decoupling = 0.6,
+  zero_inflation = 0.4,
+  MNAR_strength = 0.5,
+  stochastic_reassembly = TRUE
+)
+
+# MFA-based RRI ----------------------------------------------------------
+
+res_mfa <- rri_pipeline_st(
+  ROS_flux = sim$ROS_flux,
+  Eh_stability = sim$Eh_stability,
+  micro_data = sim$micro_data,
+  id = sim$id,
+  time_col = "time",
+  group_cols = c("plot", "depth", "plant_id"),
+  mode = "snapshot",
+  reducer = "mfa",
+  scaling = "pnorm",
+  comp_space = "clr",
+  add_compensation = TRUE,
+  compensation_weight = 0.2,
+  direction_phys = "lower_is_better",
+  direction_soil = "lower_is_better",
+  direction_micro = "higher_is_better"
+)
+
+# PCA / per-domain RRI ---------------------------------------------------
+
+res_pca <- rri_pipeline_st(
+  ROS_flux = sim$ROS_flux,
+  Eh_stability = sim$Eh_stability,
+  micro_data = sim$micro_data,
+  id = sim$id,
+  time_col = "time",
+  group_cols = c("plot", "depth", "plant_id"),
+  mode = "snapshot",
+  reducer = "per_domain",
+  scaling = "pnorm",
+  comp_space = "clr",
+  add_compensation = TRUE,
+  compensation_weight = 0.2,
+  direction_phys = "lower_is_better",
+  direction_soil = "lower_is_better",
+  direction_micro = "higher_is_better"
+)
+
+# Prepare comparison dataframe -------------------------------------------
+
+df_fig3 <- tibble(
+  rri_pca = scale01(res_pca$row_scores$RRI),
+  rri_mfa = scale01(res_mfa$row_scores$RRI)
+)
+
+rho <- cor_complete(df_fig3$rri_pca, df_fig3$rri_mfa, method = "spearman")
+
+# Figure 3 ---------------------------------------------------------------
+
+fig3 <- ggplot(df_fig3, aes(x = rri_pca, y = rri_mfa)) +
+  geom_point(alpha = 0.18, size = 1.2, color = "grey30") +
+  stat_density_2d(
+    color = "grey65",
+    linewidth = 0.6
+  ) +
+  geom_abline(
+    slope = 1,
+    intercept = 0,
+    linetype = "dashed",
+    color = "black",
+    linewidth = 0.8
+  ) +
+  geom_smooth(
+    method = "lm",
+    se = FALSE,
+    color = "#2C7FB8",
+    linewidth = 1.1
+  ) +
+  annotate(
+    "text",
+    x = 0.02,
+    y = 0.96,
+    hjust = 0,
+    vjust = 1,
+    size = 5,
+    label = paste0("Spearman \u03c1 = ", round(rho, 3))
+  ) +
+  coord_equal(xlim = c(0, 1), ylim = c(0, 1), expand = FALSE) +
+  labs(
+    x = "RRI (PCA reduction)",
+    y = "RRI (MFA reduction)"
+  ) +
+  theme_classic(base_size = 13)
+
+fig3
+
+
+```
+ 
+###Structural consequences of cross-domain decoupling
+
+To understand how cross-domain coupling contributes to holobiont stability,
+we simulate systems with increasing levels of domain decoupling and quantify
+three structural properties of the resulting RRI decomposition:
+
+1. Mean pairwise correlation among domains
+2. Net covariance contribution to aggregate variance
+3. Cross-domain coordination strength
+
+Higher decoupling should reduce coordination among domains and therefore
+we expect these metrics to decline with increasing decoupling.
+
+
+```{r}
+ 
+library(patchwork)
+
+dec_grid <- seq(0.1, 0.8, by = 0.1)
+
+compute_structure <- function(dec) {
+
+  sim <- simulate_redox_holobiont(
+    seed = 100 + round(dec * 1000),
+    decoupling = dec
+  )
+
+  res <- rri_pipeline_st(
+    ROS_flux = sim$ROS_flux,
+    Eh_stability = sim$Eh_stability,
+    micro_data = sim$micro_data,
+    reducer = "mfa",
+    scaling = "pnorm",
+    comp_space = "clr",
+    add_compensation = TRUE,
+    compensation_weight = 0.2
+  )
+
+  domains <- res$row_scores[, c("Physio", "Soil", "Micro")]
+
+  # Standardize to make covariance comparable across simulations
+  domains <- scale(domains)
+
+  # Correlation matrix
+  cor_mat <- cor(domains, use = "complete.obs")
+
+  # Covariance matrix
+  cov_mat <- cov(domains, use = "complete.obs")
+
+  # A — mean pairwise domain correlation
+  mean_corr <- mean(cor_mat[upper.tri(cor_mat)])
+
+  # B — covariance contribution to aggregate variance
+  cov_contribution <- sum(cov_mat[upper.tri(cov_mat)])
+
+  # C — coordination strength (positive covariance structure)
+  coordination_strength <- cov_contribution
+
+  tibble(
+    decoupling = dec,
+    mean_corr = mean_corr,
+    cov_contribution = cov_contribution,
+    coordination_strength = coordination_strength
+  )
+}
+
+df_struct <- purrr::map_dfr(dec_grid, compute_structure)
+
+# PANEL A — Domain correlation
+pA <- ggplot(df_struct, aes(decoupling, mean_corr)) +
+  geom_point(size = 2.5, color = "#3b78a8") +
+  geom_line(linewidth = 1, color = "#3b78a8") +
+  geom_smooth(
+    method = "loess",
+    span = 1,
+    color = "#3b78a8",
+    fill = "#3b78a8",
+    alpha = 0.15
+  ) +
+  labs(
+    x = "Simulated cross-domain decoupling",
+    y = "Mean pairwise domain correlation"
+  ) +
+  theme_classic()
+
+# PANEL B — Covariance structure
+pB <- ggplot(df_struct, aes(decoupling, cov_contribution)) +
+  geom_point(size = 2.5, color = "#d55e00") +
+  geom_line(linewidth = 1, color = "#d55e00") +
+  geom_smooth(
+    method = "loess",
+    span = 1,
+    color = "#d55e00",
+    fill = "#d55e00",
+    alpha = 0.15
+  ) +
+  labs(
+    x = "Simulated cross-domain decoupling",
+    y = "Covariance contribution to aggregate variance"
+  ) +
+  theme_classic()
+
+# PANEL C — Coordination strength
+pC <- ggplot(df_struct, aes(decoupling, coordination_strength)) +
+  geom_point(size = 2.5, color = "#7570b3") +
+  geom_line(linewidth = 1, color = "#7570b3") +
+  geom_smooth(
+    method = "loess",
+    span = 1,
+    color = "#7570b3",
+    fill = "#7570b3",
+    alpha = 0.15
+  ) +
+  labs(
+    x = "Simulated cross-domain decoupling",
+    y = "Cross-domain coordination strength"
+  ) +
+  theme_classic()
+
+fig4 <- (pA | pB | pC) +
+  patchwork::plot_annotation(
+    title = "Structural consequences of cross-domain decoupling",
+    tag_levels = "A"
+  )
+
+fig4
+
+ 
+```
+
+####Single-domain indicators vs integrated RRI
+plot × depth × plant_id × time
+
+```{r}
+
+if (requireNamespace("dplyr", quietly = TRUE)) library(dplyr)
+if (requireNamespace("tibble", quietly = TRUE)) library(tibble)
+if (requireNamespace("patchwork", quietly = TRUE)) library(patchwork)
+if (requireNamespace("ggplot2", quietly = TRUE)) library(ggplot2)
+
+
+ 
+# ---- Helpers ----
+scale01 <- function(x) {
+  x <- as.numeric(x)
+  r <- range(x, na.rm = TRUE)
+  if (!all(is.finite(r)) || diff(r) == 0) return(rep(0.5, length(x)))
+  (x - r[1]) / diff(r)
+}
+
+pick_col <- function(df, patterns, df_name = deparse(substitute(df))) {
+  stopifnot(is.data.frame(df))
+  nm <- names(df)
+  hit <- which(Reduce(`|`, lapply(patterns, function(p) grepl(p, nm, ignore.case = TRUE))))
+  if (length(hit) == 0) {
+    stop(
+      "Could not find a matching column in ", df_name, ".\n",
+      "Tried patterns: ", paste(patterns, collapse = ", "), "\n",
+      "Available columns: ", paste(nm, collapse = ", ")
+    )
+  }
+  if (length(hit) > 1) {
+    # Prefer exact-ish matches if present
+    exact <- hit[grepl(paste0("^(", paste(patterns, collapse = "|"), ")$"), nm[hit], ignore.case = TRUE)]
+    if (length(exact) >= 1) hit <- exact[1] else hit <- hit[1]
+  }
+  nm[hit]
+}
+
+micro_indicator_pc1 <- function(micro_data) {
+  if (is.null(micro_data)) return(rep(NA_real_, 0))
+  micro_data <- as.data.frame(micro_data)
+  
+  # numeric matrix
+  X <- suppressWarnings(as.matrix(micro_data))
+  storage.mode(X) <- "double"
+  
+  # handle all-NA columns
+  keep <- colSums(is.finite(X)) > 0
+  X <- X[, keep, drop = FALSE]
+  if (ncol(X) == 0) return(rep(NA_real_, nrow(micro_data)))
+  
+  # stabilize counts/abundances
+  X <- log1p(pmax(X, 0))
+  
+  # remove zero-variance columns
+  sds <- apply(X, 2, stats::sd, na.rm = TRUE)
+  X <- X[, is.finite(sds) & sds > 0, drop = FALSE]
+  if (ncol(X) == 0) return(rep(NA_real_, nrow(micro_data)))
+  
+  pc <- stats::prcomp(X, center = TRUE, scale. = TRUE)
+  as.numeric(pc$x[, 1])
+}
+
+make_panel <- function(df, y_col, y_lab, tag, add_identity = TRUE) {
+  r_val <- stats::cor(df$latent, df[[y_col]], use = "complete.obs", method = "pearson")
+  
+  p <- ggplot(df, aes(x = latent, y = .data[[y_col]])) +
+    geom_point(alpha = 0.22, size = 0.9, color = "black") +
+    geom_smooth(method = "lm", se = TRUE, color = "#B2182B", linewidth = 0.9) +
+    {if (isTRUE(add_identity)) geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "grey50")} +
+    annotate(
+      "label",
+      x = 0.02, y = 0.98,
+      hjust = 0, vjust = 1,
+      size = 3.2,
+      label = paste0("Pearson r = ", format(round(r_val, 3), nsmall = 3)),
+      fill = "white",
+      label.size = 0.2
+    ) +
+    coord_cartesian(xlim = c(0, 1), ylim = c(0, 1)) +
+    labs(x = "Latent redox state (scaled 0–1)", y = y_lab) +
+    theme_ems() +
+    theme(
+      plot.tag = element_text(face = "bold", size = 14),
+      axis.title = element_text(size = 11),
+      axis.text = element_text(size = 10)
+    ) +
+    labs(tag = tag)
+  
+  p
+}
+
+ # Build dataframe  
+ 
+# Soil: prefer "Eh" if present; otherwise "eh" substring
+eh_col <- pick_col(sim$Eh_stability, patterns = c("Eh", "eh", "redox"), df_name = "sim$Eh_stability")
+
+# Plant: prefer "FvFm", "Fv/Fm", then any photochemical efficiency-like pattern
+fvfm_col <- pick_col(
+  sim$ROS_flux,
+  patterns = c("FvFm", "Fv/Fm", "fvfm", "photochem", "PSII"),
+  df_name = "sim$ROS_flux"
+)
+
+micro_pc1 <- micro_indicator_pc1(sim$micro_data)
+
+df_s2 <- tibble(
+  latent = scale01(sim$latent_truth),
+  eh = scale01(sim$Eh_stability[[eh_col]]),
+  fvfm = scale01(sim$ROS_flux[[fvfm_col]]),
+  micro_pc1 = scale01(micro_pc1),
+  rri = scale01(res_main$row_scores$RRI)
+)
+
+# ============================================================
+# Panels
+# ============================================================
+
+pA <- make_panel(df_s2, "eh", paste0("Soil Eh (", eh_col, "; scaled 0–1)"), tag = "A")
+pB <- make_panel(df_s2, "fvfm", paste0("Plant Fv/Fm (", fvfm_col, "; scaled 0–1)"), tag = "B")
+pC <- make_panel(df_s2, "micro_pc1", "Microbiome indicator (PC1 of micro_data; scaled 0–1)", tag = "C")
+pD <- make_panel(df_s2, "rri", "Redox Resilience Index (RRI; scaled 0–1)", tag = "D")
+
+fig_s2 <- (pA | pB) / (pC | pD) +
+  plot_annotation(
+    title = "Single-domain indicators versus integrated RRI",
+    subtitle = "All variables scaled to [0,1]; dashed line indicates 1:1 identity; red line shows linear fit ± 95% CI.",
+    theme = theme(
+      plot.title = element_text(face = "bold", size = 14),
+      plot.subtitle = element_text(size = 11)
+    )
+  )
+
+
+fig_s2
+
+```
+| Indicator      | r     |
+| -------------- | ----- |
+| Soil Eh        | ~0.97 |
+| Plant Fv/Fm    | ~0.93 |
+| Microbiome PC1 | ~0.95 |
+| RRI            | ~0.75 |
+
+
+###RRI plotting
+
+```{r}
+# ---- Theme   ----
+ 
+theme_ems <- function(base_size = 12) {
+  theme_classic(base_size = base_size) +
+    theme(
+      plot.title = element_text(face = "bold"),
+      axis.title = element_text(face = "bold"),
+      legend.title = element_text(face = "bold"),
+      panel.grid = element_blank()
+    )
+}
+
+res_snap <- rri_pipeline_st(
+  ROS_flux     = sim$ROS_flux,
+  Eh_stability = sim$Eh_stability,
+  micro_data   = sim$micro_data,
+  id           = sim$id,
+  mode         = "snapshot",
+  reducer      = "per_domain",
+  scaling      = "pnorm",
+  comp_space   = "clr"
+)
+
+p_A <- plot_RRI_ternary(
+  res_snap$row_scores_comp,
+  point_size  = 2.6,
+  point_alpha = 0.65
+)
+
+res_roll <- rri_pipeline_st(
+  ROS_flux     = sim$ROS_flux,
+  Eh_stability = sim$Eh_stability,
+  micro_data   = sim$micro_data,
+  id           = sim$id,
+  mode         = "rolling",
+  time_col     = "time",
+  group_cols   = c("plot","depth","plant_id"),
+  window       = 3,
+  reducer      = "per_domain",
+  scaling      = "pnorm",
+  comp_space   = "clr"
+)
+
+p_B <- plot_RRI_ternary(
+  res_roll$row_scores_comp,
+  point_size  = 2.6,
+  point_alpha = 0.65
+)
+
+p_A <- plot_RRI_ternary(
+  res_snap$row_scores_comp,
+  point_size  = 2.6,
+  point_alpha = 0.65
+) +
+  ggtern::annotate(
+    "text",
+    x = -0.02,
+    y = 1.96,
+    z = -0.13,     
+    label = "A",
+    size = 6,
+    fontface = "plain"
+  )
+
+
+
+p_B <- plot_RRI_ternary(
+  res_roll$row_scores_comp,
+  point_size  = 2.6,
+  point_alpha = 0.65
+) +
+  ggtern::annotate(
+    "text",
+    x = -0.02,
+    y = 1.96,
+    z = -0.13, 
+    label = "B",
+    size = 6,
+    fontface = "plain"
+  )
+
+ 
+```
+
 
 ### Interpretation
 
@@ -325,6 +968,7 @@ res_w1$meta$rri_index
  
 ```
 
+
 ### Validation and robustness diagnostics
 
 ```{r Validation}
@@ -343,6 +987,7 @@ sens <- rri_sensitivity(res_w1)
 sens
 
 ```
+
 
 ### Stability of RRI
 RRI rankings remain highly stable (>0.9 Spearman correlation) under moderate perturbations of domain weighting, indicating structural robustness of the aggregation scheme.
@@ -405,6 +1050,7 @@ if (requireNamespace("ggplot2", quietly = TRUE)) {
 }
 
 ```
+
 
 ### Practical guidance
 
