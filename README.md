@@ -1,6 +1,6 @@
 # RedoxRRI  
 **Holobiont Redox Resilience Index for Integrative Stress Biology**
-###### https://rpubs.com/mgh/RedoxRRI
+
 ---
 
 ## Overview
@@ -9,6 +9,7 @@
 
 The package is designed for applications in **redox ecology**, **plant–soil–microbe interactions**, and **holobiont resilience research**, with explicit support for spatial structure, temporal dynamics, and the statistical challenges typical of ecological data.
 
+###### https://rpubs.com/mgh/RedoxRRI
 ---
 
 ## Key Features
