@@ -27,6 +27,7 @@ Imports:
     ggplot2
 Suggests:
     pkgdown,
+        tidyr,
     FactoMineR,
     WGCNA,
     psych,

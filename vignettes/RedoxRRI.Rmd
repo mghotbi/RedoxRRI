@@ -590,8 +590,12 @@ we expect these metrics to decline with increasing decoupling.
 
 
 ```{r}
-library(tidyverse)
 library(patchwork)
+library(RedoxRRI)
+library(dplyr)
+library(tidyr)
+library(tibble)
+library(purrr)
 
 # decoupling gradient
 dec_grid <- seq(0.1, 0.8, by = 0.1)
@@ -642,13 +646,13 @@ compute_structure <- function(decoupling, rep){
 }
 
 # run simulations
-df <- expand_grid(
+df <- tidyr::expand_grid(
   decoupling = dec_grid,
   rep = 1:n_rep
 ) |>
   pmap_dfr(~compute_structure(..1, ..2))
 
-
+ 
 # rename to avoid summarise masking bug
 df <- df |> rename(mean_corr_raw = mean_corr)
 

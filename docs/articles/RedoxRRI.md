@@ -660,27 +660,18 @@ we expect these metrics to decline with increasing decoupling.
 
 ``` r
 
-library(tidyverse)
+library(patchwork)
+library(RedoxRRI)
+library(dplyr)
+library(tidyr)
 ```
 
     ## Warning: package 'tidyr' was built under R version 4.5.2
 
-    ## Warning: package 'readr' was built under R version 4.5.2
-
-    ## Warning: package 'lubridate' was built under R version 4.5.2
-
-    ## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-    ## ✔ forcats   1.0.1     ✔ stringr   1.6.0
-    ## ✔ lubridate 1.9.5     ✔ tidyr     1.3.2
-    ## ✔ readr     2.2.0     
-    ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-    ## ✖ dplyr::filter() masks stats::filter()
-    ## ✖ dplyr::lag()    masks stats::lag()
-    ## ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
-
 ``` r
 
-library(patchwork)
+library(tibble)
+library(purrr)
 
 # decoupling gradient
 dec_grid <- seq(0.1, 0.8, by = 0.1)
@@ -731,13 +722,13 @@ compute_structure <- function(decoupling, rep){
 }
 
 # run simulations
-df <- expand_grid(
+df <- tidyr::expand_grid(
   decoupling = dec_grid,
   rep = 1:n_rep
 ) |>
   pmap_dfr(~compute_structure(..1, ..2))
 
-
+ 
 # rename to avoid summarise masking bug
 df <- df |> rename(mean_corr_raw = mean_corr)
 
@@ -1303,17 +1294,16 @@ sessionInfo()
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ##  [1] lubridate_1.9.5 forcats_1.0.1   stringr_1.6.0   readr_2.2.0    
-    ##  [5] tidyr_1.3.2     tidyverse_2.0.0 ggplot2_4.0.2   patchwork_1.3.2
-    ##  [9] purrr_1.2.1     tibble_3.3.1    dplyr_1.2.0     RedoxRRI_0.99.4
+    ## [1] tidyr_1.3.2     ggplot2_4.0.2   patchwork_1.3.2 purrr_1.2.1    
+    ## [5] tibble_3.3.1    dplyr_1.2.0     RedoxRRI_0.99.4
     ## 
     ## loaded via a namespace (and not attached):
     ##   [1] gridExtra_2.3         sandwich_3.1-1        rlang_1.1.7          
     ##   [4] magrittr_2.0.4        multcomp_1.4-29       otel_0.2.0           
     ##   [7] matrixStats_1.5.0     compiler_4.5.1        mgcv_1.9-4           
-    ##  [10] systemfonts_1.3.2     vctrs_0.7.1           pkgconfig_2.0.3      
-    ##  [13] fastmap_1.2.0         backports_1.5.0       labeling_0.4.3       
-    ##  [16] rmarkdown_2.30        tzdb_0.5.0            preprocessCore_1.72.0
+    ##  [10] systemfonts_1.3.2     vctrs_0.7.1           stringr_1.6.0        
+    ##  [13] pkgconfig_2.0.3       fastmap_1.2.0         backports_1.5.0      
+    ##  [16] labeling_0.4.3        rmarkdown_2.30        preprocessCore_1.72.0
     ##  [19] ragg_1.5.1            xfun_0.56             cachem_1.1.0         
     ##  [22] jsonlite_2.0.0        flashClust_1.1-4      parallel_4.5.1       
     ##  [25] cluster_2.1.8.2       R6_2.6.1              bslib_0.10.0         
@@ -1321,27 +1311,27 @@ sessionInfo()
     ##  [31] rpart_4.1.24          jquerylib_0.1.4       estimability_1.5.1   
     ##  [34] Rcpp_1.1.1            iterators_1.0.14      knitr_1.51           
     ##  [37] zoo_1.8-15            WGCNA_1.74            base64enc_0.1-6      
-    ##  [40] FNN_1.1.4.1           timechange_0.4.0      Matrix_1.7-4         
-    ##  [43] splines_4.5.1         nnet_7.3-20           tidyselect_1.2.1     
-    ##  [46] rstudioapi_0.18.0     yaml_2.3.12           viridis_0.6.5        
-    ##  [49] doParallel_1.0.17     codetools_0.2-20      lattice_0.22-9       
-    ##  [52] plyr_1.8.9            withr_3.0.2           S7_0.2.1             
-    ##  [55] coda_0.19-4.1         evaluate_1.0.5        foreign_0.8-91       
-    ##  [58] desc_1.4.3            survival_3.8-6        isoband_0.3.0        
-    ##  [61] ggtern_4.0.0          bayesm_3.1-7          pillar_1.11.1        
-    ##  [64] tensorA_0.36.2.1      checkmate_2.3.4       DT_0.34.0            
-    ##  [67] foreach_1.5.2         generics_0.1.4        hms_1.1.4            
-    ##  [70] scales_1.4.0          xtable_1.8-8          leaps_3.2            
-    ##  [73] glue_1.8.0            emmeans_2.0.2         scatterplot3d_0.3-45 
-    ##  [76] Hmisc_5.2-5           tools_4.5.1           hexbin_1.28.5        
-    ##  [79] data.table_1.18.2.1   robustbase_0.99-7     RSpectra_0.16-2      
-    ##  [82] fs_1.6.7              mvtnorm_1.3-3         fastcluster_1.3.0    
-    ##  [85] grid_4.5.1            impute_1.84.0         colorspace_2.1-2     
-    ##  [88] nlme_3.1-168          htmlTable_2.4.3       proto_1.0.0          
-    ##  [91] Formula_1.2-5         cli_3.6.5             latex2exp_0.9.8      
-    ##  [94] textshaping_1.0.5     viridisLite_0.4.3     uwot_0.2.4           
-    ##  [97] gtable_0.3.6          DEoptimR_1.1-4        dynamicTreeCut_1.63-1
-    ## [100] sass_0.4.10           digest_0.6.39         ggrepel_0.9.7        
-    ## [103] TH.data_1.1-5         FactoMineR_2.13       htmlwidgets_1.6.4    
-    ## [106] farver_2.1.2          htmltools_0.5.9       pkgdown_2.2.0        
-    ## [109] lifecycle_1.0.5       multcompView_0.1-11   MASS_7.3-65
+    ##  [40] FNN_1.1.4.1           Matrix_1.7-4          splines_4.5.1        
+    ##  [43] nnet_7.3-20           tidyselect_1.2.1      rstudioapi_0.18.0    
+    ##  [46] yaml_2.3.12           viridis_0.6.5         doParallel_1.0.17    
+    ##  [49] codetools_0.2-20      lattice_0.22-9        plyr_1.8.9           
+    ##  [52] withr_3.0.2           S7_0.2.1              coda_0.19-4.1        
+    ##  [55] evaluate_1.0.5        foreign_0.8-91        desc_1.4.3           
+    ##  [58] survival_3.8-6        isoband_0.3.0         ggtern_4.0.0         
+    ##  [61] bayesm_3.1-7          pillar_1.11.1         tensorA_0.36.2.1     
+    ##  [64] checkmate_2.3.4       DT_0.34.0             foreach_1.5.2        
+    ##  [67] generics_0.1.4        scales_1.4.0          xtable_1.8-8         
+    ##  [70] leaps_3.2             glue_1.8.0            emmeans_2.0.2        
+    ##  [73] scatterplot3d_0.3-45  Hmisc_5.2-5           tools_4.5.1          
+    ##  [76] hexbin_1.28.5         data.table_1.18.2.1   robustbase_0.99-7    
+    ##  [79] RSpectra_0.16-2       fs_1.6.7              mvtnorm_1.3-3        
+    ##  [82] fastcluster_1.3.0     grid_4.5.1            impute_1.84.0        
+    ##  [85] colorspace_2.1-2      nlme_3.1-168          htmlTable_2.4.3      
+    ##  [88] proto_1.0.0           Formula_1.2-5         cli_3.6.5            
+    ##  [91] latex2exp_0.9.8       textshaping_1.0.5     viridisLite_0.4.3    
+    ##  [94] uwot_0.2.4            gtable_0.3.6          DEoptimR_1.1-4       
+    ##  [97] dynamicTreeCut_1.63-1 sass_0.4.10           digest_0.6.39        
+    ## [100] ggrepel_0.9.7         TH.data_1.1-5         FactoMineR_2.13      
+    ## [103] htmlwidgets_1.6.4     farver_2.1.2          htmltools_0.5.9      
+    ## [106] pkgdown_2.2.0         lifecycle_1.0.5       multcompView_0.1-11  
+    ## [109] MASS_7.3-65
