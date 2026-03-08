@@ -642,8 +642,6 @@ compute_structure <- function(decoupling, rep){
   )
 }
 
-
-
 # run simulations
 df <- expand_grid(
   decoupling = dec_grid,

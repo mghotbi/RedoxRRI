@@ -9,7 +9,6 @@
 
 The package is designed for applications in **redox ecology**, **plant–soil–microbe interactions**, and **holobiont resilience research**, with explicit support for spatial structure, temporal dynamics, and the statistical challenges typical of ecological data.
 
-###### https://rpubs.com/mgh/RedoxRRI
 ---
 
 ## Key Features
@@ -213,6 +212,7 @@ GPL-3 © 2025 Mitra Ghotbi
 **Maintainer:** Mitra Ghotbi  
 📧 mitra.ghotbi@gmail.com  
 🔗 ORCID: [0000-0001-9185-9993](https://orcid.org/0000-0001-9185-9993)
+🔗  https://rpubs.com/mgh/RedoxRRI
 
 
 
