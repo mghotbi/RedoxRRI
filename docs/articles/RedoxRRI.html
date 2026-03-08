@@ -183,7 +183,10 @@ simulated data generated within the package.</p>
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tibble.tidyverse.org/" class="external-link">tibble</a></span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Warning: package 'tibble' was built under R version 4.5.2</span></span></code></pre>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1342</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"patchwork"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"Optional package 'patchwork' not installed."</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1342</span><span class="op">)</span></span>
 <span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simulate_redox_holobiont.html">simulate_redox_holobiont</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co"># sim &lt;- simulate_redox_holobiont(seed = 1)</span></span>
 <span></span>
@@ -548,7 +551,7 @@ direction_micro = “higher_is_better”</p>
 <span>  <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, use <span class="op">=</span> <span class="st">"complete.obs"</span>, method <span class="op">=</span> <span class="va">method</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="co"># Simulate one reference dataset -----------------------------------------</span></span>
+<span><span class="co"># Simulate one reference dataset </span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">4716254</span><span class="op">)</span></span>
 <span></span>
@@ -566,7 +569,7 @@ direction_micro = “higher_is_better”</p>
 <span>  stochastic_reassembly <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># MFA-based RRI ----------------------------------------------------------</span></span>
+<span><span class="co"># MFA-based RRI  </span></span>
 <span></span>
 <span><span class="va">res_mfa</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rri_pipeline_st.html">rri_pipeline_st</a></span><span class="op">(</span></span>
 <span>  ROS_flux <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">ROS_flux</span>,</span>
@@ -586,7 +589,7 @@ direction_micro = “higher_is_better”</p>
 <span>  direction_micro <span class="op">=</span> <span class="st">"higher_is_better"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># PCA / per-domain RRI ---------------------------------------------------</span></span>
+<span><span class="co"># PCA / per-domain RRI  </span></span>
 <span></span>
 <span><span class="va">res_pca</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rri_pipeline_st.html">rri_pipeline_st</a></span><span class="op">(</span></span>
 <span>  ROS_flux <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">ROS_flux</span>,</span>
@@ -606,7 +609,7 @@ direction_micro = “higher_is_better”</p>
 <span>  direction_micro <span class="op">=</span> <span class="st">"higher_is_better"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Prepare comparison dataframe -------------------------------------------</span></span>
+<span><span class="co"># Prepare comparison dataframe  </span></span>
 <span></span>
 <span><span class="va">df_fig3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  rri_pca <span class="op">=</span> <span class="fu">scale01</span><span class="op">(</span><span class="va">res_pca</span><span class="op">$</span><span class="va">row_scores</span><span class="op">$</span><span class="va">RRI</span><span class="op">)</span>,</span>
@@ -615,7 +618,7 @@ direction_micro = “higher_is_better”</p>
 <span></span>
 <span><span class="va">rho</span> <span class="op">&lt;-</span> <span class="fu">cor_complete</span><span class="op">(</span><span class="va">df_fig3</span><span class="op">$</span><span class="va">rri_pca</span>, <span class="va">df_fig3</span><span class="op">$</span><span class="va">rri_mfa</span>, method <span class="op">=</span> <span class="st">"spearman"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Figure 3 ---------------------------------------------------------------</span></span>
+<span><span class="co"># Figure 3  </span></span>
 <span></span>
 <span><span class="va">fig3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df_fig3</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">rri_pca</span>, y <span class="op">=</span> <span class="va">rri_mfa</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0.18</span>, size <span class="op">=</span> <span class="fl">1.2</span>, color <span class="op">=</span> <span class="st">"grey30"</span><span class="op">)</span> <span class="op">+</span></span>
@@ -669,15 +672,33 @@ decomposition:</p>
 therefore we expect these metrics to decline with increasing
 decoupling.</p>
 <div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning: package 'tidyr' was built under R version 4.5.2</span></span></code></pre>
+<pre><code><span><span class="co">## Warning: package 'readr' was built under R version 4.5.2</span></span></code></pre>
+<pre><code><span><span class="co">## Warning: package 'lubridate' was built under R version 4.5.2</span></span></code></pre>
+<pre><code><span><span class="co">## ── <span style="font-weight: bold;">Attaching core tidyverse packages</span> ──────────────────────── tidyverse 2.0.0 ──</span></span>
+<span><span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">forcats  </span> 1.0.1     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">stringr  </span> 1.6.0</span></span>
+<span><span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">lubridate</span> 1.9.5     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">tidyr    </span> 1.3.2</span></span>
+<span><span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">readr    </span> 2.2.0     </span></span>
+<span><span class="co">## ── <span style="font-weight: bold;">Conflicts</span> ────────────────────────────────────────── tidyverse_conflicts() ──</span></span>
+<span><span class="co">## <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">dplyr</span>::<span style="color: #00BB00;">filter()</span> masks <span style="color: #0000BB;">stats</span>::filter()</span></span>
+<span><span class="co">## <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">dplyr</span>::<span style="color: #00BB00;">lag()</span>    masks <span style="color: #0000BB;">stats</span>::lag()</span></span>
+<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Use the conflicted package (<span style="color: #0000BB; font-style: italic;">&lt;http://conflicted.r-lib.org/&gt;</span>) to force all conflicts to become errors</span></span></code></pre>
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com" class="external-link">patchwork</a></span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># decoupling gradient</span></span>
 <span><span class="va">dec_grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">0.8</span>, by <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">compute_structure</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">dec</span><span class="op">)</span> <span class="op">{</span></span>
+<span><span class="co"># number of stochastic replicates</span></span>
+<span><span class="va">n_rep</span> <span class="op">&lt;-</span> <span class="fl">50</span></span>
+<span></span>
+<span></span>
+<span><span class="va">compute_structure</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">decoupling</span>, <span class="va">rep</span><span class="op">)</span><span class="op">{</span></span>
 <span></span>
 <span>  <span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simulate_redox_holobiont.html">simulate_redox_holobiont</a></span><span class="op">(</span></span>
-<span>    seed <span class="op">=</span> <span class="fl">100</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">dec</span> <span class="op">*</span> <span class="fl">1000</span><span class="op">)</span>,</span>
-<span>    decoupling <span class="op">=</span> <span class="va">dec</span></span>
+<span>    seed <span class="op">=</span> <span class="fl">1000</span> <span class="op">+</span> <span class="va">rep</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">decoupling</span> <span class="op">*</span> <span class="fl">100</span><span class="op">)</span>,</span>
+<span>    decoupling <span class="op">=</span> <span class="va">decoupling</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
 <span>  <span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rri_pipeline_st.html">rri_pipeline_st</a></span><span class="op">(</span></span>
@@ -691,101 +712,166 @@ decoupling.</p>
 <span>    compensation_weight <span class="op">=</span> <span class="fl">0.2</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
-<span>  <span class="va">domains</span> <span class="op">&lt;-</span> <span class="va">res</span><span class="op">$</span><span class="va">row_scores</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Physio"</span>, <span class="st">"Soil"</span>, <span class="st">"Micro"</span><span class="op">)</span><span class="op">]</span></span>
+<span>  <span class="va">domains</span> <span class="op">&lt;-</span> <span class="va">res</span><span class="op">$</span><span class="va">row_scores</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Physio"</span>,<span class="st">"Soil"</span>,<span class="st">"Micro"</span><span class="op">)</span><span class="op">]</span></span>
 <span></span>
-<span>  <span class="co"># Standardize to make covariance comparable across simulations</span></span>
+<span>  <span class="co"># standardize domains</span></span>
 <span>  <span class="va">domains</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/scale.html" class="external-link">scale</a></span><span class="op">(</span><span class="va">domains</span><span class="op">)</span></span>
 <span></span>
-<span>  <span class="co"># Correlation matrix</span></span>
-<span>  <span class="va">cor_mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">domains</span>, use <span class="op">=</span> <span class="st">"complete.obs"</span><span class="op">)</span></span>
-<span></span>
-<span>  <span class="co"># Covariance matrix</span></span>
-<span>  <span class="va">cov_mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cov</a></span><span class="op">(</span><span class="va">domains</span>, use <span class="op">=</span> <span class="st">"complete.obs"</span><span class="op">)</span></span>
-<span></span>
-<span>  <span class="co"># A — mean pairwise domain correlation</span></span>
+<span>  <span class="co"># Panel A — synchrony</span></span>
+<span>  <span class="va">cor_mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">domains</span><span class="op">)</span></span>
 <span>  <span class="va">mean_corr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">cor_mat</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/lower.tri.html" class="external-link">upper.tri</a></span><span class="op">(</span><span class="va">cor_mat</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
 <span></span>
-<span>  <span class="co"># B — covariance contribution to aggregate variance</span></span>
-<span>  <span class="va">cov_contribution</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">cov_mat</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/lower.tri.html" class="external-link">upper.tri</a></span><span class="op">(</span><span class="va">cov_mat</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
+<span>  <span class="co"># Panel B — domain divergence</span></span>
+<span>  <span class="va">domain_divergence</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">domains</span>, <span class="fl">1</span>, <span class="va">sd</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span>  <span class="co"># C — coordination strength (positive covariance structure)</span></span>
-<span>  <span class="va">coordination_strength</span> <span class="op">&lt;-</span> <span class="va">cov_contribution</span></span>
+<span>  <span class="co"># Panel C — system instability</span></span>
+<span>  <span class="va">rri_instability</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diff.html" class="external-link">diff</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">row_scores</span><span class="op">$</span><span class="va">RRI</span><span class="op">)</span><span class="op">)</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
-<span>    decoupling <span class="op">=</span> <span class="va">dec</span>,</span>
+<span>    decoupling <span class="op">=</span> <span class="va">decoupling</span>,</span>
 <span>    mean_corr <span class="op">=</span> <span class="va">mean_corr</span>,</span>
-<span>    cov_contribution <span class="op">=</span> <span class="va">cov_contribution</span>,</span>
-<span>    coordination_strength <span class="op">=</span> <span class="va">coordination_strength</span></span>
+<span>    domain_divergence <span class="op">=</span> <span class="va">domain_divergence</span>,</span>
+<span>    rri_instability <span class="op">=</span> <span class="va">rri_instability</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="va">df_struct</span> <span class="op">&lt;-</span> <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map_dfr.html" class="external-link">map_dfr</a></span><span class="op">(</span><span class="va">dec_grid</span>, <span class="va">compute_structure</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># PANEL A — Domain correlation</span></span>
-<span><span class="va">pA</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df_struct</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">decoupling</span>, <span class="va">mean_corr</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">2.5</span>, color <span class="op">=</span> <span class="st">"#3b78a8"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">1</span>, color <span class="op">=</span> <span class="st">"#3b78a8"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html" class="external-link">geom_smooth</a></span><span class="op">(</span></span>
-<span>    method <span class="op">=</span> <span class="st">"loess"</span>,</span>
-<span>    span <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>    color <span class="op">=</span> <span class="st">"#3b78a8"</span>,</span>
+<span></span>
+<span><span class="co"># run simulations</span></span>
+<span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tidyr.tidyverse.org/reference/expand_grid.html" class="external-link">expand_grid</a></span><span class="op">(</span></span>
+<span>  decoupling <span class="op">=</span> <span class="va">dec_grid</span>,</span>
+<span>  rep <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">n_rep</span></span>
+<span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://purrr.tidyverse.org/reference/map_dfr.html" class="external-link">pmap_dfr</a></span><span class="op">(</span><span class="op">~</span><span class="fu">compute_structure</span><span class="op">(</span><span class="va">..1</span>, <span class="va">..2</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span></span>
+<span><span class="co"># rename to avoid summarise masking bug</span></span>
+<span><span class="va">df</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>mean_corr_raw <span class="op">=</span> <span class="va">mean_corr</span><span class="op">)</span></span>
+<span></span>
+<span></span>
+<span></span>
+<span><span class="co"># summarise statistics</span></span>
+<span><span class="va">df_summary</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">decoupling</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
+<span></span>
+<span>    mean_corr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">mean_corr_raw</span><span class="op">)</span>,</span>
+<span>    corr_se <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">mean_corr_raw</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,</span>
+<span></span>
+<span>    div_mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">domain_divergence</span><span class="op">)</span>,</span>
+<span>    div_se <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">domain_divergence</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,</span>
+<span></span>
+<span>    instab_mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">rri_instability</span><span class="op">)</span>,</span>
+<span>    instab_se <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">rri_instability</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,</span>
+<span></span>
+<span>    .groups <span class="op">=</span> <span class="st">"drop"</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span></span>
+<span></span>
+<span><span class="co"># Panel A — domain synchrony</span></span>
+<span><span class="va">pA</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df_summary</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">decoupling</span>, <span class="va">mean_corr</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html" class="external-link">geom_ribbon</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">mean_corr</span> <span class="op">-</span> <span class="va">corr_se</span>,</span>
+<span>        ymax <span class="op">=</span> <span class="va">mean_corr</span> <span class="op">+</span> <span class="va">corr_se</span><span class="op">)</span>,</span>
 <span>    fill <span class="op">=</span> <span class="st">"#3b78a8"</span>,</span>
-<span>    alpha <span class="op">=</span> <span class="fl">0.15</span></span>
+<span>    alpha <span class="op">=</span> <span class="fl">0.25</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
+<span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#3b78a8"</span>, linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#3b78a8"</span>, size <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span></span>
+<span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
 <span>    x <span class="op">=</span> <span class="st">"Simulated cross-domain decoupling"</span>,</span>
 <span>    y <span class="op">=</span> <span class="st">"Mean pairwise domain correlation"</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
+<span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_classic</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># PANEL B — Covariance structure</span></span>
-<span><span class="va">pB</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df_struct</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">decoupling</span>, <span class="va">cov_contribution</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">2.5</span>, color <span class="op">=</span> <span class="st">"#d55e00"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">1</span>, color <span class="op">=</span> <span class="st">"#d55e00"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html" class="external-link">geom_smooth</a></span><span class="op">(</span></span>
-<span>    method <span class="op">=</span> <span class="st">"loess"</span>,</span>
-<span>    span <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>    color <span class="op">=</span> <span class="st">"#d55e00"</span>,</span>
+<span></span>
+<span></span>
+<span><span class="co"># Panel B — domain divergence</span></span>
+<span><span class="va">pB</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df_summary</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">decoupling</span>, <span class="va">div_mean</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html" class="external-link">geom_ribbon</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">div_mean</span> <span class="op">-</span> <span class="va">div_se</span>,</span>
+<span>        ymax <span class="op">=</span> <span class="va">div_mean</span> <span class="op">+</span> <span class="va">div_se</span><span class="op">)</span>,</span>
 <span>    fill <span class="op">=</span> <span class="st">"#d55e00"</span>,</span>
-<span>    alpha <span class="op">=</span> <span class="fl">0.15</span></span>
+<span>    alpha <span class="op">=</span> <span class="fl">0.25</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
+<span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#d55e00"</span>, linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#d55e00"</span>, size <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span></span>
+<span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
 <span>    x <span class="op">=</span> <span class="st">"Simulated cross-domain decoupling"</span>,</span>
-<span>    y <span class="op">=</span> <span class="st">"Covariance contribution to aggregate variance"</span></span>
+<span>    y <span class="op">=</span> <span class="st">"Cross-domain divergence"</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
+<span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_classic</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># PANEL C — Coordination strength</span></span>
-<span><span class="va">pC</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df_struct</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">decoupling</span>, <span class="va">coordination_strength</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">2.5</span>, color <span class="op">=</span> <span class="st">"#7570b3"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">1</span>, color <span class="op">=</span> <span class="st">"#7570b3"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html" class="external-link">geom_smooth</a></span><span class="op">(</span></span>
-<span>    method <span class="op">=</span> <span class="st">"loess"</span>,</span>
-<span>    span <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>    color <span class="op">=</span> <span class="st">"#7570b3"</span>,</span>
+<span></span>
+<span></span>
+<span><span class="co"># Panel C — system instability</span></span>
+<span><span class="va">pC</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df_summary</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">decoupling</span>, <span class="va">instab_mean</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html" class="external-link">geom_ribbon</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">instab_mean</span> <span class="op">-</span> <span class="va">instab_se</span>,</span>
+<span>        ymax <span class="op">=</span> <span class="va">instab_mean</span> <span class="op">+</span> <span class="va">instab_se</span><span class="op">)</span>,</span>
 <span>    fill <span class="op">=</span> <span class="st">"#7570b3"</span>,</span>
-<span>    alpha <span class="op">=</span> <span class="fl">0.15</span></span>
+<span>    alpha <span class="op">=</span> <span class="fl">0.25</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
+<span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#7570b3"</span>, linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#7570b3"</span>, size <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span></span>
+<span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
 <span>    x <span class="op">=</span> <span class="st">"Simulated cross-domain decoupling"</span>,</span>
-<span>    y <span class="op">=</span> <span class="st">"Cross-domain coordination strength"</span></span>
+<span>    y <span class="op">=</span> <span class="st">"RRI fluctuation magnitude (system instability)"</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
+<span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_classic</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
+<span></span>
+<span></span>
+<span><span class="co"># combine panels</span></span>
 <span><span class="va">fig4</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">pA</span> <span class="op">|</span> <span class="va">pB</span> <span class="op">|</span> <span class="va">pC</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">patchwork</span><span class="fu">::</span><span class="fu"><a href="https://patchwork.data-imaginist.com/reference/plot_annotation.html" class="external-link">plot_annotation</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://patchwork.data-imaginist.com/reference/plot_annotation.html" class="external-link">plot_annotation</a></span><span class="op">(</span></span>
 <span>    title <span class="op">=</span> <span class="st">"Structural consequences of cross-domain decoupling"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Increasing decoupling reduces synchrony while increasing divergence and systemic instability"</span>,</span>
 <span>    tag_levels <span class="op">=</span> <span class="st">"A"</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
 <span><span class="va">fig4</span></span></code></pre></div>
-<pre><code><span><span class="co">## `geom_smooth()` using formula = 'y ~ x'</span></span>
-<span><span class="co">## `geom_smooth()` using formula = 'y ~ x'</span></span>
-<span><span class="co">## `geom_smooth()` using formula = 'y ~ x'</span></span></code></pre>
 <p><img src="RedoxRRI_files/figure-html/unnamed-chunk-4-1.png" class="r-plt" alt="" width="70%" style="display: block; margin: auto;"></p>
+<table class="table">
+<thead><tr class="header">
+<th align="center">Panel</th>
+<th>Metric</th>
+<th>Interpretation</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="center">A</td>
+<td>Mean pairwise correlation</td>
+<td>Domain synchrony</td>
+</tr>
+<tr class="even">
+<td align="center">B</td>
+<td>Domain divergence</td>
+<td>Separation of responses</td>
+</tr>
+<tr class="odd">
+<td align="center">C</td>
+<td>RRI fluctuation magnitude</td>
+<td>System instability</td>
+</tr>
+</tbody>
+</table>
 <p>####Single-domain indicators vs integrated RRI plot × depth ×
 plant_id × time</p>
-<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"dplyr"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"tibble"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tibble.tidyverse.org/" class="external-link">tibble</a></span><span class="op">)</span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"patchwork"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com" class="external-link">patchwork</a></span><span class="op">)</span></span>
@@ -896,26 +982,25 @@ plant_id × time</p>
 <span>  rri <span class="op">=</span> <span class="fu">scale01</span><span class="op">(</span><span class="va">res_main</span><span class="op">$</span><span class="va">row_scores</span><span class="op">$</span><span class="va">RRI</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># ============================================================</span></span>
 <span><span class="co"># Panels</span></span>
-<span><span class="co"># ============================================================</span></span>
+<span></span>
 <span></span>
 <span><span class="va">pA</span> <span class="op">&lt;-</span> <span class="fu">make_panel</span><span class="op">(</span><span class="va">df_s2</span>, <span class="st">"eh"</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Soil Eh ("</span>, <span class="va">eh_col</span>, <span class="st">"; scaled 0–1)"</span><span class="op">)</span>, tag <span class="op">=</span> <span class="st">"A"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Warning in annotate("label", x = 0.02, y = 0.98, hjust = 0, vjust = 1, size =</span></span>
 <span><span class="co">## 3.2, : Ignoring unknown parameters: `label.size`</span></span></code></pre>
-<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pB</span> <span class="op">&lt;-</span> <span class="fu">make_panel</span><span class="op">(</span><span class="va">df_s2</span>, <span class="st">"fvfm"</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Plant Fv/Fm ("</span>, <span class="va">fvfm_col</span>, <span class="st">"; scaled 0–1)"</span><span class="op">)</span>, tag <span class="op">=</span> <span class="st">"B"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Warning in annotate("label", x = 0.02, y = 0.98, hjust = 0, vjust = 1, size =</span></span>
 <span><span class="co">## 3.2, : Ignoring unknown parameters: `label.size`</span></span></code></pre>
-<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pC</span> <span class="op">&lt;-</span> <span class="fu">make_panel</span><span class="op">(</span><span class="va">df_s2</span>, <span class="st">"micro_pc1"</span>, <span class="st">"Microbiome indicator (PC1 of micro_data; scaled 0–1)"</span>, tag <span class="op">=</span> <span class="st">"C"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Warning in annotate("label", x = 0.02, y = 0.98, hjust = 0, vjust = 1, size =</span></span>
 <span><span class="co">## 3.2, : Ignoring unknown parameters: `label.size`</span></span></code></pre>
-<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pD</span> <span class="op">&lt;-</span> <span class="fu">make_panel</span><span class="op">(</span><span class="va">df_s2</span>, <span class="st">"rri"</span>, <span class="st">"Redox Resilience Index (RRI; scaled 0–1)"</span>, tag <span class="op">=</span> <span class="st">"D"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Warning in annotate("label", x = 0.02, y = 0.98, hjust = 0, vjust = 1, size =</span></span>
 <span><span class="co">## 3.2, : Ignoring unknown parameters: `label.size`</span></span></code></pre>
-<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fig_s2</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">pA</span> <span class="op">|</span> <span class="va">pB</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="va">pC</span> <span class="op">|</span> <span class="va">pD</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://patchwork.data-imaginist.com/reference/plot_annotation.html" class="external-link">plot_annotation</a></span><span class="op">(</span></span>
 <span>    title <span class="op">=</span> <span class="st">"Single-domain indicators versus integrated RRI"</span>,</span>
@@ -936,11 +1021,33 @@ plant_id × time</p>
 <pre><code><span><span class="co">## `geom_smooth()` using formula = 'y ~ x'</span></span>
 <span><span class="co">## `geom_smooth()` using formula = 'y ~ x'</span></span>
 <span><span class="co">## `geom_smooth()` using formula = 'y ~ x'</span></span></code></pre>
-<p><img src="RedoxRRI_files/figure-html/unnamed-chunk-5-1.png" class="r-plt" alt="" width="70%" style="display: block; margin: auto;">
-| Indicator | r | | ————– | —– | | Soil Eh | ~0.97 | | Plant Fv/Fm |
-~0.93 | | Microbiome PC1 | ~0.95 | | RRI | ~0.75 |</p>
+<p><img src="RedoxRRI_files/figure-html/unnamed-chunk-5-1.png" class="r-plt" alt="" width="70%" style="display: block; margin: auto;"></p>
+<table class="table">
+<thead><tr class="header">
+<th align="left">Indicator</th>
+<th align="right">r</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">Soil Eh</td>
+<td align="right">0.97</td>
+</tr>
+<tr class="even">
+<td align="left">Plant Fv/Fm</td>
+<td align="right">0.93</td>
+</tr>
+<tr class="odd">
+<td align="left">Microbiome PC1</td>
+<td align="right">0.95</td>
+</tr>
+<tr class="even">
+<td align="left">RRI</td>
+<td align="right">0.75</td>
+</tr>
+</tbody>
+</table>
 <p>###RRI plotting</p>
-<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># ---- Theme   ----</span></span>
 <span> </span>
 <span><span class="va">theme_ems</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">base_size</span> <span class="op">=</span> <span class="fl">12</span><span class="op">)</span> <span class="op">{</span></span>
@@ -971,7 +1078,7 @@ plant_id × time</p>
 <span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Warning in ggplot2::geom_point(data = centroid, ggplot2::aes(x = .data$Physio,</span></span>
 <span><span class="co">## : Ignoring unknown aesthetics: <span style="color: #00BB00;">z</span></span></span></code></pre>
-<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_roll</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rri_pipeline_st.html">rri_pipeline_st</a></span><span class="op">(</span></span>
 <span>  ROS_flux     <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">ROS_flux</span>,</span>
 <span>  Eh_stability <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">Eh_stability</span>,</span>
@@ -993,7 +1100,7 @@ plant_id × time</p>
 <span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Warning in ggplot2::geom_point(data = centroid, ggplot2::aes(x = .data$Physio,</span></span>
 <span><span class="co">## : Ignoring unknown aesthetics: <span style="color: #00BB00;">z</span></span></span></code></pre>
-<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p_A</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_RRI_ternary.html">plot_RRI_ternary</a></span><span class="op">(</span></span>
 <span>  <span class="va">res_snap</span><span class="op">$</span><span class="va">row_scores_comp</span>,</span>
 <span>  point_size  <span class="op">=</span> <span class="fl">2.6</span>,</span>
@@ -1010,7 +1117,7 @@ plant_id × time</p>
 <span>  <span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Warning in ggplot2::geom_point(data = centroid, ggplot2::aes(x = .data$Physio,</span></span>
 <span><span class="co">## : Ignoring unknown aesthetics: <span style="color: #00BB00;">z</span></span></span></code></pre>
-<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p_B</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_RRI_ternary.html">plot_RRI_ternary</a></span><span class="op">(</span></span>
 <span>  <span class="va">res_roll</span><span class="op">$</span><span class="va">row_scores_comp</span>,</span>
 <span>  point_size  <span class="op">=</span> <span class="fl">2.6</span>,</span>
@@ -1046,7 +1153,7 @@ among domains.</p>
 <div class="section level2">
 <h2 id="sensitivity-to-domain-weights">Sensitivity to domain weights<a class="anchor" aria-label="anchor" href="#sensitivity-to-domain-weights"></a>
 </h2>
-<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_w1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rri_pipeline_st.html">rri_pipeline_st</a></span><span class="op">(</span></span>
 <span>  ROS_flux <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">ROS_flux</span>,</span>
 <span>  Eh_stability <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">Eh_stability</span>,</span>
@@ -1059,17 +1166,17 @@ among domains.</p>
 <div class="section level3">
 <h3 id="validation-and-robustness-diagnostics">Validation and robustness diagnostics<a class="anchor" aria-label="anchor" href="#validation-and-robustness-diagnostics"></a>
 </h3>
-<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Validation utilities</span></span>
 <span><span class="co">### 1. Latent recovery  </span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/rri_latent_correlation.html">rri_latent_correlation</a></span><span class="op">(</span><span class="va">res_w1</span>, <span class="va">sim</span><span class="op">$</span><span class="va">latent_truth</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] -0.9417382</span></span></code></pre>
-<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Compensation strength</span></span>
 <span><span class="fu"><a href="../reference/rri_compensation_index.html">rri_compensation_index</a></span><span class="op">(</span><span class="va">res_w1</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 0.3186399</span></span></code></pre>
-<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Sensitivity of RRI rankings to aggregation weights</span></span>
 <span></span>
 <span><span class="va">sens</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rri_sensitivity.html">rri_sensitivity</a></span><span class="op">(</span><span class="va">res_w1</span><span class="op">)</span></span>
@@ -1088,7 +1195,7 @@ among domains.</p>
 <p>RRI rankings remain highly stable (&gt;0.9 Spearman correlation)
 under moderate perturbations of domain weighting, indicating structural
 robustness of the aggregation scheme.</p>
-<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"ggplot2"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  </span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
@@ -1158,7 +1265,7 @@ ordering.</li>
 <li>Sensitivity-test domain weights and methods.</li>
 <li>Validate RRI against independent outcomes.</li>
 </ul>
-<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## R version 4.5.1 (2025-06-13)</span></span>
 <span><span class="co">## Platform: aarch64-apple-darwin20</span></span>
@@ -1178,16 +1285,18 @@ ordering.</li>
 <span><span class="co">## [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] ggplot2_4.0.2    patchwork_1.3.2  purrr_1.2.1      tibble_3.3.1    </span></span>
-<span><span class="co">## [5] dplyr_1.2.0      RedoxRRI_0.99.3  BiocStyle_2.38.0</span></span>
+<span><span class="co">##  [1] lubridate_1.9.5  forcats_1.0.1    stringr_1.6.0    readr_2.2.0     </span></span>
+<span><span class="co">##  [5] tidyr_1.3.2      tidyverse_2.0.0  ggplot2_4.0.2    patchwork_1.3.2 </span></span>
+<span><span class="co">##  [9] purrr_1.2.1      tibble_3.3.1     dplyr_1.2.0      RedoxRRI_0.99.3 </span></span>
+<span><span class="co">## [13] BiocStyle_2.38.0</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
 <span><span class="co">##   [1] gridExtra_2.3         sandwich_3.1-1        rlang_1.1.7          </span></span>
 <span><span class="co">##   [4] magrittr_2.0.4        multcomp_1.4-29       otel_0.2.0           </span></span>
 <span><span class="co">##   [7] matrixStats_1.5.0     compiler_4.5.1        mgcv_1.9-4           </span></span>
-<span><span class="co">##  [10] systemfonts_1.3.1     vctrs_0.7.1           stringr_1.6.0        </span></span>
-<span><span class="co">##  [13] pkgconfig_2.0.3       fastmap_1.2.0         backports_1.5.0      </span></span>
-<span><span class="co">##  [16] labeling_0.4.3        rmarkdown_2.30        preprocessCore_1.72.0</span></span>
+<span><span class="co">##  [10] systemfonts_1.3.1     vctrs_0.7.1           pkgconfig_2.0.3      </span></span>
+<span><span class="co">##  [13] fastmap_1.2.0         backports_1.5.0       labeling_0.4.3       </span></span>
+<span><span class="co">##  [16] rmarkdown_2.30        tzdb_0.5.0            preprocessCore_1.72.0</span></span>
 <span><span class="co">##  [19] ragg_1.5.0            xfun_0.56             cachem_1.1.0         </span></span>
 <span><span class="co">##  [22] jsonlite_2.0.0        flashClust_1.1-4      parallel_4.5.1       </span></span>
 <span><span class="co">##  [25] cluster_2.1.8.2       R6_2.6.1              stringi_1.8.7        </span></span>
@@ -1195,30 +1304,31 @@ ordering.</li>
 <span><span class="co">##  [31] rpart_4.1.24          jquerylib_0.1.4       estimability_1.5.1   </span></span>
 <span><span class="co">##  [34] Rcpp_1.1.1            bookdown_0.46         iterators_1.0.14     </span></span>
 <span><span class="co">##  [37] knitr_1.51            zoo_1.8-15            WGCNA_1.74           </span></span>
-<span><span class="co">##  [40] base64enc_0.1-6       FNN_1.1.4.1           Matrix_1.7-4         </span></span>
-<span><span class="co">##  [43] splines_4.5.1         nnet_7.3-20           tidyselect_1.2.1     </span></span>
-<span><span class="co">##  [46] rstudioapi_0.18.0     yaml_2.3.12           viridis_0.6.5        </span></span>
-<span><span class="co">##  [49] doParallel_1.0.17     codetools_0.2-20      lattice_0.22-9       </span></span>
-<span><span class="co">##  [52] plyr_1.8.9            withr_3.0.2           S7_0.2.1             </span></span>
-<span><span class="co">##  [55] coda_0.19-4.1         evaluate_1.0.5        foreign_0.8-91       </span></span>
-<span><span class="co">##  [58] desc_1.4.3            survival_3.8-6        isoband_0.3.0        </span></span>
-<span><span class="co">##  [61] ggtern_4.0.0          bayesm_3.1-7          pillar_1.11.1        </span></span>
-<span><span class="co">##  [64] BiocManager_1.30.27   tensorA_0.36.2.1      checkmate_2.3.4      </span></span>
-<span><span class="co">##  [67] DT_0.34.0             foreach_1.5.2         generics_0.1.4       </span></span>
-<span><span class="co">##  [70] scales_1.4.0          xtable_1.8-8          leaps_3.2            </span></span>
-<span><span class="co">##  [73] glue_1.8.0            emmeans_2.0.1         scatterplot3d_0.3-45 </span></span>
-<span><span class="co">##  [76] Hmisc_5.2-5           tools_4.5.1           hexbin_1.28.5        </span></span>
-<span><span class="co">##  [79] data.table_1.18.2.1   robustbase_0.99-7     RSpectra_0.16-2      </span></span>
-<span><span class="co">##  [82] fs_1.6.6              mvtnorm_1.3-3         fastcluster_1.3.0    </span></span>
-<span><span class="co">##  [85] grid_4.5.1            impute_1.84.0         colorspace_2.1-2     </span></span>
-<span><span class="co">##  [88] nlme_3.1-168          htmlTable_2.4.3       proto_1.0.0          </span></span>
-<span><span class="co">##  [91] Formula_1.2-5         cli_3.6.5             latex2exp_0.9.8      </span></span>
-<span><span class="co">##  [94] textshaping_1.0.4     viridisLite_0.4.3     uwot_0.2.4           </span></span>
-<span><span class="co">##  [97] gtable_0.3.6          DEoptimR_1.1-4        dynamicTreeCut_1.63-1</span></span>
-<span><span class="co">## [100] sass_0.4.10           digest_0.6.39         ggrepel_0.9.7        </span></span>
-<span><span class="co">## [103] TH.data_1.1-5         FactoMineR_2.13       htmlwidgets_1.6.4    </span></span>
-<span><span class="co">## [106] farver_2.1.2          htmltools_0.5.9       pkgdown_2.2.0        </span></span>
-<span><span class="co">## [109] lifecycle_1.0.5       multcompView_0.1-11   MASS_7.3-65</span></span></code></pre>
+<span><span class="co">##  [40] base64enc_0.1-6       FNN_1.1.4.1           timechange_0.4.0     </span></span>
+<span><span class="co">##  [43] Matrix_1.7-4          splines_4.5.1         nnet_7.3-20          </span></span>
+<span><span class="co">##  [46] tidyselect_1.2.1      rstudioapi_0.18.0     yaml_2.3.12          </span></span>
+<span><span class="co">##  [49] viridis_0.6.5         doParallel_1.0.17     codetools_0.2-20     </span></span>
+<span><span class="co">##  [52] lattice_0.22-9        plyr_1.8.9            withr_3.0.2          </span></span>
+<span><span class="co">##  [55] S7_0.2.1              coda_0.19-4.1         evaluate_1.0.5       </span></span>
+<span><span class="co">##  [58] foreign_0.8-91        desc_1.4.3            survival_3.8-6       </span></span>
+<span><span class="co">##  [61] isoband_0.3.0         ggtern_4.0.0          bayesm_3.1-7         </span></span>
+<span><span class="co">##  [64] pillar_1.11.1         BiocManager_1.30.27   tensorA_0.36.2.1     </span></span>
+<span><span class="co">##  [67] checkmate_2.3.4       DT_0.34.0             foreach_1.5.2        </span></span>
+<span><span class="co">##  [70] generics_0.1.4        hms_1.1.4             scales_1.4.0         </span></span>
+<span><span class="co">##  [73] xtable_1.8-8          leaps_3.2             glue_1.8.0           </span></span>
+<span><span class="co">##  [76] emmeans_2.0.1         scatterplot3d_0.3-45  Hmisc_5.2-5          </span></span>
+<span><span class="co">##  [79] tools_4.5.1           hexbin_1.28.5         data.table_1.18.2.1  </span></span>
+<span><span class="co">##  [82] robustbase_0.99-7     RSpectra_0.16-2       fs_1.6.6             </span></span>
+<span><span class="co">##  [85] mvtnorm_1.3-3         fastcluster_1.3.0     grid_4.5.1           </span></span>
+<span><span class="co">##  [88] impute_1.84.0         colorspace_2.1-2      nlme_3.1-168         </span></span>
+<span><span class="co">##  [91] htmlTable_2.4.3       proto_1.0.0           Formula_1.2-5        </span></span>
+<span><span class="co">##  [94] cli_3.6.5             latex2exp_0.9.8       textshaping_1.0.4    </span></span>
+<span><span class="co">##  [97] viridisLite_0.4.3     uwot_0.2.4            gtable_0.3.6         </span></span>
+<span><span class="co">## [100] DEoptimR_1.1-4        dynamicTreeCut_1.63-1 sass_0.4.10          </span></span>
+<span><span class="co">## [103] digest_0.6.39         ggrepel_0.9.7         TH.data_1.1-5        </span></span>
+<span><span class="co">## [106] FactoMineR_2.13       htmlwidgets_1.6.4     farver_2.1.2         </span></span>
+<span><span class="co">## [109] htmltools_0.5.9       pkgdown_2.2.0         lifecycle_1.0.5      </span></span>
+<span><span class="co">## [112] multcompView_0.1-11   MASS_7.3-65</span></span></code></pre>
 </div>
 </div>
   </div>

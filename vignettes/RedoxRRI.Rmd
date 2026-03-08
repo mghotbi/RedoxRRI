@@ -11,6 +11,7 @@ vignette: >
 ---
 
 ```{r, include = FALSE}
+
 knitr::opts_chunk$set(
   fig.width = 10,
   fig.height = 10,
@@ -18,16 +19,15 @@ knitr::opts_chunk$set(
   fig.align = "center",
   dev = "png",
   fig.crop = FALSE,
-  dpi = 80
+ dpi = 90
 )
 
-if (!requireNamespace("patchwork", quietly = TRUE)) {
-  message("Optional package 'patchwork' not installed.")
-}
 ```
 
 
+
 ```{r setup}
+
 library(RedoxRRI)
 ```
 
@@ -120,7 +120,9 @@ simulated data generated within the package.
 ```{r simulate-example}
 library(dplyr)
 library(tibble)
-
+if (!requireNamespace("patchwork", quietly = TRUE)) {
+  message("Optional package 'patchwork' not installed.")
+}
 set.seed(1342)
 sim <- simulate_redox_holobiont()
 # sim <- simulate_redox_holobiont(seed = 1)
@@ -465,7 +467,7 @@ cor_complete <- function(x, y, method = "spearman") {
   stats::cor(x, y, use = "complete.obs", method = method)
 }
 
-# Simulate one reference dataset -----------------------------------------
+# Simulate one reference dataset 
 
 set.seed(4716254)
 
@@ -483,7 +485,7 @@ sim <- simulate_redox_holobiont(
   stochastic_reassembly = TRUE
 )
 
-# MFA-based RRI ----------------------------------------------------------
+# MFA-based RRI  
 
 res_mfa <- rri_pipeline_st(
   ROS_flux = sim$ROS_flux,
@@ -503,7 +505,7 @@ res_mfa <- rri_pipeline_st(
   direction_micro = "higher_is_better"
 )
 
-# PCA / per-domain RRI ---------------------------------------------------
+# PCA / per-domain RRI  
 
 res_pca <- rri_pipeline_st(
   ROS_flux = sim$ROS_flux,
@@ -523,7 +525,7 @@ res_pca <- rri_pipeline_st(
   direction_micro = "higher_is_better"
 )
 
-# Prepare comparison dataframe -------------------------------------------
+# Prepare comparison dataframe  
 
 df_fig3 <- tibble(
   rri_pca = scale01(res_pca$row_scores$RRI),
@@ -532,7 +534,7 @@ df_fig3 <- tibble(
 
 rho <- cor_complete(df_fig3$rri_pca, df_fig3$rri_mfa, method = "spearman")
 
-# Figure 3 ---------------------------------------------------------------
+# Figure 3  
 
 fig3 <- ggplot(df_fig3, aes(x = rri_pca, y = rri_mfa)) +
   geom_point(alpha = 0.18, size = 1.2, color = "grey30") +
@@ -589,16 +591,21 @@ we expect these metrics to decline with increasing decoupling.
 
 
 ```{r}
- 
+library(tidyverse)
 library(patchwork)
 
+# decoupling gradient
 dec_grid <- seq(0.1, 0.8, by = 0.1)
 
-compute_structure <- function(dec) {
+# number of stochastic replicates
+n_rep <- 50
+
+
+compute_structure <- function(decoupling, rep){
 
   sim <- simulate_redox_holobiont(
-    seed = 100 + round(dec * 1000),
-    decoupling = dec
+    seed = 1000 + rep + round(decoupling * 100),
+    decoupling = decoupling
   )
 
   res <- rri_pipeline_st(
@@ -612,97 +619,147 @@ compute_structure <- function(dec) {
     compensation_weight = 0.2
   )
 
-  domains <- res$row_scores[, c("Physio", "Soil", "Micro")]
+  domains <- res$row_scores[, c("Physio","Soil","Micro")]
 
-  # Standardize to make covariance comparable across simulations
+  # standardize domains
   domains <- scale(domains)
 
-  # Correlation matrix
-  cor_mat <- cor(domains, use = "complete.obs")
-
-  # Covariance matrix
-  cov_mat <- cov(domains, use = "complete.obs")
-
-  # A — mean pairwise domain correlation
+  # Panel A — synchrony
+  cor_mat <- cor(domains)
   mean_corr <- mean(cor_mat[upper.tri(cor_mat)])
 
-  # B — covariance contribution to aggregate variance
-  cov_contribution <- sum(cov_mat[upper.tri(cov_mat)])
+  # Panel B — domain divergence
+  domain_divergence <- mean(apply(domains, 1, sd))
 
-  # C — coordination strength (positive covariance structure)
-  coordination_strength <- cov_contribution
+  # Panel C — system instability
+  rri_instability <- mean(abs(diff(res$row_scores$RRI)), na.rm = TRUE)
 
   tibble(
-    decoupling = dec,
+    decoupling = decoupling,
     mean_corr = mean_corr,
-    cov_contribution = cov_contribution,
-    coordination_strength = coordination_strength
+    domain_divergence = domain_divergence,
+    rri_instability = rri_instability
   )
 }
 
-df_struct <- purrr::map_dfr(dec_grid, compute_structure)
 
-# PANEL A — Domain correlation
-pA <- ggplot(df_struct, aes(decoupling, mean_corr)) +
-  geom_point(size = 2.5, color = "#3b78a8") +
-  geom_line(linewidth = 1, color = "#3b78a8") +
-  geom_smooth(
-    method = "loess",
-    span = 1,
-    color = "#3b78a8",
+
+# run simulations
+df <- expand_grid(
+  decoupling = dec_grid,
+  rep = 1:n_rep
+) |>
+  pmap_dfr(~compute_structure(..1, ..2))
+
+
+# rename to avoid summarise masking bug
+df <- df |> rename(mean_corr_raw = mean_corr)
+
+
+
+# summarise statistics
+df_summary <- df |>
+  group_by(decoupling) |>
+  summarise(
+
+    mean_corr = mean(mean_corr_raw),
+    corr_se = sd(mean_corr_raw) / sqrt(n()),
+
+    div_mean = mean(domain_divergence),
+    div_se = sd(domain_divergence) / sqrt(n()),
+
+    instab_mean = mean(rri_instability),
+    instab_se = sd(rri_instability) / sqrt(n()),
+
+    .groups = "drop"
+  )
+
+
+
+# Panel A — domain synchrony
+pA <- ggplot(df_summary, aes(decoupling, mean_corr)) +
+
+  geom_ribbon(
+    aes(ymin = mean_corr - corr_se,
+        ymax = mean_corr + corr_se),
     fill = "#3b78a8",
-    alpha = 0.15
+    alpha = 0.25
   ) +
+
+  geom_line(color = "#3b78a8", linewidth = 1) +
+  geom_point(color = "#3b78a8", size = 2) +
+
   labs(
     x = "Simulated cross-domain decoupling",
     y = "Mean pairwise domain correlation"
   ) +
+
   theme_classic()
 
-# PANEL B — Covariance structure
-pB <- ggplot(df_struct, aes(decoupling, cov_contribution)) +
-  geom_point(size = 2.5, color = "#d55e00") +
-  geom_line(linewidth = 1, color = "#d55e00") +
-  geom_smooth(
-    method = "loess",
-    span = 1,
-    color = "#d55e00",
+
+
+# Panel B — domain divergence
+pB <- ggplot(df_summary, aes(decoupling, div_mean)) +
+
+  geom_ribbon(
+    aes(ymin = div_mean - div_se,
+        ymax = div_mean + div_se),
     fill = "#d55e00",
-    alpha = 0.15
+    alpha = 0.25
   ) +
+
+  geom_line(color = "#d55e00", linewidth = 1) +
+  geom_point(color = "#d55e00", size = 2) +
+
   labs(
     x = "Simulated cross-domain decoupling",
-    y = "Covariance contribution to aggregate variance"
+    y = "Cross-domain divergence"
   ) +
+
   theme_classic()
 
-# PANEL C — Coordination strength
-pC <- ggplot(df_struct, aes(decoupling, coordination_strength)) +
-  geom_point(size = 2.5, color = "#7570b3") +
-  geom_line(linewidth = 1, color = "#7570b3") +
-  geom_smooth(
-    method = "loess",
-    span = 1,
-    color = "#7570b3",
+
+
+# Panel C — system instability
+pC <- ggplot(df_summary, aes(decoupling, instab_mean)) +
+
+  geom_ribbon(
+    aes(ymin = instab_mean - instab_se,
+        ymax = instab_mean + instab_se),
     fill = "#7570b3",
-    alpha = 0.15
+    alpha = 0.25
   ) +
+
+  geom_line(color = "#7570b3", linewidth = 1) +
+  geom_point(color = "#7570b3", size = 2) +
+
   labs(
     x = "Simulated cross-domain decoupling",
-    y = "Cross-domain coordination strength"
+    y = "RRI fluctuation magnitude (system instability)"
   ) +
+
   theme_classic()
 
+
+
+# combine panels
 fig4 <- (pA | pB | pC) +
-  patchwork::plot_annotation(
+  plot_annotation(
     title = "Structural consequences of cross-domain decoupling",
+    subtitle = "Increasing decoupling reduces synchrony while increasing divergence and systemic instability",
     tag_levels = "A"
   )
 
 fig4
 
- 
 ```
+
+| Panel | Metric                    | Interpretation          |
+|:-----:|---------------------------|-------------------------|
+| A     | Mean pairwise correlation | Domain synchrony        |
+| B     | Domain divergence         | Separation of responses |
+| C     | RRI fluctuation magnitude | System instability      |
+
 
 ####Single-domain indicators vs integrated RRI
 plot × depth × plant_id × time
@@ -819,9 +876,8 @@ df_s2 <- tibble(
   rri = scale01(res_main$row_scores$RRI)
 )
 
-# ============================================================
 # Panels
-# ============================================================
+
 
 pA <- make_panel(df_s2, "eh", paste0("Soil Eh (", eh_col, "; scaled 0–1)"), tag = "A")
 pB <- make_panel(df_s2, "fvfm", paste0("Plant Fv/Fm (", fvfm_col, "; scaled 0–1)"), tag = "B")
@@ -842,13 +898,14 @@ fig_s2 <- (pA | pB) / (pC | pD) +
 fig_s2
 
 ```
-| Indicator      | r     |
-| -------------- | ----- |
-| Soil Eh        | ~0.97 |
-| Plant Fv/Fm    | ~0.93 |
-| Microbiome PC1 | ~0.95 |
-| RRI            | ~0.75 |
 
+ 
+| Indicator      | r    |
+|:---------------|-----:|
+| Soil Eh        | 0.97 |
+| Plant Fv/Fm    | 0.93 |
+| Microbiome PC1 | 0.95 |
+| RRI            | 0.75 |
 
 ###RRI plotting
 
