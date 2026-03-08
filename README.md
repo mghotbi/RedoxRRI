@@ -3,10 +3,6 @@
 Quantifying **holobiont resilience** through coordinated redox buffering
 across plant, soil, and microbial domains.
 
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/c64a2965-0413-41dc-952d-a7d0ce4017a4"
-       width="900">
-</p>
 
 ## Overview
 
@@ -14,7 +10,12 @@ across plant, soil, and microbial domains.
 
 The package is designed for applications in **redox ecology**, **plant–soil–microbe interactions**, and **holobiont resilience research**, with explicit support for spatial structure, temporal dynamics, and the statistical challenges typical of ecological data.
 
----
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/c64a2965-0413-41dc-952d-a7d0ce4017a4"
+       width="900">
+</p>
+
 
 ## Key Features
 
