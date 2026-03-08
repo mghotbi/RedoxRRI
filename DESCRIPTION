@@ -52,7 +52,7 @@ biocViews:
     Network,
     PrincipalComponent,
     Spatial
-URL: https://github.com/mghotbi/RedoxRRI
+URL: https://github.com/mghotbi/RedoxRRI, https://mghotbi.github.io/RedoxRRI/
 BugReports: https://github.com/mghotbi/RedoxRRI/issues
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
