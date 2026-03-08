@@ -11,7 +11,7 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/mghotbi/RedoxRRI/blob/main/inst/CITATION)
+[`inst/CITATION`](https://github.com/mghotbi/RedoxRRI/blob/V0.99.4/inst/CITATION)
 
 Ghotbi M, Ghotbi M (2026). *RedoxRRI: Holobiont Redox Resilience Index
 for Integrative Stress Biology*. R package version 0.99.0,
