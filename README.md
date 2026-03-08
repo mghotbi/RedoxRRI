@@ -1,7 +1,9 @@
-# RedoxRRI  
-**Holobiont Redox Resilience Index for Integrative Stress Biology**
+# RedoxRRI
 
----
+Quantifying **holobiont resilience** through coordinated redox buffering
+across plant, soil, and microbial domains.
+
+--- 
 
 ## Overview
 
