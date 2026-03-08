@@ -8,7 +8,7 @@ across plant, soil, and microbial domains.
 
 **RedoxRRI** is an R package for computing and visualizing a **Holobiont Redox Resilience Index (RRI)** by integrating **plant physiology**, **soil redox chemistry**, and **microbial resilience** into a unified, directionally identifiable framework.
 
-The package is designed for applications in **redox ecology**, **plant–soil–microbe interactions**, and **holobiont resilience research**, with explicit support for spatial structure, temporal dynamics, and the statistical challenges typical of ecological data.
+The package is designed for applications in **redox ecology**, **plant-soil-microbe interactions**, and **holobiont resilience research**, with explicit support for spatial structure, temporal dynamics, and the statistical challenges typical of ecological data.
 
 
 <p align="center">
