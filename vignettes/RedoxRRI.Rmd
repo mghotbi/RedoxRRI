@@ -868,7 +868,7 @@ fvfm_col <- pick_col(
 
 micro_pc1 <- micro_indicator_pc1(sim$micro_data)
 
-df_s2 <- tibble(
+df_6 <- tibble(
   latent = scale01(sim$latent_truth),
   eh = scale01(sim$Eh_stability[[eh_col]]),
   fvfm = scale01(sim$ROS_flux[[fvfm_col]]),
@@ -879,12 +879,12 @@ df_s2 <- tibble(
 # Panels
 
 
-pA <- make_panel(df_s2, "eh", paste0("Soil Eh (", eh_col, "; scaled 0–1)"), tag = "A")
-pB <- make_panel(df_s2, "fvfm", paste0("Plant Fv/Fm (", fvfm_col, "; scaled 0–1)"), tag = "B")
-pC <- make_panel(df_s2, "micro_pc1", "Microbiome indicator (PC1 of micro_data; scaled 0–1)", tag = "C")
-pD <- make_panel(df_s2, "rri", "Redox Resilience Index (RRI; scaled 0–1)", tag = "D")
+pA <- make_panel(df_6, "eh", paste0("Soil Eh (", eh_col, "; scaled 0–1)"), tag = "A")
+pB <- make_panel(df_6, "fvfm", paste0("Plant Fv/Fm (", fvfm_col, "; scaled 0–1)"), tag = "B")
+pC <- make_panel(df_6, "micro_pc1", "Microbiome indicator (PC1 of micro_data; scaled 0–1)", tag = "C")
+pD <- make_panel(df_6, "rri", "Redox Resilience Index (RRI; scaled 0–1)", tag = "D")
 
-fig_s2 <- (pA | pB) / (pC | pD) +
+fig_6 <- (pA | pB) / (pC | pD) +
   plot_annotation(
     title = "Single-domain indicators versus integrated RRI",
     subtitle = "All variables scaled to [0,1]; dashed line indicates 1:1 identity; red line shows linear fit ± 95% CI.",
@@ -895,7 +895,7 @@ fig_s2 <- (pA | pB) / (pC | pD) +
   )
 
 
-fig_s2
+fig_6
 
 ```
 
