@@ -1109,7 +1109,6 @@ if (requireNamespace("ggplot2", quietly = TRUE)) {
 
 ```
 
-
 ### Practical guidance
 
 A recommended workflow:
