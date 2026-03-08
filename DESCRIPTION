@@ -26,6 +26,7 @@ Imports:
     rlang,
     ggplot2
 Suggests:
+    pkgdown,
     FactoMineR,
     WGCNA,
     psych,
