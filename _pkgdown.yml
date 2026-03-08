@@ -7,9 +7,10 @@ template:
     primary: "#2C7BB6"
 
 home:
-  title: "RedoxRRI"
+  title: RedoxRRI
   description: >
-    Quantifying holobiont resilience through integrated plant–soil–microbiome redox dynamics.
+    Quantifying holobiont resilience through integrated
+    plant–soil–microbiome redox dynamics.
 
 navbar:
   structure:
@@ -39,3 +40,4 @@ navbar:
     github:
       icon: fa-github
       href: https://github.com/mghotbi/RedoxRRI
+      
