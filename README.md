@@ -3,7 +3,10 @@
 Quantifying **holobiont resilience** through coordinated redox buffering
 across plant, soil, and microbial domains.
 
---- 
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/c64a2965-0413-41dc-952d-a7d0ce4017a4"
+       width="900">
+</p>
 
 ## Overview
 
