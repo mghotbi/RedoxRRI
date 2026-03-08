@@ -1,4 +1,41 @@
 url: https://mghotbi.github.io/RedoxRRI/
+
 template:
   bootstrap: 5
+  bootswatch: flatly
+  bslib:
+    primary: "#2C7BB6"
 
+home:
+  title: "RedoxRRI"
+  description: >
+    Quantifying holobiont resilience through integrated plant–soil–microbiome redox dynamics.
+
+navbar:
+  structure:
+    left:  [intro, reference, articles, news]
+    right: [github]
+
+  components:
+
+    intro:
+      text: Overview
+      href: index.html
+
+    articles:
+      text: Vignettes
+      menu:
+      - text: RedoxRRI workflow
+        href: articles/RedoxRRI.html
+
+    reference:
+      text: Functions
+      href: reference/index.html
+
+    news:
+      text: Changelog
+      href: news/index.html
+
+    github:
+      icon: fa-github
+      href: https://github.com/mghotbi/RedoxRRI
