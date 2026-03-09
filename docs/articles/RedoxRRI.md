@@ -644,7 +644,7 @@ fig3
 
 ![](RedoxRRI_files/figure-html/unnamed-chunk-3-1.png)
 
-\###Structural consequences of cross-domain decoupling
+### Structural consequences of cross-domain decoupling
 
 To understand how cross-domain coupling contributes to holobiont
 stability, we simulate systems with increasing levels of domain
@@ -838,8 +838,9 @@ fig4
 |   B   | Domain divergence         | Separation of responses |
 |   C   | RRI fluctuation magnitude | System instability      |
 
-\####Single-domain indicators vs integrated RRI plot × depth × plant_id
-× time
+### Single-domain indicators vs integrated RRI
+
+plot × depth × plant_id × time
 
 ``` r
 
@@ -1023,7 +1024,7 @@ fig_6
 | Microbiome PC1 | 0.95 |
 | RRI            | 0.75 |
 
-\###RRI plotting
+### RRI plotting
 
 ``` r
 
@@ -1142,7 +1143,7 @@ averaging in simplex space.
 The optional compensation term increases RRI when negative cross-domain
 covariance is detected, reflecting compensatory dynamics among domains.
 
-## Sensitivity to domain weights
+### Sensitivity to domain weights
 
 ``` r
 

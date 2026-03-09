@@ -646,7 +646,10 @@ direction_micro = “higher_is_better”</p>
 <span><span class="va">fig3</span></span></code></pre></div>
 <pre><code><span><span class="co">## `geom_smooth()` using formula = 'y ~ x'</span></span></code></pre>
 <p><img src="RedoxRRI_files/figure-html/unnamed-chunk-3-1.png" class="r-plt" alt="" width="70%" style="display: block; margin: auto;"></p>
-<p>###Structural consequences of cross-domain decoupling</p>
+</div>
+<div class="section level3">
+<h3 id="structural-consequences-of-cross-domain-decoupling">Structural consequences of cross-domain decoupling<a class="anchor" aria-label="anchor" href="#structural-consequences-of-cross-domain-decoupling"></a>
+</h3>
 <p>To understand how cross-domain coupling contributes to holobiont
 stability, we simulate systems with increasing levels of domain
 decoupling and quantify three structural properties of the resulting RRI
@@ -849,8 +852,11 @@ decoupling.</p>
 </tr>
 </tbody>
 </table>
-<p>####Single-domain indicators vs integrated RRI plot × depth ×
-plant_id × time</p>
+</div>
+<div class="section level3">
+<h3 id="single-domain-indicators-vs-integrated-rri">Single-domain indicators vs integrated RRI<a class="anchor" aria-label="anchor" href="#single-domain-indicators-vs-integrated-rri"></a>
+</h3>
+<p>plot × depth × plant_id × time</p>
 <div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"dplyr"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"tibble"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tibble.tidyverse.org/" class="external-link">tibble</a></span><span class="op">)</span></span>
@@ -1026,7 +1032,10 @@ plant_id × time</p>
 </tr>
 </tbody>
 </table>
-<p>###RRI plotting</p>
+</div>
+<div class="section level3">
+<h3 id="rri-plotting">RRI plotting<a class="anchor" aria-label="anchor" href="#rri-plotting"></a>
+</h3>
 <div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># ---- Theme   ----</span></span>
 <span> </span>
@@ -1129,10 +1138,9 @@ averaging in simplex space.</p>
 cross-domain covariance is detected, reflecting compensatory dynamics
 among domains.</p>
 </div>
-</div>
-<div class="section level2">
-<h2 id="sensitivity-to-domain-weights">Sensitivity to domain weights<a class="anchor" aria-label="anchor" href="#sensitivity-to-domain-weights"></a>
-</h2>
+<div class="section level3">
+<h3 id="sensitivity-to-domain-weights">Sensitivity to domain weights<a class="anchor" aria-label="anchor" href="#sensitivity-to-domain-weights"></a>
+</h3>
 <div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_w1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rri_pipeline_st.html">rri_pipeline_st</a></span><span class="op">(</span></span>
 <span>  ROS_flux <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">ROS_flux</span>,</span>
@@ -1143,6 +1151,7 @@ among domains.</p>
 <span></span>
 <span><span class="va">res_w1</span><span class="op">$</span><span class="va">meta</span><span class="op">$</span><span class="va">rri_index</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 0.45387</span></span></code></pre>
+</div>
 <div class="section level3">
 <h3 id="validation-and-robustness-diagnostics">Validation and robustness diagnostics<a class="anchor" aria-label="anchor" href="#validation-and-robustness-diagnostics"></a>
 </h3>
